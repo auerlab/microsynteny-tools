@@ -1,0 +1,3 @@
+usyn-hood.o: usyn-hood.c
+	${CC} -c ${CFLAGS} usyn-hood.c
+

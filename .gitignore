@@ -29,6 +29,7 @@
 *.dylib
 
 # Executables
+usyn-hood
 *.exe
 *.out
 *.app
