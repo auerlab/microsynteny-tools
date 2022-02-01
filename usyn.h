@@ -1,0 +1,2 @@
+
+#define USYN_GENE_NAME_BUFF_LEN 256

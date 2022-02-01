@@ -1,3 +1,17 @@
-usyn-hood.o: usyn-hood.c
+findex.o: findex.c findex.h
+	${CC} -c ${CFLAGS} findex.c
+
+usyn-hood.o: usyn-hood.c /usr/local/include/biolibc/gff.h \
+  /usr/local/include/biolibc/biolibc.h /usr/local/include/biolibc/bed.h \
+  /usr/local/include/biolibc/overlap.h \
+  /usr/local/include/biolibc/overlap-rvs.h \
+  /usr/local/include/biolibc/overlap-accessors.h \
+  /usr/local/include/biolibc/overlap-mutators.h \
+  /usr/local/include/biolibc/bed-rvs.h \
+  /usr/local/include/biolibc/bed-accessors.h \
+  /usr/local/include/biolibc/bed-mutators.h \
+  /usr/local/include/biolibc/gff-rvs.h \
+  /usr/local/include/biolibc/gff-accessors.h \
+  /usr/local/include/biolibc/gff-mutators.h usyn.h
 	${CC} -c ${CFLAGS} usyn-hood.c
 

@@ -53,7 +53,7 @@ BIN     = usyn-hood
 ############################################################################
 # List object files that comprise BIN.
 
-OBJS    = usyn-hood.o
+OBJS    = usyn-hood.o findex.o
 
 ############################################################################
 # Compile, link, and install options
@@ -98,7 +98,8 @@ CFLAGS      += ${INCLUDES}
 CXXFLAGS    += ${INCLUDES}
 FFLAGS      += ${INCLUDES}
 LDFLAGS     += -L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib \
-	       -L${LOCALBASE}/lib -Wl,-rpath,${LOCALBASE}/lib
+	       -L${LOCALBASE}/lib -Wl,-rpath,${LOCALBASE}/lib \
+	       -lbiolibc -lxtend
 
 ############################################################################
 # Assume first command in PATH.  Override with full pathnames if necessary.
