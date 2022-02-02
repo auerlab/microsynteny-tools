@@ -34,7 +34,7 @@ int     main(int argc,char *argv[])
 		*end,
 		*neighbor_name;
     size_t      distance;
-    gff_index_t    gi = BL_GFF_INDEX_INIT;
+    bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
     
     switch(argc)
     {
@@ -69,7 +69,7 @@ int     main(int argc,char *argv[])
 	if ( strcmp(BL_GFF_FEATURE(&gene), "gene") == 0 )
 	{
 	    // Index positions of all genes in the file
-	    gff_index_add_pos(&gi, BL_GFF_FILE_POS(&gene),
+	    bl_gff_index_add_pos(&gi, BL_GFF_FILE_POS(&gene),
 		BL_GFF_SEQUENCE(&gene), BL_GFF_START(&gene), BL_GFF_END(&gene));
 	    
 	    if ( strstr(BL_GFF_ATTRIBUTES(&gene), gene_name_string) != NULL )
@@ -81,7 +81,7 @@ int     main(int argc,char *argv[])
 		 *  Back up to at the position of this gene - distance
 		 *  and output all genes from there to position + distance
 		 */
-		if ( gff_index_seek_first_ge(&gi, gff_stream,
+		if ( bl_gff_index_seek_first_ge(&gi, gff_stream,
 			BL_GFF_SEQUENCE(&gene),
 			BL_GFF_END(&gene) - distance) != 0 )
 		{

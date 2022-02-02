@@ -30,7 +30,7 @@
  *  2022-02-01  Jason Bacon Begin
  ***************************************************************************/
 
-int     gff_index_add_pos(gff_index_t *gi, long file_pos,
+int     bl_gff_index_add_pos(bl_gff_index_t *gi, long file_pos,
 	    char *chr, uint64_t start, uint64_t end)
 
 {
@@ -88,7 +88,7 @@ int     gff_index_add_pos(gff_index_t *gi, long file_pos,
  *  2022-02-01  Jason Bacon Begin
  ***************************************************************************/
 
-int     gff_index_seek_first_ge(gff_index_t *gi, FILE *stream,
+int     bl_gff_index_seek_first_ge(bl_gff_index_t *gi, FILE *stream,
 	    char *chr, uint64_t end)
 
 {
@@ -108,6 +108,51 @@ int     gff_index_seek_first_ge(gff_index_t *gi, FILE *stream,
     return fseek(stream, gi->file_pos[c], SEEK_SET);
 }
 
+
+/***************************************************************************
+ *  Use auto-c2man to generate a man page from this comment
+ *
+ *  Library:
+ *      #include <xtend/string.h>
+ *      -lxtend
+ *
+ *  Description:
+ *      .B str2u64()
+ *      is a super-fast hash function that converts a string of 8 or fewer
+ *      characters to a 64-bit integer.  This is useful for storing lists
+ *      of short strings, as it eliminates the need to use strdup(),
+ *      strlcpy(), and strcmp() for processing.  Strings can be compared
+ *      for equality using a straight integer comparison.  Strings of 7
+ *      or fewer characters can still be accessed as a string by simply
+ *      casting to char * for output, lexical comparison with strcmp(), etc.
+ *      A string of 8 characters will not have a null-terminator.
+ *
+ *      The value returned varies depending on endianness.  Hence, hash
+ *      values generated on one architecture will need to be byte swapped
+ *      before comparison to values generated under a different endianness.
+ *  
+ *  Arguments:
+ *      str     String to convert
+ *
+ *  Returns:
+ *      uint64_t integer containing the characters in str
+ *
+ *  Examples:
+ *      char        *s1 = "hello!", s2 = "Hello!";
+ *      uint64_t    v1, v2;
+ *      
+ *      v1 = str2u64(s1);
+ *      v2 = str2u64(s2);
+ *      if ( v1 != v2 )
+ *          printf("%s and %s are different.\n", (char *)&v1, (char *)&v2);
+ *
+ *  See also:
+ *      strdup(3), strcmp(3), strlcpy(3)
+ *
+ *  History: 
+ *  Date        Name        Modification
+ *  2022-02-02  Jason Bacon Begin
+ ***************************************************************************/
 
 uint64_t    str2u64(const char *str)
 
