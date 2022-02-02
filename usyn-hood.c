@@ -19,21 +19,22 @@
 #include <errno.h>
 #include <biolibc/gff.h>
 #include "usyn.h"
-#include "findex.h"
+#include "gff-index.h"
 
 void    usage(char *argv[]);
 
 int     main(int argc,char *argv[])
 
 {
-    bl_gff_t    feature = BL_GFF_INIT;
+    bl_gff_t    gene = BL_GFF_INIT, neighbor_gene = BL_GFF_INIT;
     FILE        *gff_stream;
     char        *gene_name,
 		*gff_filename,
 		gene_name_string[USYN_GENE_NAME_BUFF_LEN],
-		*end;
+		*end,
+		*neighbor_name;
     size_t      distance;
-    findex_t    findex = FINDEX_INIT;
+    gff_index_t    gi = BL_GFF_INDEX_INIT;
     
     switch(argc)
     {
@@ -63,20 +64,61 @@ int     main(int argc,char *argv[])
 	exit(EX_NOINPUT);
     }
     bl_gff_skip_header(gff_stream);
-    findex_add_pos(&findex, gff_stream);
-    while ( bl_gff_read(&feature, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK )
+    while ( bl_gff_read(&gene, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK )
     {
-	if ( (strcmp(BL_GFF_FEATURE(&feature), "gene") == 0) &&
-	     (strstr(BL_GFF_ATTRIBUTES(&feature), gene_name_string) != NULL) )
+	if ( strcmp(BL_GFF_FEATURE(&gene), "gene") == 0 )
 	{
-	    bl_gff_write(&feature, stdout, BL_GFF_FIELD_ALL);
+	    // Index positions of all genes in the file
+	    gff_index_add_pos(&gi, BL_GFF_FILE_POS(&gene),
+		BL_GFF_SEQUENCE(&gene), BL_GFF_START(&gene), BL_GFF_END(&gene));
 	    
-	    /*
-	     *  Back up to at the position of this gene - distance
-	     *  and output all genes from there to position + distance
-	     */
-	    
+	    if ( strstr(BL_GFF_ATTRIBUTES(&gene), gene_name_string) != NULL )
+	    {
+		printf("%s\t%zu\t%zu\t%s\n\n", BL_GFF_SEQUENCE(&gene),
+		    BL_GFF_START(&gene), BL_GFF_END(&gene), gene_name);
+		
+		/*
+		 *  Back up to at the position of this gene - distance
+		 *  and output all genes from there to position + distance
+		 */
+		if ( gff_index_seek_first_ge(&gi, gff_stream,
+			BL_GFF_SEQUENCE(&gene),
+			BL_GFF_END(&gene) - distance) != 0 )
+		{
+		    fprintf(stderr, "usyn-hood: Seek %zu failed.\n", BL_GFF_FILE_POS(&gene));
+		    return EX_SOFTWARE;
+		}
+		while ( bl_gff_read(&neighbor_gene, gff_stream,
+				    BL_GFF_FIELD_ALL) == BL_READ_OK )
+		{
+		    //printf("%zu\n", BL_GFF_START(&neighbor_gene));
+		    if ( strcmp(BL_GFF_FEATURE(&neighbor_gene), "gene") == 0 )
+		    {
+			neighbor_name =
+			    strstr(BL_GFF_ATTRIBUTES(&neighbor_gene), "Name=");
+			if ( neighbor_name != NULL )
+			{
+			    end = strchr(neighbor_name, ';');
+			    *end = '\0';
+			}
+			else
+			    neighbor_name = "unnamed";
+			printf("%s\t%zu\t%zu\t%s\n",
+				BL_GFF_SEQUENCE(&neighbor_gene),
+				BL_GFF_START(&neighbor_gene),
+				BL_GFF_END(&neighbor_gene), neighbor_name);
+			//printf("%zu %zu\n", BL_GFF_START(&neighbor_gene),
+			//    BL_GFF_START(&gene) + distance);
+			if ( BL_GFF_START(&neighbor_gene) > BL_GFF_START(&gene) + distance )
+			    break;
+		    }
+		    bl_gff_free(&neighbor_gene);
+		}
+		// FIXME: Temporary hack
+		break;
+	    }
 	}
+	bl_gff_free(&gene);
     }
     fclose(gff_stream);
     return EX_OK;

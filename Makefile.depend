@@ -1,17 +1,18 @@
-findex.o: findex.c findex.h
-	${CC} -c ${CFLAGS} findex.c
+gff-index.o: gff-index.c ../local/include/xtend/mem.h \
+  ../local/include/xtend/math.h gff-index.h
+	${CC} -c ${CFLAGS} gff-index.c
 
-usyn-hood.o: usyn-hood.c /usr/local/include/biolibc/gff.h \
-  /usr/local/include/biolibc/biolibc.h /usr/local/include/biolibc/bed.h \
-  /usr/local/include/biolibc/overlap.h \
-  /usr/local/include/biolibc/overlap-rvs.h \
-  /usr/local/include/biolibc/overlap-accessors.h \
-  /usr/local/include/biolibc/overlap-mutators.h \
-  /usr/local/include/biolibc/bed-rvs.h \
-  /usr/local/include/biolibc/bed-accessors.h \
-  /usr/local/include/biolibc/bed-mutators.h \
-  /usr/local/include/biolibc/gff-rvs.h \
-  /usr/local/include/biolibc/gff-accessors.h \
-  /usr/local/include/biolibc/gff-mutators.h usyn.h
+usyn-hood.o: usyn-hood.c ../local/include/biolibc/gff.h \
+  ../local/include/biolibc/biolibc.h ../local/include/biolibc/bed.h \
+  ../local/include/biolibc/overlap.h \
+  ../local/include/biolibc/overlap-rvs.h \
+  ../local/include/biolibc/overlap-accessors.h \
+  ../local/include/biolibc/overlap-mutators.h \
+  ../local/include/biolibc/bed-rvs.h \
+  ../local/include/biolibc/bed-accessors.h \
+  ../local/include/biolibc/bed-mutators.h \
+  ../local/include/biolibc/gff-rvs.h \
+  ../local/include/biolibc/gff-accessors.h \
+  ../local/include/biolibc/gff-mutators.h usyn.h gff-index.h
 	${CC} -c ${CFLAGS} usyn-hood.c
 

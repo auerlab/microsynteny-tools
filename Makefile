@@ -53,7 +53,7 @@ BIN     = usyn-hood
 ############################################################################
 # List object files that comprise BIN.
 
-OBJS    = usyn-hood.o findex.o
+OBJS    = usyn-hood.o gff-index.o
 
 ############################################################################
 # Compile, link, and install options
@@ -93,7 +93,7 @@ CPP         ?= cpp
 AR          ?= ar
 RANLIB      ?= ranlib
 
-INCLUDES    += -I${PREFIX}/lib -I${LOCALBASE}/include
+INCLUDES    += -I${PREFIX}/include -I${LOCALBASE}/include
 CFLAGS      += ${INCLUDES}
 CXXFLAGS    += ${INCLUDES}
 FFLAGS      += ${INCLUDES}
