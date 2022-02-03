@@ -17,8 +17,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
-#include "usyn.h"
+#include "msyn.h"
 #include "gff-index.h"
 
 void    usage(char *argv[]);
@@ -27,12 +28,13 @@ int     main(int argc,char *argv[])
 
 {
     bl_gff_t    gene = BL_GFF_INIT, neighbor_gene = BL_GFF_INIT;
-    FILE        *gff_stream;
+    FILE        *gff_stream, *hood_stream, *header_stream;
     char        *gene_name,
 		*gff_filename,
-		gene_name_string[USYN_GENE_NAME_BUFF_LEN],
+		gene_name_string[MSYN_GENE_NAME_BUFF_LEN],
 		*end,
-		*neighbor_name;
+		*neighbor_name,
+		hood_file[PATH_MAX];
     size_t      distance;
     bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
     
@@ -47,11 +49,11 @@ int     main(int argc,char *argv[])
     gff_filename = argv[1];
     gene_name = argv[2];
     
-    snprintf(gene_name_string, USYN_GENE_NAME_BUFF_LEN, "Name=%s;", gene_name);
+    snprintf(gene_name_string, MSYN_GENE_NAME_BUFF_LEN, "Name=%s;", gene_name);
     distance = strtoul(argv[3], &end, 10);
     if ( *end != '\0' )
     {
-	fprintf(stderr, "usyn-hood: Invalid distance: %s\n", argv[3]);
+	fprintf(stderr, "msyn-hood: Invalid distance: %s\n", argv[3]);
 	usage(argv);
     }
 
@@ -59,11 +61,11 @@ int     main(int argc,char *argv[])
     // unzip compressed files if present
     if ( (gff_stream = fopen(gff_filename, "r")) == NULL )
     {
-	fprintf(stderr, "usyn-hood: Could not open %s: %s\n",
+	fprintf(stderr, "msyn-hood: Could not open %s: %s\n",
 		gff_filename, strerror(errno));
 	exit(EX_NOINPUT);
     }
-    bl_gff_skip_header(gff_stream);
+    header_stream = bl_gff_skip_header(gff_stream);
     while ( bl_gff_read(&gene, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK )
     {
 	if ( strcmp(BL_GFF_FEATURE(&gene), "gene") == 0 )
@@ -77,6 +79,15 @@ int     main(int argc,char *argv[])
 		printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n\n", BL_GFF_SEQUENCE(&gene),
 		    BL_GFF_START(&gene), BL_GFF_END(&gene), gene_name);
 		
+		snprintf(hood_file, PATH_MAX, "%s-hood.gff3", gene_name);
+		if ( (hood_stream = fopen(hood_file, "w")) == NULL )
+		{
+		    fprintf(stderr, "msyn-hood: Cannot open %s: %s\n",
+			    hood_file, strerror(errno));
+		    return EX_CANTCREAT;
+		}
+		bl_gff_copy_header(header_stream, hood_stream);
+		
 		/*
 		 *  Back up to at the position of this gene - distance
 		 *  and output all genes from there to position + distance
@@ -85,19 +96,19 @@ int     main(int argc,char *argv[])
 			BL_GFF_SEQUENCE(&gene),
 			BL_GFF_END(&gene) - distance) != 0 )
 		{
-		    fprintf(stderr, "usyn-hood: Seek %zu failed.\n", BL_GFF_FILE_POS(&gene));
+		    fprintf(stderr, "msyn-hood: Seek %zu failed.\n", BL_GFF_FILE_POS(&gene));
 		    return EX_SOFTWARE;
 		}
 		while ( bl_gff_read(&neighbor_gene, gff_stream,
 				    BL_GFF_FIELD_ALL) == BL_READ_OK )
 		{
-		    //printf("%" PRIu64 "\n", BL_GFF_START(&neighbor_gene));
 		    if ( strcmp(BL_GFF_FEATURE(&neighbor_gene), "gene") == 0 )
 		    {
 			neighbor_name =
 			    strstr(BL_GFF_ATTRIBUTES(&neighbor_gene), "Name=");
 			if ( neighbor_name != NULL )
 			{
+			    neighbor_name = strchr(neighbor_name, '=') + 1;
 			    end = strchr(neighbor_name, ';');
 			    *end = '\0';
 			}
@@ -107,13 +118,22 @@ int     main(int argc,char *argv[])
 				BL_GFF_SEQUENCE(&neighbor_gene),
 				BL_GFF_START(&neighbor_gene),
 				BL_GFF_END(&neighbor_gene), neighbor_name);
-			//printf("%" PRIu64 " %" PRIu64 "\n", BL_GFF_START(&neighbor_gene),
-			//    BL_GFF_START(&gene) + distance);
+		    
+			// Hack gene name into source field for
+			// DNA Feature Viewer.  Should be a way to avoid this.
+			bl_gff_set_source_cpy(&neighbor_gene, neighbor_name,
+			    BL_GFF_SOURCE_MAX_CHARS);
+			// Output gene neighborhood in GFF format for above
+			bl_gff_write(&neighbor_gene, hood_stream,
+			    BL_GFF_FIELD_ALL);
+			
 			if ( BL_GFF_START(&neighbor_gene) > BL_GFF_START(&gene) + distance )
 			    break;
 		    }
 		    bl_gff_free(&neighbor_gene);
 		}
+		fclose(hood_stream);
+		
 		// FIXME: Temporary hack
 		break;
 	    }
@@ -131,3 +151,4 @@ void    usage(char *argv[])
     fprintf(stderr, "Usage: file.gff gene-name distance%s\n", argv[0]);
     exit(EX_USAGE);
 }
+

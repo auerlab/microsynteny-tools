@@ -48,12 +48,12 @@
 ############################################################################
 # Installed targets
 
-BIN     = usyn-hood
+BIN     = msyn-hood
 
 ############################################################################
 # List object files that comprise BIN.
 
-OBJS    = usyn-hood.o gff-index.o
+OBJS    = msyn-hood.o gff-index.o
 
 ############################################################################
 # Compile, link, and install options

@@ -8,7 +8,7 @@
 *.dylib
 
 # Executables
-usyn-hood
+msyn-hood
 
 # Debug files
 *.dSYM/

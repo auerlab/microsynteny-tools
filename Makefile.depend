@@ -2,7 +2,7 @@ gff-index.o: gff-index.c ../local/include/xtend/mem.h \
   ../local/include/xtend/math.h gff-index.h
 	${CC} -c ${CFLAGS} gff-index.c
 
-usyn-hood.o: usyn-hood.c ../local/include/biolibc/gff.h \
+msyn-hood.o: msyn-hood.c ../local/include/biolibc/gff.h \
   ../local/include/biolibc/biolibc.h ../local/include/biolibc/bed.h \
   ../local/include/biolibc/overlap.h \
   ../local/include/biolibc/overlap-rvs.h \
@@ -13,6 +13,6 @@ usyn-hood.o: usyn-hood.c ../local/include/biolibc/gff.h \
   ../local/include/biolibc/bed-mutators.h \
   ../local/include/biolibc/gff-rvs.h \
   ../local/include/biolibc/gff-accessors.h \
-  ../local/include/biolibc/gff-mutators.h usyn.h gff-index.h
-	${CC} -c ${CFLAGS} usyn-hood.c
+  ../local/include/biolibc/gff-mutators.h msyn.h gff-index.h
+	${CC} -c ${CFLAGS} msyn-hood.c
 
