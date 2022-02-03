@@ -18,6 +18,7 @@ msyn-hood
 
 # Data files
 *.gff3
+*.png
 
 # Temp files
 README.html
