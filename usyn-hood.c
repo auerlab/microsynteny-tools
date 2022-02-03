@@ -74,7 +74,7 @@ int     main(int argc,char *argv[])
 	    
 	    if ( strstr(BL_GFF_ATTRIBUTES(&gene), gene_name_string) != NULL )
 	    {
-		printf("%s\t%zu\t%zu\t%s\n\n", BL_GFF_SEQUENCE(&gene),
+		printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n\n", BL_GFF_SEQUENCE(&gene),
 		    BL_GFF_START(&gene), BL_GFF_END(&gene), gene_name);
 		
 		/*
@@ -91,7 +91,7 @@ int     main(int argc,char *argv[])
 		while ( bl_gff_read(&neighbor_gene, gff_stream,
 				    BL_GFF_FIELD_ALL) == BL_READ_OK )
 		{
-		    //printf("%zu\n", BL_GFF_START(&neighbor_gene));
+		    //printf("%" PRIu64 "\n", BL_GFF_START(&neighbor_gene));
 		    if ( strcmp(BL_GFF_FEATURE(&neighbor_gene), "gene") == 0 )
 		    {
 			neighbor_name =
@@ -103,11 +103,11 @@ int     main(int argc,char *argv[])
 			}
 			else
 			    neighbor_name = "unnamed";
-			printf("%s\t%zu\t%zu\t%s\n",
+			printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n",
 				BL_GFF_SEQUENCE(&neighbor_gene),
 				BL_GFF_START(&neighbor_gene),
 				BL_GFF_END(&neighbor_gene), neighbor_name);
-			//printf("%zu %zu\n", BL_GFF_START(&neighbor_gene),
+			//printf("%" PRIu64 " %" PRIu64 "\n", BL_GFF_START(&neighbor_gene),
 			//    BL_GFF_START(&gene) + distance);
 			if ( BL_GFF_START(&neighbor_gene) > BL_GFF_START(&gene) + distance )
 			    break;
