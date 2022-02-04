@@ -70,7 +70,9 @@ for i in range(1, argc):
     record = BiopythonTranslator().translate_record(filename, filetype="gff")
     # 12 of what I have no idea, but it about spans the screen
     ax, _ = record.plot(figure_width=12, x_lim = [x_min, x_max], strand_in_label_threshold=7)
+    ax.set_title(filename)
     plt.show()
+
     stem = os.path.splitext(filename)[0]
     png_filename = ".".join([stem,"png"])
     ax.figure.savefig(png_filename, bbox_inches='tight')
