@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/param.h>  // MIN()
 #include <xtend/mem.h>
 #include <xtend/math.h>
 #include <biolibc/gff.h>
@@ -97,7 +98,7 @@ int     bl_gff_index_seek_reverse(bl_gff_index_t *gi, FILE *stream,
     ssize_t     c;
     char        *ref_seqid = BL_GFF_SEQID(feature);
     uint64_t    ref_start = BL_GFF_START(feature),
-		end = ref_start - max_nt,
+		end = MIN((int64_t)ref_start - max_nt, 0),
 		f;
 
     // First find the reference feature
@@ -105,19 +106,15 @@ int     bl_gff_index_seek_reverse(bl_gff_index_t *gi, FILE *stream,
 			    (gi->start[c] != ref_start) &&
 			    (strcmp(gi->seqid[c], ref_seqid) != 0); --c)
 	;
-    //fprintf(stderr, "Seeking backward from %s %" PRIu64 " %s %" PRIu64 "\n",
-    //        gi->seqid[c], gi->start[c], ref_seqid, ref_start);
     
     // Now back up gene_count features or to the leftmost feature overlapping
     // with the ref feature start - max_nt
-    fprintf(stderr, "Backing up %" PRIu64 " features, %" PRIu64 " nt max.\n",
-	    feature_count, max_nt);
     for (f = feature_count; ((int64_t)f > 0) &&
-			    ((int64_t)c >= 0) &&
+			    ((int64_t)c > 0) &&
+			    (strcmp(gi->seqid[c], ref_seqid) == 0) &&
 			    (gi->end[c] > end); --f, --c)
 	;
-	//fprintf(stderr, "%" PRIu64 " %" PRIu64 "\n", f, c);
-    if ( (c < 0) || (gi->end[c] < end) )
+    if ( gi->end[c] < end )
 	++c;
 
     return fseek(stream, gi->file_pos[c], SEEK_SET);

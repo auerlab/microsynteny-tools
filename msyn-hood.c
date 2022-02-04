@@ -51,7 +51,7 @@ int     main(int argc,char *argv[])
     {
 	if ( strcmp(argv[arg], "--output-dir") == 0 )
 	    output_dir = argv[++arg];
-	else if ( strcmp(argv[arg], "--base-distance") == 0 )
+	else if ( strcmp(argv[arg], "--max-nt-distance") == 0 )
 	{
 	    max_nt_distance = strtoul(argv[++arg], &end, 10);
 	    if ( *end != '\0' )
@@ -71,6 +71,8 @@ int     main(int argc,char *argv[])
 		usage(argv);
 	    }
 	}
+	else
+	    usage(argv);
     }
     
     if ( arg > argc - 2 )
@@ -91,13 +93,18 @@ int     main(int argc,char *argv[])
     header_stream = bl_gff_skip_header(gff_stream);
     while ( bl_gff_read(&gene, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK )
     {
-	if ( strcmp(BL_GFF_TYPE(&gene), "gene") == 0 )
+	if ( strcasecmp(BL_GFF_TYPE(&gene), "gene") == 0 )
 	{
 	    // Index positions of all genes in the file
-	    bl_gff_index_add_pos(&gi, BL_GFF_FILE_POS(&gene),
-		BL_GFF_SEQID(&gene), BL_GFF_START(&gene), BL_GFF_END(&gene));
+	    if ( bl_gff_index_add_pos(&gi, BL_GFF_FILE_POS(&gene),
+		 BL_GFF_SEQID(&gene), BL_GFF_START(&gene),
+		 BL_GFF_END(&gene)) != BL_GFF_INDEX_OK )
+	    {
+		fprintf(stderr, "bl_gff_index_add_pos() failed.\n");
+		return EX_SOFTWARE;
+	    }
 	    
-	    if ( strstr(BL_GFF_ATTRIBUTES(&gene), gene_name_string) != NULL )
+	    if ( strcasestr(BL_GFF_ATTRIBUTES(&gene), gene_name_string) != NULL )
 	    {
 		printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n\n", BL_GFF_SEQID(&gene),
 		    BL_GFF_START(&gene), BL_GFF_END(&gene), gene_name);
@@ -137,7 +144,7 @@ int     main(int argc,char *argv[])
 		    {
 			++g;
 			neighbor_name =
-			    strstr(BL_GFF_ATTRIBUTES(&neighbor_gene), "Name=");
+			    strcasestr(BL_GFF_ATTRIBUTES(&neighbor_gene), "Name=");
 			if ( neighbor_name != NULL )
 			{
 			    neighbor_name = strchr(neighbor_name, '=') + 1;
