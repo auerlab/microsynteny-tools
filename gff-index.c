@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <xtend/mem.h>
 #include <xtend/math.h>
+#include <biolibc/gff.h>
 #include "gff-index.h"
 
 /***************************************************************************
@@ -31,7 +33,7 @@
  ***************************************************************************/
 
 int     bl_gff_index_add_pos(bl_gff_index_t *gi, long file_pos,
-	    char *chr, uint64_t start, uint64_t end)
+	    char *seqid, uint64_t start, uint64_t end)
 
 {
     if ( gi->count == gi->array_size )
@@ -46,8 +48,8 @@ int     bl_gff_index_add_pos(bl_gff_index_t *gi, long file_pos,
 	gi->end = xt_realloc(gi->end, gi->array_size, sizeof(*gi->end));
 	if ( gi->end == NULL )
 	    return BL_GFF_INDEX_MALLOC_FAILED;
-	gi->chr = xt_realloc(gi->chr, gi->array_size, sizeof(*gi->chr));
-	if ( gi->chr == NULL )
+	gi->seqid = xt_realloc(gi->seqid, gi->array_size, sizeof(*gi->seqid));
+	if ( gi->seqid == NULL )
 	    return BL_GFF_INDEX_MALLOC_FAILED;
     }
     gi->file_pos[gi->count] = file_pos;
@@ -55,8 +57,8 @@ int     bl_gff_index_add_pos(bl_gff_index_t *gi, long file_pos,
     gi->end[gi->count] = end;
     
     // Hash chr to a 64-bit integer, padding with 0s beyond the end
-    gi->chr[gi->count] = str2u64(chr);
-    //printf("%lx %s ", gi->chr[gi->count], (char *)&gi->chr[gi->count]);
+    if ( (gi->seqid[gi->count] = strdup(seqid)) == NULL )
+	return BL_GFF_INDEX_MALLOC_FAILED;
     ++gi->count;
     return BL_GFF_INDEX_OK;
 }
@@ -88,23 +90,36 @@ int     bl_gff_index_add_pos(bl_gff_index_t *gi, long file_pos,
  *  2022-02-01  Jason Bacon Begin
  ***************************************************************************/
 
-int     bl_gff_index_seek_first_ge(bl_gff_index_t *gi, FILE *stream,
-	    char *chr, uint64_t end)
+int     bl_gff_index_seek_reverse(bl_gff_index_t *gi, FILE *stream,
+	    bl_gff_t *feature, uint64_t feature_count, uint64_t max_nt)
 
 {
-    size_t      c;
-    uint64_t    v = str2u64(chr);
+    ssize_t     c;
+    char        *ref_seqid = BL_GFF_SEQID(feature);
+    uint64_t    ref_start = BL_GFF_START(feature),
+		end = ref_start - max_nt,
+		f;
 
-    // First find the segment containing our chromosome
-    for (c = gi->count - 1; ((int64_t)c >= 0) && (gi->chr[c] != v); --c)
+    // First find the reference feature
+    for (c = gi->count - 1; ((int64_t)c >= 0) &&
+			    (gi->start[c] != ref_start) &&
+			    (strcmp(gi->seqid[c], ref_seqid) != 0); --c)
 	;
+    //fprintf(stderr, "Seeking backward from %s %" PRIu64 " %s %" PRIu64 "\n",
+    //        gi->seqid[c], gi->start[c], ref_seqid, ref_start);
     
-    // Now find the first feature overlapping or after our position
-    while ( ((int64_t)c >= 0) &&(gi->end[c] > end) )
-	--c;
-    
-    if ( gi->end[c] < end )
+    // Now back up gene_count features or to the leftmost feature overlapping
+    // with the ref feature start - max_nt
+    fprintf(stderr, "Backing up %" PRIu64 " features, %" PRIu64 " nt max.\n",
+	    feature_count, max_nt);
+    for (f = feature_count; ((int64_t)f > 0) &&
+			    ((int64_t)c >= 0) &&
+			    (gi->end[c] > end); --f, --c)
+	;
+	//fprintf(stderr, "%" PRIu64 " %" PRIu64 "\n", f, c);
+    if ( (c < 0) || (gi->end[c] < end) )
 	++c;
+
     return fseek(stream, gi->file_pos[c], SEEK_SET);
 }
 

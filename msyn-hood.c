@@ -38,8 +38,9 @@ int     main(int argc,char *argv[])
 		hood_file[PATH_MAX],
 		*output_dir = ".",
 		*ext;
-    size_t      nt_distance = DEFAULT_NT_DISTANCE,
-		gene_distance = DEFAULT_GENE_DISTANCE;
+    uint64_t    max_nt_distance = DEFAULT_NT_DISTANCE,
+		gene_count = DEFAULT_GENE_COUNT,
+		g;
     int         arg;
     bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
 
@@ -52,17 +53,17 @@ int     main(int argc,char *argv[])
 	    output_dir = argv[++arg];
 	else if ( strcmp(argv[arg], "--base-distance") == 0 )
 	{
-	    nt_distance = strtoul(argv[++arg], &end, 10);
+	    max_nt_distance = strtoul(argv[++arg], &end, 10);
 	    if ( *end != '\0' )
 	    {
-		fprintf(stderr, "msyn-hood: Invalid --nt-distance: %s\n",
+		fprintf(stderr, "msyn-hood: Invalid --max-nt-distance: %s\n",
 			argv[arg]);
 		usage(argv);
 	    }
 	}
 	else if ( strcmp(argv[arg], "--gene-distance") == 0 )
 	{
-	    gene_distance = strtoul(argv[++arg], &end, 10);
+	    gene_count = strtoul(argv[++arg], &end, 10);
 	    if ( *end != '\0' )
 	    {
 		fprintf(stderr, "msyn-hood: Invalid --gene-distance: %s\n",
@@ -117,21 +118,24 @@ int     main(int argc,char *argv[])
 		bl_gff_copy_header(header_stream, hood_stream);
 		
 		/*
-		 *  Back up to at the position of this gene - nt_distance
-		 *  and output all genes from there to position + nt_distance
+		 *  Back up to at the position of this gene - max_nt_distance
+		 *  and output all genes from there to position + max_nt_distance
 		 */
-		if ( bl_gff_index_seek_first_ge(&gi, gff_stream,
-			BL_GFF_SEQID(&gene),
-			BL_GFF_END(&gene) - nt_distance) != 0 )
+		if ( bl_gff_index_seek_reverse(&gi, gff_stream, &gene,
+			gene_count, max_nt_distance) != 0 )
 		{
 		    fprintf(stderr, "msyn-hood: Seek %zu failed.\n", BL_GFF_FILE_POS(&gene));
 		    return EX_SOFTWARE;
 		}
-		while ( bl_gff_read(&neighbor_gene, gff_stream,
-				    BL_GFF_FIELD_ALL) == BL_READ_OK )
+		
+		// From leftmost neighbor read gene_count before and after ref
+		for (g = 0; (g < gene_count * 2 + 1) &&
+			    bl_gff_read(&neighbor_gene, gff_stream,
+				    BL_GFF_FIELD_ALL) == BL_READ_OK; )
 		{
 		    if ( strcmp(BL_GFF_TYPE(&neighbor_gene), "gene") == 0 )
 		    {
+			++g;
 			neighbor_name =
 			    strstr(BL_GFF_ATTRIBUTES(&neighbor_gene), "Name=");
 			if ( neighbor_name != NULL )
@@ -155,7 +159,8 @@ int     main(int argc,char *argv[])
 			bl_gff_write(&neighbor_gene, hood_stream,
 			    BL_GFF_FIELD_ALL);
 			
-			if ( BL_GFF_START(&neighbor_gene) > BL_GFF_START(&gene) + nt_distance )
+			if ( BL_GFF_START(&neighbor_gene) >
+				BL_GFF_END(&gene) + max_nt_distance )
 			    break;
 		    }
 		    bl_gff_free(&neighbor_gene);
@@ -179,7 +184,7 @@ void    usage(char *argv[])
     fprintf(stderr, "Usage: %s\n"
 		    "   [--output-dir dir]\n"
 		    "   [--gene-distance genes]\n"
-		    "   [--nt-distance nucleotides]\n"
+		    "   [--max-nt-distance nucleotides]\n"
 		    "   file.gff gene-name\n", argv[0]);
     exit(EX_USAGE);
 }

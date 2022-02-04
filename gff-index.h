@@ -15,14 +15,14 @@
 
 typedef struct
 {
-    size_t  array_size;
-    size_t  count;
-    long    *file_pos;  // Return type of ftell()
-    uint64_t    *chr;
+    size_t      array_size;
+    size_t      count;
+    long        *file_pos;  // Return type of ftell()
+    char        **seqid;
     uint64_t    *start;
     uint64_t    *end;
 }   bl_gff_index_t;
 
 int bl_gff_index_add_pos(bl_gff_index_t *gi, long file_pos, char *chr, uint64_t start, uint64_t end);
-int bl_gff_index_seek_first_ge(bl_gff_index_t *gi, FILE *stream, char *chr, uint64_t end);
+int bl_gff_index_seek_reverse(bl_gff_index_t *gi, FILE *stream, bl_gff_t *feature, uint64_t gene_count, uint64_t max_nt);
 uint64_t str2u64(const char *str);
