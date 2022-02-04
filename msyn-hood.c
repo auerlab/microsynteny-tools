@@ -31,26 +31,32 @@ int     main(int argc,char *argv[])
     FILE        *gff_stream, *hood_stream, *header_stream;
     char        *gene_name,
 		*gff_filename,
+		*gff_basename,
 		gene_name_string[MSYN_GENE_NAME_BUFF_LEN],
 		*end,
 		*neighbor_name,
-		hood_file[PATH_MAX];
+		hood_file[PATH_MAX],
+		*output_dir = ".";
     size_t      distance;
+    int         arg;
     bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
-    
-    switch(argc)
-    {
-	case 4:
-	    break;
-	
-	default:
+
+    if ( argc < 4 )
 	    usage(argv);
+    
+    for (arg = 1; (arg < argc) && (argv[arg][0] == '-'); ++arg)
+    {
+	if ( strcmp(argv[arg], "--output-dir") == 0 )
+	    output_dir = argv[++arg];
     }
-    gff_filename = argv[1];
-    gene_name = argv[2];
+    
+    if ( arg > argc - 3 )
+	usage(argv);
+    gff_filename = argv[arg++];
+    gene_name = argv[arg++];
     
     snprintf(gene_name_string, MSYN_GENE_NAME_BUFF_LEN, "Name=%s;", gene_name);
-    distance = strtoul(argv[3], &end, 10);
+    distance = strtoul(argv[arg++], &end, 10);
     if ( *end != '\0' )
     {
 	fprintf(stderr, "msyn-hood: Invalid distance: %s\n", argv[3]);
@@ -79,7 +85,10 @@ int     main(int argc,char *argv[])
 		printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n\n", BL_GFF_SEQUENCE(&gene),
 		    BL_GFF_START(&gene), BL_GFF_END(&gene), gene_name);
 		
-		snprintf(hood_file, PATH_MAX, "%s-hood.gff3", gene_name);
+		if ( (gff_basename = strrchr(gff_filename, '/')) == NULL )
+		    gff_basename = gff_filename;
+		snprintf(hood_file, PATH_MAX, "%s/%s-%s-hood.gff3",
+		    output_dir, gff_basename, gene_name);
 		if ( (hood_stream = fopen(hood_file, "w")) == NULL )
 		{
 		    fprintf(stderr, "msyn-hood: Cannot open %s: %s\n",
