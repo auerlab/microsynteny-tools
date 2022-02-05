@@ -1,22 +1,10 @@
 #!/bin/sh -e
 
 ##########################################################################
-#   Synopsis:
-#       
 #   Description:
-#       
-#   Arguments:
-#       
-#   Returns:
+#       Extract genes and their neighbors from a GFF, saving the
+#       neighborhood to another GFF.
 #
-#   Examples:
-#
-#   Files:
-#
-#   Environment:
-#
-#   See also:
-#       
 #   History:
 #   Date        Name        Modification
 #   2022-02-04  Jason Bacon Begin
