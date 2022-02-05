@@ -114,7 +114,7 @@ int     main(int argc,char *argv[])
 		// Note: Destroys gff_filename == argv[1]
 		if ( (ext = strchr(gff_basename, '.')) != NULL )
 		    *ext = '\0';
-		snprintf(hood_file, PATH_MAX, "%s/%s-%s-hood.gff3",
+		snprintf(hood_file, PATH_MAX, "%s/%s-%s.gff3",
 		    output_dir, gff_basename, gene_name);
 		if ( (hood_stream = fopen(hood_file, "w")) == NULL )
 		{
