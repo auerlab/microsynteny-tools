@@ -9,7 +9,7 @@
 #       other.  This is most useful for comparing the gene neighbohood
 #       of a particular gene across two or more species.
 #
-#       The GFF3 files are generally output from msyn-hood, containing
+#       The GFF3 files are generally output from ms-shire, containing
 #       a small set of consecutive gene features surrounding a gene of
 #       interest.
 #
@@ -29,7 +29,7 @@
 #       Mouse   Tek Eqtn Mysm1 Jun Fggy Hook1 Cyp2j13
 #
 #   See also:
-#       msyn-hood(1), feature-view(1)
+#       ms-shire(1), feature-view(1)
 #       
 #   History:
 #   Date        Name        Modification

@@ -48,12 +48,12 @@
 ############################################################################
 # Installed targets
 
-BIN     = msyn-hood
+BIN     = ms-shire
 
 ############################################################################
 # List object files that comprise BIN.
 
-OBJS    = msyn-hood.o gff-index.o
+OBJS    = ms-shire.o gff-index.o
 
 ############################################################################
 # Compile, link, and install options

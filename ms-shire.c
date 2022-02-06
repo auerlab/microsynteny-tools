@@ -19,7 +19,7 @@
 #include <errno.h>
 #include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
-#include "msyn.h"
+#include "ms-shire.h"
 #include "gff-index.h"
 
 void    usage(char *argv[]);
@@ -55,7 +55,7 @@ int     main(int argc,char *argv[])
 	    max_nt_distance = strtoul(argv[++arg], &end, 10);
 	    if ( *end != '\0' )
 	    {
-		fprintf(stderr, "msyn-hood: Invalid --max-nt-distance: %s\n",
+		fprintf(stderr, "ms-shire: Invalid --max-nt-distance: %s\n",
 			argv[arg]);
 		usage(argv);
 	    }
@@ -65,7 +65,7 @@ int     main(int argc,char *argv[])
 	    gene_count = strtoul(argv[++arg], &end, 10);
 	    if ( *end != '\0' )
 	    {
-		fprintf(stderr, "msyn-hood: Invalid --gene-distance: %s\n",
+		fprintf(stderr, "ms-shire: Invalid --gene-distance: %s\n",
 			argv[arg]);
 		usage(argv);
 	    }
@@ -83,7 +83,7 @@ int     main(int argc,char *argv[])
     // unzip compressed files if present
     if ( (gff_stream = fopen(gff_filename, "r")) == NULL )
     {
-	fprintf(stderr, "msyn-hood: Could not open %s: %s\n",
+	fprintf(stderr, "ms-shire: Could not open %s: %s\n",
 		gff_filename, strerror(errno));
 	exit(EX_NOINPUT);
     }
@@ -116,7 +116,7 @@ int     main(int argc,char *argv[])
 		    output_dir, gff_basename, gene_name);
 		if ( (hood_stream = fopen(hood_file, "w")) == NULL )
 		{
-		    fprintf(stderr, "msyn-hood: Cannot open %s: %s\n",
+		    fprintf(stderr, "ms-shire: Cannot open %s: %s\n",
 			    hood_file, strerror(errno));
 		    return EX_CANTCREAT;
 		}
@@ -129,7 +129,7 @@ int     main(int argc,char *argv[])
 		if ( bl_gff_index_seek_reverse(&gi, gff_stream, &gene,
 			gene_count, max_nt_distance) != 0 )
 		{
-		    fprintf(stderr, "msyn-hood: Seek %zu failed.\n", BL_GFF_FILE_POS(&gene));
+		    fprintf(stderr, "ms-shire: Seek %zu failed.\n", BL_GFF_FILE_POS(&gene));
 		    return EX_SOFTWARE;
 		}
 		
