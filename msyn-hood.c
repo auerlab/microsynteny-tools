@@ -32,7 +32,6 @@ int     main(int argc,char *argv[])
     char        *gene_name,
 		*gff_filename,
 		*gff_basename,
-		gene_name_string[MSYN_GENE_NAME_BUFF_LEN],
 		*end,
 		*neighbor_name,
 		hood_file[PATH_MAX],
@@ -80,8 +79,6 @@ int     main(int argc,char *argv[])
     gff_filename = argv[arg++];
     gene_name = argv[arg++];
     
-    snprintf(gene_name_string, MSYN_GENE_NAME_BUFF_LEN, "Name=%s;", gene_name);
-
     // FIXME: Maybe make xt_fopen_seekable() function to automatically
     // unzip compressed files if present
     if ( (gff_stream = fopen(gff_filename, "r")) == NULL )
@@ -104,7 +101,8 @@ int     main(int argc,char *argv[])
 		return EX_SOFTWARE;
 	    }
 	    
-	    if ( strcasestr(BL_GFF_ATTRIBUTES(&gene), gene_name_string) != NULL )
+	    if ( (BL_GFF_FEATURE_NAME(&gene) != NULL) &&
+		 (strcmp(BL_GFF_FEATURE_NAME(&gene), gene_name) == 0) )
 	    {
 		printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n\n", BL_GFF_SEQID(&gene),
 		    BL_GFF_START(&gene), BL_GFF_END(&gene), gene_name);
@@ -143,15 +141,8 @@ int     main(int argc,char *argv[])
 		    if ( strcmp(BL_GFF_TYPE(&neighbor_gene), "gene") == 0 )
 		    {
 			++g;
-			neighbor_name =
-			    strcasestr(BL_GFF_ATTRIBUTES(&neighbor_gene), "Name=");
-			if ( neighbor_name != NULL )
-			{
-			    neighbor_name = strchr(neighbor_name, '=') + 1;
-			    end = strchr(neighbor_name, ';');
-			    *end = '\0';
-			}
-			else
+			neighbor_name = BL_GFF_FEATURE_NAME(&neighbor_gene);
+			if ( neighbor_name == NULL )
 			    neighbor_name = "unnamed";
 			printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n",
 				BL_GFF_SEQID(&neighbor_gene),
