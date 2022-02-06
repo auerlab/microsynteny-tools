@@ -34,6 +34,6 @@ for gff in "$@"; do
     while read line; do
 	printf "\n$line\n"
 	gene=$(printf "$line\n" | cut -f 2);
-	time ./ms-shire --max-nt-distance 10000000 --output-dir Hoods $gff $gene
+	time ./ms-extract --max-nt-distance 10000000 --output-dir Hoods $gff $gene
     done < DETF_refined.tsv
 done

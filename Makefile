@@ -48,12 +48,12 @@
 ############################################################################
 # Installed targets
 
-BIN     = ms-shire
+BIN     = ms-extract
 
 ############################################################################
 # List object files that comprise BIN.
 
-OBJS    = ms-shire.o gff-index.o
+OBJS    = ms-extract.o gff-index.o
 
 ############################################################################
 # Compile, link, and install options
