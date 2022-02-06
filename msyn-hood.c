@@ -102,7 +102,7 @@ int     main(int argc,char *argv[])
 	    }
 	    
 	    if ( (BL_GFF_FEATURE_NAME(&gene) != NULL) &&
-		 (strcmp(BL_GFF_FEATURE_NAME(&gene), gene_name) == 0) )
+		 (strcasecmp(BL_GFF_FEATURE_NAME(&gene), gene_name) == 0) )
 	    {
 		printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n\n", BL_GFF_SEQID(&gene),
 		    BL_GFF_START(&gene), BL_GFF_END(&gene), gene_name);

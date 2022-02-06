@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+
+##########################################################################
+#   Synopsis:
+#       align-species file.gff3 [file.gff3 ...]
+#
+#   Description:
+#       Display the gene neighborhoods of multiple files on top of each
+#       other.  This is most useful for comparing the gene neighbohood
+#       of a particular gene across two or more species.
+#
+#       The GFF3 files are generally output from msyn-hood, containing
+#       a small set of consecutive gene features surrounding a gene of
+#       interest.
+#
+#   Arguments:
+#       file.gff3   A GFF3 file containing a gene neighborhood
+#       
+#   Returns:
+#       0 on success, non-zero error codes if a failure occurs
+#
+#   Examples:
+#       align-species Hoods/Danio_rerio-jun.gff3 \\\\
+#           Hoods/Takifugu_rubripes-jun.gff3 Hoods/Xenopus_tropicalis-jun.gff3 \\\\
+#           Hoods/Mus_musculus-jun.gff3
+#       Danio   si:dkey-239i20.4 plpp6 prdx6 jun caiap si:dkey-86e18.1 faslg
+#       Fugu    unnamed plpp6 prdx6 jun si:dkey-86e18.1 faslg fam20b
+#       Xenopus mysm1 unnamed pan3 jun fggy XB5864909 [provisional:rnf170] hook1
+#       Mouse   Tek Eqtn Mysm1 Jun Fggy Hook1 Cyp2j13
+#
+#   See also:
+#       msyn-hood(1), feature-view(1)
+#       
+#   History:
+#   Date        Name        Modification
+#   2022-02-06  Jason Bacon Begin
+##########################################################################
+
+import sys, os
+
+#############################################################################
+#   Process command line args
+
+if len(sys.argv) < 2:
+    print("Usage: %s %s" % (sys.argv[0], "file.gff3 [file.gff3 ...]"))
+    sys.exit(1)
+
+for filename in sys.argv[1:]:
+    basename = os.path.basename(filename)
+    c = basename.split("-")
+    print("%-20s" % c[0], end='')
+    
+    #############################################################################
+    #   Parse file line by line
+    
+    with open(filename) as infile:
+        for line in infile:
+            if line[0] != '#':
+                cols = line.split("\t")
+                print("%s " % (cols[1]), end='')
+    infile.close()
+    print()
+    
