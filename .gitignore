@@ -1,3 +1,6 @@
+# Executables
+ms-extract
+
 # Object files
 *.o
 
@@ -6,9 +9,6 @@
 *.so
 *.so.*
 *.dylib
-
-# Executables
-msyn-hood
 
 # Debug files
 *.dSYM/
