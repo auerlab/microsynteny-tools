@@ -53,7 +53,7 @@ BIN     = ms-extract
 ############################################################################
 # List object files that comprise BIN.
 
-OBJS    = ms-extract.o gff-index.o
+OBJS    = ms-extract.o
 
 ############################################################################
 # Compile, link, and install options

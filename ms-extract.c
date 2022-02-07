@@ -19,8 +19,8 @@
 #include <errno.h>
 #include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
+#include <biolibc/gff-index.h>
 #include "ms-extract.h"
-#include "gff-index.h"
 
 void    usage(char *argv[]);
 
@@ -93,9 +93,7 @@ int     main(int argc,char *argv[])
 	if ( strcasecmp(BL_GFF_TYPE(&gene), "gene") == 0 )
 	{
 	    // Index positions of all genes in the file
-	    if ( bl_gff_index_add_pos(&gi, BL_GFF_FILE_POS(&gene),
-		 BL_GFF_SEQID(&gene), BL_GFF_START(&gene),
-		 BL_GFF_END(&gene)) != BL_GFF_INDEX_OK )
+	    if ( bl_gff_index_add(&gi, &gene) != BL_GFF_INDEX_OK )
 	    {
 		fprintf(stderr, "bl_gff_index_add_pos() failed.\n");
 		return EX_SOFTWARE;
@@ -104,9 +102,6 @@ int     main(int argc,char *argv[])
 	    if ( (BL_GFF_FEATURE_NAME(&gene) != NULL) &&
 		 (strcasecmp(BL_GFF_FEATURE_NAME(&gene), gene_name) == 0) )
 	    {
-		printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n\n", BL_GFF_SEQID(&gene),
-		    BL_GFF_START(&gene), BL_GFF_END(&gene), gene_name);
-		
 		if ( (gff_basename = strrchr(gff_filename, '/')) == NULL )
 		    gff_basename = gff_filename;
 		// Note: Destroys gff_filename == argv[1]
