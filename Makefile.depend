@@ -1,29 +1,3 @@
-gff-index.o: gff-index.c ../local/include/xtend/mem.h \
-  ../local/include/xtend/math.h ../local/include/biolibc/gff.h \
-  ../local/include/biolibc/biolibc.h ../local/include/biolibc/bed.h \
-  ../local/include/biolibc/overlap.h \
-  ../local/include/biolibc/overlap-rvs.h \
-  ../local/include/biolibc/overlap-accessors.h \
-  ../local/include/biolibc/overlap-mutators.h \
-  ../local/include/biolibc/bed-rvs.h \
-  ../local/include/biolibc/bed-accessors.h \
-  ../local/include/biolibc/bed-mutators.h \
-  ../local/include/biolibc/gff-rvs.h \
-  ../local/include/biolibc/gff-accessors.h \
-  ../local/include/biolibc/gff-mutators.h gff-index.h
-	${CC} -c ${CFLAGS} gff-index.c
-
-ms-extract.o: ms-extract.c ../local/include/biolibc/gff.h \
-  ../local/include/biolibc/biolibc.h ../local/include/biolibc/bed.h \
-  ../local/include/biolibc/overlap.h \
-  ../local/include/biolibc/overlap-rvs.h \
-  ../local/include/biolibc/overlap-accessors.h \
-  ../local/include/biolibc/overlap-mutators.h \
-  ../local/include/biolibc/bed-rvs.h \
-  ../local/include/biolibc/bed-accessors.h \
-  ../local/include/biolibc/bed-mutators.h \
-  ../local/include/biolibc/gff-rvs.h \
-  ../local/include/biolibc/gff-accessors.h \
-  ../local/include/biolibc/gff-mutators.h ms-extract.h gff-index.h
+ms-extract.o: ms-extract.c ms-extract.h
 	${CC} -c ${CFLAGS} ms-extract.c
 
