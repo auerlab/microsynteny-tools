@@ -43,9 +43,6 @@ int     main(int argc,char *argv[])
     int         arg;
     bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
 
-    if ( argc < 4 )
-	    usage(argv);
-    
     for (arg = 1; (arg < argc) && (argv[arg][0] == '-'); ++arg)
     {
 	if ( strcmp(argv[arg], "--output-dir") == 0 )

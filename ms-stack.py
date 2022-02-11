@@ -57,7 +57,12 @@ for filename in sys.argv[1:]:
         for line in infile:
             if line[0] != '#':
                 cols = line.split("\t")
-                print("%s " % (cols[1]), end='')
+                gene = cols[1]
+                strand = cols[6]
+                if strand == '+':
+                    print("%s-> " % gene, end='')
+                else:
+                    print("<-%s " % gene, end='')
     infile.close()
     print()
     
