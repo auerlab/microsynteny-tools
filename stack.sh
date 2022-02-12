@@ -31,7 +31,11 @@ gene=$1
 
 ./ms-stack.py \
     Hoods/Danio_rerio-$gene.gff3 \
+    Hoods/Oryzias_latipes-gap43.gff3 \
     Hoods/Takifugu_rubripes-$gene.gff3 \
     Hoods/Xenopus_tropicalis-$gene.gff3 \
-    Hoods/Mus_musculus-$gene.gff3
+    Hoods/Gallus_gallus-$gene.gff3 \
+    Hoods/Mus_musculus-$gene.gff3 \
+    Hoods/Rattus_norvegicus-$gene.gff3 \
+    Hoods/Homo_sapiens-$gene.gff3
 

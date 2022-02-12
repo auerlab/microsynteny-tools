@@ -12,7 +12,7 @@
 
 usage()
 {
-    printf "Usage: $0 file.gff3 [file.gff3 ...]\n"
+    printf "Usage: $0 [file.gff3 ...]\n"
     exit 1
 }
 
@@ -22,12 +22,14 @@ usage()
 ##########################################################################
 
 if [ $# -lt 1 ]; then
-    usage
+    files=$(ls GFF/*.gff3)
+else
+    files="$@"
 fi
 
 make clean all
 mkdir -p Hoods
-for gff in "$@"; do
+for gff in $files; do
     printf "\n========================================================\n"
     printf "$gff\n"
     printf "========================================================\n"
