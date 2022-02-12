@@ -36,7 +36,8 @@
 #   2022-02-06  Jason Bacon Begin
 ##########################################################################
 
-import sys, os
+import sys
+from os import path
 
 #############################################################################
 #   Process command line args
@@ -46,23 +47,23 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 for filename in sys.argv[1:]:
-    basename = os.path.basename(filename)
+    basename = path.basename(filename)
     c = basename.split("-")
     print("%-20s" % c[0], end='')
     
     #############################################################################
     #   Parse file line by line
-    
-    with open(filename) as infile:
-        for line in infile:
-            if line[0] != '#':
-                cols = line.split("\t")
-                gene = cols[1]
-                strand = cols[6]
-                if strand == '+':
-                    print("%s+ " % gene, end='')
-                else:
-                    print("-%s " % gene, end='')
-    infile.close()
-    print()
-    
+
+    if path.exists(filename):
+        with open(filename) as infile:
+            for line in infile:
+                if line[0] != '#':
+                    cols = line.split("\t")
+                    gene = cols[1]
+                    strand = cols[6]
+                    if strand == '+':
+                        print("%s+ " % gene, end='')
+                    else:
+                        print("-%s " % gene, end='')
+        infile.close()
+        print()
