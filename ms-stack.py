@@ -60,9 +60,9 @@ for filename in sys.argv[1:]:
                 gene = cols[1]
                 strand = cols[6]
                 if strand == '+':
-                    print("%s-> " % gene, end='')
+                    print("%s+ " % gene, end='')
                 else:
-                    print("<-%s " % gene, end='')
+                    print("-%s " % gene, end='')
     infile.close()
     print()
     
