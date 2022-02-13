@@ -33,8 +33,7 @@ for gff in $files; do
     printf "\n========================================================\n"
     printf "$gff\n"
     printf "========================================================\n"
-    while read line; do
-	gene=$(printf "$line\n" | cut -f 2);
-	time ./ms-extract --max-nt-distance 10000000 --output-dir Hoods $gff $gene
-    done < DETF_refined.tsv
+    genes=$(awk '{ print $2 }' DETF_refined.tsv)
+    time ./ms-extract --max-nt-distance 10000000 --output-dir Hoods \
+	$gff $genes
 done

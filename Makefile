@@ -168,7 +168,9 @@ realclean: clean
 
 install: all
 	${MKDIR} -p ${DESTDIR}${PREFIX}/bin ${DESTDIR}${MANDIR}/man1
-	${INSTALL} -s -m 0555 ${BIN} ${DESTDIR}${PREFIX}/bin
+	${INSTALL} -s -m 0755 ${BIN} ${DESTDIR}${PREFIX}/bin
+	${INSTALL} -m 0755 ms-plot.py ${DESTDIR}${PREFIX}/bin/ms-plot
+	${INSTALL} -m 0755 ms-stack.py ${DESTDIR}${PREFIX}/bin/ms-stack
 	${INSTALL} -m 0444 Man/*.1 ${DESTDIR}${MANDIR}/man1
 
 install-strip: install
