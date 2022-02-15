@@ -25,8 +25,6 @@
 #   2022-02-03  Jason Bacon Begin
 ##########################################################################
 
-import sys, os
-
 import sys,os
 import matplotlib.pyplot as plt
 from dna_features_viewer import GraphicFeature, GraphicRecord

@@ -46,15 +46,17 @@ if len(sys.argv) < 2:
     print("Usage: %s %s" % (sys.argv[0], "file.gff3 [file.gff3 ...]"))
     sys.exit(1)
 
+unrep = []
+
 for filename in sys.argv[1:]:
     basename = path.basename(filename)
     c = basename.split("-")
-    print("%-20s" % c[0], end='')
     
     #############################################################################
     #   Parse file line by line
 
     if path.exists(filename):
+        print("%-20s" % c[0], end='')
         with open(filename) as infile:
             for line in infile:
                 if line[0] != '#':
@@ -66,4 +68,11 @@ for filename in sys.argv[1:]:
                     else:
                         print("-%s " % gene, end='')
         infile.close()
-    print()
+        print()
+    else:
+        unrep.append(c[0])
+
+if len(unrep) > 0:
+    print("\nNo GFF found to the following species:")
+    for file in unrep:
+        print(file)
