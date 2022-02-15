@@ -20,6 +20,7 @@
 #include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
 #include <biolibc/gff-index.h>
+#include <xtend/string.h>
 #include "ms-extract.h"
 
 
@@ -162,6 +163,7 @@ int     extract_neighborhood(bl_gff_t *gene, bl_gff_index_t *gi,
     // Note: Destroys gff_filename == argv[1]
     if ( (ext = strchr(gff_basename, '.')) != NULL )
 	*ext = '\0';
+    strlower(gene_name);
     snprintf(hood_file, PATH_MAX, "%s/%s-%s.gff3",
 	output_dir, gff_basename, gene_name);
     if ( (hood_stream = fopen(hood_file, "w")) == NULL )

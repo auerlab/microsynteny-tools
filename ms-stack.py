@@ -66,4 +66,4 @@ for filename in sys.argv[1:]:
                     else:
                         print("-%s " % gene, end='')
         infile.close()
-        print()
+    print()
