@@ -28,6 +28,7 @@ if [ $# != 1 ]; then
     usage
 fi
 gene=$1
+clear
 
 ./ms-stack.py \
     Hoods/Danio_rerio-$gene.gff3 \
