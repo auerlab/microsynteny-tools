@@ -18,6 +18,7 @@ ms-extract
 
 # Data files
 *.gff3
+*.fa
 *.png
 
 # Temp files
