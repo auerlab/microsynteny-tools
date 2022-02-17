@@ -1,21 +1,30 @@
 #!/bin/sh -e
 
 ##########################################################################
+#   Synopsis:
+#       
 #   Description:
-#       Convenient wrapper around ms-stack.py, placing species in
-#       evolutionary order for easier viewing.
-#
+#       
 #   Arguments:
-#       gene-name (e.g. jun, gap43)
+#       
+#   Returns:
+#
+#   Examples:
+#
+#   Files:
+#
+#   Environment:
+#
+#   See also:
 #       
 #   History:
 #   Date        Name        Modification
-#   2022-02-12  Jason Bacon Begin
+#   2022-02-17  Jason Bacon Begin
 ##########################################################################
 
 usage()
 {
-    printf "Usage: $0 gene\n"
+    printf "Usage: $0 gene-name\n"
     exit 1
 }
 
@@ -29,7 +38,8 @@ if [ $# != 1 ]; then
 fi
 gene=$1
 
-./ms-stack.py \
+make
+./ms-divergence \
     Hoods/Danio_rerio-$gene.gff3 \
     Hoods/Oryzias_latipes-$gene.gff3 \
     Hoods/Takifugu_rubripes-$gene.gff3 \
@@ -38,4 +48,3 @@ gene=$1
     Hoods/Mus_musculus-$gene.gff3 \
     Hoods/Rattus_norvegicus-$gene.gff3 \
     Hoods/Homo_sapiens-$gene.gff3
-

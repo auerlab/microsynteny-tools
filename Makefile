@@ -56,7 +56,7 @@ BINS    = ${BIN1} ${BIN2}
 # List object files that comprise BIN.
 
 OBJS1   = ms-extract.o
-OBJS2   = ms-divergence.o
+OBJS2   = ms-divergence.o gff-hood.o
 OBJS    = ${OBJS1} ${OBJS2}
 
 ############################################################################

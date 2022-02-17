@@ -106,12 +106,13 @@ int     main(int argc,char *argv[])
 	    
 	    for (c = 0; c < gene_count; ++c)
 	    {
-		if ( (BL_GFF_FEATURE_NAME(&feature) != NULL) &&
-		     (strcasecmp(BL_GFF_FEATURE_NAME(&feature), gene_names[c]) == 0) )
+		if ( (strcasecmp(BL_GFF_FEATURE_NAME(&feature), gene_names[c]) == 0) )
 		{
 		    ++genes_found;
 		    printf("\nFound %s:\n", gene_names[c]);
 		    strlower(gene_names[c]);
+		    // FIXME: Factor out to a bl_gff_hood function
+		    // Name format is important, used by ms-divergence
 		    snprintf(hood_file, PATH_MAX, "%s/%s-%s.gff3",
 			output_dir, gff_basename, gene_names[c]);
 		    status = extract_neighborhood(&feature, &gi, gff_stream,
