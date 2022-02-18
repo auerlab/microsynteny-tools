@@ -38,13 +38,19 @@ if [ $# != 1 ]; then
 fi
 gene=$1
 
+for species in \
+    Danio_rerio \
+    Oryzias_latipes \
+    Takifugu_rubripes \
+    Xenopus_tropicalis \
+    Gallus_gallus \
+    Mus_musculus \
+    Rattus_norvegicus \
+    Homo_sapiens; do
+    file=Hoods/$species-$gene.gff3
+    if [ -e $file ]; then
+	list="$list $file"
+    fi
+done
 make
-./ms-divergence \
-    Hoods/Danio_rerio-$gene.gff3 \
-    Hoods/Oryzias_latipes-$gene.gff3 \
-    Hoods/Takifugu_rubripes-$gene.gff3 \
-    Hoods/Xenopus_tropicalis-$gene.gff3 \
-    Hoods/Gallus_gallus-$gene.gff3 \
-    Hoods/Mus_musculus-$gene.gff3 \
-    Hoods/Rattus_norvegicus-$gene.gff3 \
-    Hoods/Homo_sapiens-$gene.gff3
+./ms-divergence $list
