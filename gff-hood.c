@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
+#include <xtend/string.h>   // Linux strlcpy()
 #include "gff-hood.h"
 
 /***************************************************************************
