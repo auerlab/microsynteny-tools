@@ -3,6 +3,9 @@
 : ${PREFIX:=../local}
 : ${LOCALBASE:=/usr/local}
 
+# Undefined macro in stdlib.h
+extras=-D_Noreturn=""
+
 for file in *.c; do
-    cproto -I$PREFIX/include -I$LOCALBASE/include $file
+    cproto $extras -I$LOCALBASE/include $file
 done

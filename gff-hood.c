@@ -1,14 +1,34 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
 #include "gff-hood.h"
 
 /***************************************************************************
+ *  Use auto-c2man to generate a man page from this comment
+ *
+ *  Library:
+ *      #include <biolibc/gff-hood.h>
+ *      -lbiolibc -lxtend
+ *
  *  Description:
  *      Load a gene neighborhood from a GFF3 file, typically generated
  *      by ms-extract.  The file should contain a short list of adjacent
  *      gene features and nothing more.
+ *  
+ *  Arguments:
+ *
+ *  Returns:
+ *
+ *  Examples:
+ *
+ *  Files:
+ *
+ *  Environment
+ *
+ *  See also:
+ *
  *
  *  History: 
  *  Date        Name        Modification
@@ -87,12 +107,52 @@ int     bl_gff_hood_load(bl_gff_hood_t *hood, const char *filename)
  *
  *  History: 
  *  Date        Name        Modification
+ *  2022-02-20  Jason Bacon Begin
+ ***************************************************************************/
+
+void    bl_gff_hood_init(bl_gff_hood_t *hood)
+
+{
+    hood->gene_count = 0;
+    hood->goi_index = 0;
+    hood->species = NULL;
+    hood->goi = NULL;
+}
+
+
+/***************************************************************************
+ *  Use auto-c2man to generate a man page from this comment
+ *
+ *  Library:
+ *      #include <>
+ *      -l
+ *
+ *  Description:
+ *  
+ *  Arguments:
+ *
+ *  Returns:
+ *
+ *  Examples:
+ *
+ *  Files:
+ *
+ *  Environment
+ *
+ *  See also:
+ *
+ *  History: 
+ *  Date        Name        Modification
  *  2022-02-17  Jason Bacon Begin
  ***************************************************************************/
 
 void    bl_gff_hood_free(bl_gff_hood_t *hood)
 
 {
+    if ( hood->species != NULL )
+	free(hood->species);
+    if ( hood->goi != NULL )
+	free(hood->goi);
 }
 
 
