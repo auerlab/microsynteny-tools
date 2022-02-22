@@ -1,5 +1,6 @@
 # Executables
 ms-extract
+ms-divergence
 
 # Object files
 *.o

@@ -17,20 +17,23 @@
 #include <biolibc/gff.h>
 #include <biolibc/gff-index.h>
 #include <xtend/string.h>
+#include <xtend/mem.h>
+#include <xtend/file.h>
 #include "ms-extract.h"
-
 
 int     main(int argc,char *argv[])
 
 {
     bl_gff_t    feature = BL_GFF_INIT;
-    FILE        *gff_stream, *header_stream;
-    char        **gene_names,
-		*gff_filename,
+    FILE        *gff_stream, *header_stream, *gene_stream;
+    char        *gene_file,
+		**gene_names,
+		*gff_file,
 		*end,
 		*output_dir = ".",
 		*gff_basename,
 		*ext,
+		*id,
 		hood_file[PATH_MAX];
     uint64_t    max_nt_distance = DEFAULT_NT_DISTANCE,
 		adjacent_genes = DEFAULT_ADJACENT_GENES;
@@ -69,25 +72,37 @@ int     main(int argc,char *argv[])
 	    usage(argv);
     }
     
-    if ( arg > argc - 2 )
+    if ( arg != argc - 2 )
 	usage(argv);
-    gff_filename = argv[arg++];
-    gene_names = argv + arg;
-    gene_count = argc - arg;
+    gff_file = argv[arg++];
+    gene_file = argv[arg];
     
     // FIXME: Maybe make xt_fopen_seekable() function to automatically
     // unzip compressed files if present
-    if ( (gff_stream = fopen(gff_filename, "r")) == NULL )
+    if ( (gff_stream = fopen(gff_file, "r")) == NULL )
     {
 	fprintf(stderr, "ms-extract: Could not open %s: %s\n",
-		gff_filename, strerror(errno));
-	exit(EX_NOINPUT);
+		gff_file, strerror(errno));
+	return EX_NOINPUT;
     }
     header_stream = bl_gff_skip_header(gff_stream);
     
-    if ( (gff_basename = strrchr(gff_filename, '/')) == NULL )
-	gff_basename = gff_filename;
-    // Note: Destroys gff_filename == argv[1]
+    if ( (gene_stream = fopen(gene_file, "r")) == NULL )
+    {
+	fprintf(stderr, "ms-extract: Could not open %s: %s\n",
+		gene_file, strerror(errno));
+	return EX_NOINPUT;
+    }
+    if ( (gene_count = xt_inhale_strings(gene_stream, &gene_names)) == 0 )
+    {
+	fprintf(stderr, "ms-extract: Unable to read genes from %s.\n", gene_file);
+	return EX_NOINPUT;
+    }
+    fclose(gene_stream);
+    
+    if ( (gff_basename = strrchr(gff_file, '/')) == NULL )
+	gff_basename = gff_file;
+    // Note: Destroys gff_file == argv[1]
     if ( (ext = strchr(gff_basename, '.')) != NULL )
 	*ext = '\0';
 
@@ -106,7 +121,13 @@ int     main(int argc,char *argv[])
 	    
 	    for (c = 0; c < gene_count; ++c)
 	    {
-		if ( (strcasecmp(BL_GFF_FEATURE_NAME(&feature), gene_names[c]) == 0) )
+		if ( memcmp(BL_GFF_FEATURE_ID(&feature), "gene:", 5) == 0 )
+		    id = BL_GFF_FEATURE_ID(&feature) + 5;
+		else
+		    id = BL_GFF_FEATURE_ID(&feature);
+		//printf("%s == %s?\n", id, gene_names[c]);
+		if ( (strcasecmp(BL_GFF_FEATURE_NAME(&feature), gene_names[c]) == 0) 
+		     || (strcasecmp(id, gene_names[c]) == 0) )
 		{
 		    ++genes_found;
 		    printf("\nFound %s:\n", gene_names[c]);
@@ -220,7 +241,7 @@ void    usage(char *argv[])
 		    "   [--output-dir dir]\n"
 		    "   [--adjacent-genes genes]\n"
 		    "   [--max-nt-distance nucleotides]\n"
-		    "   file.gff3 gene-name [gene-name ...]\n", argv[0]);
+		    "   species.gff3 gene-list.txt\n", argv[0]);
     exit(EX_USAGE);
 }
 

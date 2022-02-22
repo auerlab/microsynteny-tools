@@ -12,7 +12,7 @@
 
 usage()
 {
-    printf "Usage: $0 [file.gff3 ...]\n"
+    printf "Usage: $0 gene-list.txt [file.gff3 ...]\n"
     exit 1
 }
 
@@ -21,19 +21,28 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# -lt 1 ]; then
+case $# in
+1)
+    gene_list=$1
     files="$(ls GFF/*.gff3)"
-else
+    ;;
+2)
+    gene_list=$1
+    shift
     files="$@"
-fi
+    ;;
+*)
+    usage
+    ;;
+esac
 
 make clean all
+awk '{ print $2 }' DETF_refined.tsv > DETF-refined.txt
 mkdir -p Hoods
 for gff in $files; do
     printf "\n========================================================\n"
     printf "$gff\n"
     printf "========================================================\n"
-    genes=$(awk '{ print $2 }' DETF_refined.tsv)
     time ./ms-extract --max-nt-distance 10000000 --output-dir Hoods \
-	$gff $genes
+	$gff $gene_list
 done

@@ -30,7 +30,6 @@
  *
  *  See also:
  *
- *
  *  History: 
  *  Date        Name        Modification
  *  2022-02-16  Jason Bacon Begin
