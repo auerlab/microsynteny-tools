@@ -1,6 +1,5 @@
 #!/bin/sh -e
 
-for gene in $(awk '{ print $2 }' DETF_refined.tsv); do
-    printf "\n$gene\n\n"
+for gene in $(cat DETF-names.txt); do
     ./divergence.sh $gene
 done

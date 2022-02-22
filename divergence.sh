@@ -53,4 +53,7 @@ for species in \
     fi
 done
 make
-./ms-divergence $list
+if [ $(echo $list | wc -w) -ge 2 ]; then
+    printf "\n$gene\n\n"
+    ./ms-divergence $list
+fi
