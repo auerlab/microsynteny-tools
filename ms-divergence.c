@@ -17,17 +17,52 @@
 #include <biolibc/gff.h>
 #include "gff-hood.h"
 
+int     compare_adjacent(int argc, char *argv[]);
 void    usage(char *argv[]);
 
 int     main(int argc,char *argv[])
 
 {
+    if ( argc < 3 )
+	usage(argv);
+
+    return compare_adjacent(argc, argv);
+}
+
+
+/***************************************************************************
+ *  Use auto-c2man to generate a man page from this comment
+ *
+ *  Library:
+ *      #include <>
+ *      -l
+ *
+ *  Description:
+ *  
+ *  Arguments:
+ *
+ *  Returns:
+ *
+ *  Examples:
+ *
+ *  Files:
+ *
+ *  Environment
+ *
+ *  See also:
+ *
+ *  History: 
+ *  Date        Name        Modification
+ *  2022-02-23  Jason Bacon Begin
+ ***************************************************************************/
+
+int     compare_adjacent(int argc, char *argv[])
+
+{
     int             arg, old, new, old_count, new_count;
     bl_gff_hood_t   hoods[2];
     
-    if ( argc < 3 )
-	usage(argv);
-    
+    // Toggle old and new between 0 and 1, 1 and 0
     old = 0, new = 1;
     if ( (old_count = bl_gff_hood_load(&hoods[old], argv[1])) == 0 )
     {
@@ -35,7 +70,7 @@ int     main(int argc,char *argv[])
 		argv[1], strerror(errno));
 	return EX_NOINPUT;
     }
-    // Toggle old and new between 0 and 1, 1 and 0
+    
     for (arg = 2; arg < argc; ++arg, old = (old + 1) % 2, new = (new + 1) % 2)
     {
 	if ( (new_count = bl_gff_hood_load(&hoods[new], argv[arg])) == 0 )
@@ -57,7 +92,6 @@ int     main(int argc,char *argv[])
 	    hoods[new].species, hoods[new].gene_count,
 	    bl_gff_hood_commonality(&hoods[old], &hoods[new]));
     }
-    
     return EX_OK;
 }
 
