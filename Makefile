@@ -49,14 +49,14 @@
 # Installed targets
 
 BIN1    = ms-extract
-BIN2    = ms-divergence
+BIN2    = ms-common-to
 BINS    = ${BIN1} ${BIN2}
 
 ############################################################################
 # List object files that comprise BIN.
 
 OBJS1   = ms-extract.o
-OBJS2   = ms-divergence.o gff-hood.o
+OBJS2   = ms-common-to.o gff-hood.o
 OBJS    = ${OBJS1} ${OBJS2}
 
 ############################################################################
