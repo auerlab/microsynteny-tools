@@ -254,7 +254,7 @@ int     bl_gff_region_commonality(bl_gff_region_t *r1, bl_gff_region_t *r2)
 bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t *r2)
 
 {
-    int             n = 0, c1, c2;
+    size_t          n = 0, c1, c2;
     char            *n1, *n2;
     bl_gff_region_t *intersect;
 
@@ -264,7 +264,7 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	return NULL;
     }
     bl_gff_region_init(intersect);
-    if ( (intersect->species = strdup("Intersection of species")) == NULL )
+    if ( (intersect->species = strdup("Intersection")) == NULL )
     {
 	fprintf(stderr, "%s: Could not strdup species.\n", __FUNCTION__);
 	free(intersect);
@@ -278,13 +278,17 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	return NULL;
     }
     
+    //fprintf(stderr, "%s %s\n", r1->species, r2->species);
+    // FIXME: Don't count multiple copies of the same gene
     for (c1 = 0; c1 < r1->count; ++c1)
     {
 	n1 = BL_GFF_FEATURE_NAME(&r1->features[c1]);
 	for (c2 = 0; c2 < r2->count; ++c2)
 	{
 	    n2 = BL_GFF_FEATURE_NAME(&r2->features[c2]);
-	    if ( (strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0) )
+	    // fprintf(stderr, "%s %s\n", n1, n2);
+	    if ( (strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0) &&
+		 (strcasecmp(n1, intersect->goi) != 0) )
 	    {
 		if ( n == intersect->count )
 		{
@@ -306,9 +310,11 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 		 */
 		bl_gff_init(&intersect->features[n]);
 		bl_gff_set_feature_name(&intersect->features[n], strdup(n2));
+		++n;
 	    }
 	}
     }
     intersect->count = n;
+    //fprintf(stderr, "Returning %zu\n", n);
     return intersect;
 }

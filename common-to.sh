@@ -40,13 +40,8 @@ gene=$1
 
 for species in \
     Danio_rerio \
-    Oryzias_latipes \
     Takifugu_rubripes \
-    Xenopus_tropicalis \
-    Gallus_gallus \
-    Mus_musculus \
-    Rattus_norvegicus \
-    Homo_sapiens; do
+    Oryzias_latipes; do
     file=Hoods/$species-$gene.gff3
     if [ -e $file ]; then
 	list="$list $file"

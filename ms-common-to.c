@@ -78,7 +78,10 @@ int     common_to(int argc, char *argv[])
 		argv[2], strerror(errno));
 	return EX_NOINPUT;
     }
+    printf("%-20s %9s %6s\n", "Species", "Neighbors", "Common");
+    printf("%-20s %9zu %6zu\n", h1.species, h1.count - 1, h1.count - 1);
     intersect = bl_gff_region_intersect(&h1, &h2);
+    printf("%-20s %9zu %6zu\n", h2.species, h2.count - 1, intersect->count);
     
     for (arg = 3; arg < argc; ++arg)
     {
@@ -95,8 +98,7 @@ int     common_to(int argc, char *argv[])
 	intersect = new_intersect;
 	
 	// FIXME: Use accessor macros
-	printf("%-20s: %zu  Common: %zu\n",
-		hn.species, hn.count, intersect->count);
+	printf("%-20s %9zu %6zu\n", hn.species, hn.count - 1, intersect->count);
 	    
     }
     return EX_OK;
