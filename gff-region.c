@@ -12,11 +12,11 @@
  *  Use auto-c2man to generate a man page from this comment
  *
  *  Library:
- *      #include <biolibc/gff-hood.h>
+ *      #include <biolibc/gff-region.h>
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Load a gene neighborhood from a GFF3 file, typically generated
+ *      Load a gene region from a GFF3 file, typically generated
  *      by ms-extract.  The file should contain a short list of adjacent
  *      gene features and nothing more.
  *  
@@ -37,7 +37,7 @@
  *  2022-02-16  Jason Bacon Begin
  ***************************************************************************/
 
-int     bl_gff_region_load(bl_gff_region_t *hood, const char *filename)
+int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 
 {
     FILE        *infile;
@@ -61,28 +61,28 @@ int     bl_gff_region_load(bl_gff_region_t *hood, const char *filename)
     //printf("Loading %s %s\n", species, gene_name);
     
     // Free memory in previously used objects
-    if ( hood->species != NULL )
+    if ( region->species != NULL )
     {
-	free(hood->species);
-	hood->species = NULL;
+	free(region->species);
+	region->species = NULL;
     }
-    if ( hood->goi != NULL )
+    if ( region->goi != NULL )
     {
-	free(hood->goi);
-	hood->goi = NULL;
+	free(region->goi);
+	region->goi = NULL;
     }
-    if ( ((hood->species = strdup(species)) == NULL) ||
-	 ((hood->goi = strdup(gene_name)) == NULL) )
+    if ( ((region->species = strdup(species)) == NULL) ||
+	 ((region->goi = strdup(gene_name)) == NULL) )
     {
 	fprintf(stderr, "bl_gff_region_load(): Could not allocate strings.\n");
 	return 0;
     }
     
-    if ( hood->count == 0 )
+    if ( region->count == 0 )
     {
-	hood->count = 16;
-	if ( (hood->features = xt_malloc(hood->count,
-	      sizeof(*hood->features))) == NULL )
+	region->count = 16;
+	if ( (region->features = xt_malloc(region->count,
+	      sizeof(*region->features))) == NULL )
 	{
 	    fprintf(stderr, "%s: Could not allocate features array.\n", __FUNCTION__);
 	    return 0;
@@ -94,26 +94,26 @@ int     bl_gff_region_load(bl_gff_region_t *hood, const char *filename)
     for (c = 0; (bl_gff_read(&temp_feature, infile, BL_GFF_FIELD_ALL)
 		 == BL_READ_OK); )
     {
-	if ( c == hood->count )
+	if ( c == region->count )
 	{
-	    hood->count *= 2;
-	    if ( (hood->features = xt_realloc(hood->features, hood->count,
-		  sizeof(*hood->features))) == NULL )
+	    region->count *= 2;
+	    if ( (region->features = xt_realloc(region->features, region->count,
+		  sizeof(*region->features))) == NULL )
 	    {
-		fprintf(stderr, "%s: Could not expand hood->features.\n",
+		fprintf(stderr, "%s: Could not expand region->features.\n",
 			__FUNCTION__);
 		return 0;
 	    }
 	}
-	bl_gff_copy(&hood->features[c], &temp_feature);
+	bl_gff_copy(&region->features[c], &temp_feature);
 	/*printf("%s %" PRIu64 "\n",
-		BL_GFF_SEQID(&hood->features[c]),
-		BL_GFF_START(&hood->features[c]));*/
+		BL_GFF_SEQID(&region->features[c]),
+		BL_GFF_START(&region->features[c]));*/
 	if ( strcasecmp(gene_name, BL_GFF_FEATURE_NAME(&temp_feature)) == 0 )
-	    hood->goi_index = c;
+	    region->goi_index = c;
 	++c;
     }
-    hood->count = c;
+    region->count = c;
     fclose(infile);
     return c;
 }
@@ -145,14 +145,14 @@ int     bl_gff_region_load(bl_gff_region_t *hood, const char *filename)
  *  2022-02-20  Jason Bacon Begin
  ***************************************************************************/
 
-void    bl_gff_region_init(bl_gff_region_t *hood)
+void    bl_gff_region_init(bl_gff_region_t *region)
 
 {
-    hood->count = 0;
-    hood->goi_index = 0;
-    hood->features = NULL;
-    hood->species = NULL;
-    hood->goi = NULL;
+    region->count = 0;
+    region->goi_index = 0;
+    region->features = NULL;
+    region->species = NULL;
+    region->goi = NULL;
 }
 
 
@@ -182,21 +182,22 @@ void    bl_gff_region_init(bl_gff_region_t *hood)
  *  2022-02-17  Jason Bacon Begin
  ***************************************************************************/
 
-void    bl_gff_region_destroy(bl_gff_region_t *hood)
+void    bl_gff_region_free(bl_gff_region_t *region)
 
 {
-    if ( hood->features != NULL )
-	free(hood->features);
-    if ( hood->species != NULL )
-	free(hood->species);
-    if ( hood->goi != NULL )
-	free(hood->goi);
+    if ( region->features != NULL )
+	free(region->features);
+    if ( region->species != NULL )
+	free(region->species);
+    if ( region->goi != NULL )
+	free(region->goi);
+    bl_gff_region_init(region);
 }
 
 
 /***************************************************************************
  *  Description:
- *      Generate a commonality score for two gene neighborhoods r1 and r2.
+ *      Generate a commonality score for two gene regions r1 and r2.
  *      The score represents how many genes they have in common and in
  *      the same order.
  *

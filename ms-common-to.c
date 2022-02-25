@@ -93,7 +93,7 @@ int     common_to(int argc, char *argv[])
 	}
 	
 	new_intersect = bl_gff_region_intersect(intersect, &hn);
-	bl_gff_region_destroy(intersect);
+	bl_gff_region_free(intersect);
 	free(intersect);
 	intersect = new_intersect;
 	
