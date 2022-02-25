@@ -33,7 +33,6 @@ int     main(int argc,char *argv[])
 		*output_dir = ".",
 		*gff_basename,
 		*ext,
-		*id,
 		hood_file[PATH_MAX];
     uint64_t    max_nt_distance = DEFAULT_NT_DISTANCE,
 		adjacent_genes = DEFAULT_ADJACENT_GENES;
@@ -105,9 +104,16 @@ int     main(int argc,char *argv[])
     
     if ( (gff_basename = strrchr(gff_file, '/')) == NULL )
 	gff_basename = gff_file;
+    else
+	++gff_basename; // First char after /
+    
     // Note: Destroys gff_file == argv[1]
     if ( (ext = strchr(gff_basename, '.')) != NULL )
 	*ext = '\0';
+
+    // For consistent output and easy comparison by other programs
+    for (c = 0; c < gene_count; ++c)
+	strlower(gene_names[c]);
 
     genes_found = 0;
     while ( (genes_found < gene_count) &&
@@ -128,22 +134,12 @@ int     main(int argc,char *argv[])
 	    
 	    for (c = 0; c < gene_count; ++c)
 	    {
-		if ( memcmp(BL_GFF_FEATURE_ID(&feature), "gene:", 5) == 0 )
-		    id = BL_GFF_FEATURE_ID(&feature) + 5;
-		else
-		    id = BL_GFF_FEATURE_ID(&feature);
-		
 		// Ensembl GFFs are not consistent with capitalization.
 		// All lower case for some species, capitalized for others
-		if ( (strcasecmp(BL_GFF_FEATURE_NAME(&feature), gene_names[c]) == 0) 
-		     || (strcasecmp(id, gene_names[c]) == 0) )
+		if ( strcasecmp(BL_GFF_FEATURE_NAME(&feature), gene_names[c]) == 0 )
 		{
 		    ++genes_found;
-		    printf("\nFound %s:\n", gene_names[c]);
-		    
-		    // For consistent output and easy comparison by other
-		    // programs
-		    strlower(gene_names[c]);
+		    printf("\n%s %s:\n", gff_basename, gene_names[c]);
 		    
 		    // Path name format is important, parsed by ms-divergence
 		    snprintf(hood_file, PATH_MAX, "%s/%s-%s.gff3",
@@ -156,6 +152,7 @@ int     main(int argc,char *argv[])
 			fclose(gff_stream);
 			exit(status);
 		    }
+		    break;  // Don't bother comparing the other genes
 		}
 	    }
 	}
@@ -180,14 +177,15 @@ int     main(int argc,char *argv[])
  *  2022-02-13  Jason Bacon Begin
  ***************************************************************************/
 
-int     extract_neighborhood(bl_gff_t *feature, bl_gff_index_t *gi,
+int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 	    FILE *gff_stream, FILE *header_stream, char *hood_file,
 	    uint64_t adjacent_genes, uint64_t max_nt_distance)
 
 {
-    bl_gff_t    neighbor_gene = BL_GFF_INIT;
+    bl_gff_t    neighbor = BL_GFF_INIT;
     char        *neighbor_name;
-    uint64_t    g;
+    uint64_t    g, len;
+    int64_t     distance;
     FILE        *hood_stream;
     
     if ( (hood_stream = fopen(hood_file, "w")) == NULL )
@@ -204,45 +202,55 @@ int     extract_neighborhood(bl_gff_t *feature, bl_gff_index_t *gi,
      *  more than max_nt_distance nucleotides, and output all genes from
      *  there to position + (adjacent_genes or max_nt_distance)
      */
-    if ( bl_gff_index_seek_reverse(gi, gff_stream, feature,
+    if ( bl_gff_index_seek_reverse(gi, gff_stream, goi,
 	    adjacent_genes, max_nt_distance) != 0 )
     {
 	fprintf(stderr, "ms-extract: Seek %zu failed.\n",
-		BL_GFF_FILE_POS(feature));
+		BL_GFF_FILE_POS(goi));
 	return EX_SOFTWARE;
     }
     
+    printf("%-3s %10s %10s %10s %10s %s\n",
+	    "Chr", "Start", "End", "Len", "Distance", "Name");
     // From leftmost neighbor read adjacent_genes before and after GOI
     for (g = 0; (g < adjacent_genes * 2 + 1) &&
-		bl_gff_read(&neighbor_gene, gff_stream,
+		bl_gff_read(&neighbor, gff_stream,
 			BL_GFF_FIELD_ALL) == BL_READ_OK; )
     {
-	if ( strcmp(BL_GFF_TYPE(&neighbor_gene), "gene") == 0 )
+	if ( strcmp(BL_GFF_TYPE(&neighbor), "gene") == 0 )
 	{
 	    ++g;
-	    neighbor_name = BL_GFF_FEATURE_NAME(&neighbor_gene);
+	    neighbor_name = BL_GFF_FEATURE_NAME(&neighbor);
 	    if ( neighbor_name == NULL )
 		neighbor_name = "unnamed";
-	    printf("%s\t%" PRIu64 "\t%" PRIu64 "\t%s\n",
-		    BL_GFF_SEQID(&neighbor_gene),
-		    BL_GFF_START(&neighbor_gene),
-		    BL_GFF_END(&neighbor_gene), neighbor_name);
+	    if ( BL_GFF_START(&neighbor) < BL_GFF_START(goi) )
+		distance = BL_GFF_END(&neighbor) - BL_GFF_START(goi);
+	    else if ( BL_GFF_START(&neighbor) > BL_GFF_START(goi) )
+		distance = BL_GFF_START(&neighbor) - BL_GFF_END(goi);
+	    else
+		distance = 0;
+	    len = BL_GFF_END(&neighbor) - BL_GFF_START(&neighbor);
+	    
+	    printf("%-3s %10" PRIu64 " %10" PRIu64 " %10" PRId64 " %10" PRId64 " %s\n",
+		    BL_GFF_SEQID(&neighbor),
+		    BL_GFF_START(&neighbor),
+		    BL_GFF_END(&neighbor), len, distance, neighbor_name);
 	
 	    // Hack gene name into source field for DNA Feature Viewer.
 	    // There should be a way to avoid this.
-	    bl_gff_set_source_cpy(&neighbor_gene, neighbor_name,
+	    bl_gff_set_source_cpy(&neighbor, neighbor_name,
 		BL_GFF_SOURCE_MAX_CHARS);
 	    
 	    // Output gene neighborhood in GFF format for above
-	    bl_gff_write(&neighbor_gene, hood_stream,
+	    bl_gff_write(&neighbor, hood_stream,
 		BL_GFF_FIELD_ALL);
 	    
 	    // FIXME: Restructure the loop so this is a loop condition
-	    if ( BL_GFF_START(&neighbor_gene) >
-		    BL_GFF_END(feature) + max_nt_distance )
+	    if ( BL_GFF_START(&neighbor) >
+		    BL_GFF_END(goi) + max_nt_distance )
 		break;
 	}
-	bl_gff_free(&neighbor_gene);
+	bl_gff_free(&neighbor);
     }
     fclose(hood_stream);
     

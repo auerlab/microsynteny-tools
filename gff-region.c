@@ -6,7 +6,7 @@
 #include <xtend/string.h>   // Linux strlcpy()
 #include <xtend/file.h>
 #include <xtend/mem.h>
-#include "gff-hood.h"
+#include "gff-region.h"
 
 /***************************************************************************
  *  Use auto-c2man to generate a man page from this comment

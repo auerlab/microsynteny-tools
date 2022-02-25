@@ -15,7 +15,7 @@
 #include <errno.h>
 #include <xtend/mem.h>
 #include <biolibc/gff.h>
-#include "gff-hood.h"
+#include "gff-region.h"
 
 int     common_to(int argc, char *argv[]);
 void    usage(char *argv[]);
@@ -99,7 +99,6 @@ int     common_to(int argc, char *argv[])
 	
 	// FIXME: Use accessor macros
 	printf("%-20s %9zu %6zu\n", hn.species, hn.count - 1, intersect->count);
-	    
     }
     return EX_OK;
 }

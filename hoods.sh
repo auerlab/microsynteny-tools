@@ -21,20 +21,29 @@ usage()
 #   Main
 ##########################################################################
 
-case $# in
-1)
-    gene_list=$1
-    files="$(ls GFF/*.gff3)"
-    ;;
-2)
-    gene_list=$1
-    shift
-    files="$@"
-    ;;
-*)
+if [ $# = 0 ]; then
     usage
-    ;;
-esac
+fi
+
+gene_list=$1
+shift
+
+if [ $# != 0 ]; then
+    while [ 0$(echo $1 | cut -c 1) = 0'-' ]; do
+	# All flags have one argument (for now)
+	flags="$flags $1 $2"
+	shift
+	shift
+    done
+fi
+
+if [ $# = 0 ]; then
+    files=$(ls GFF/*.gff3)
+else
+    files="$@"
+fi
+printf "%s\n" "$flags"
+printf "$files\n"
 
 make clean all
 awk '{ print $2 }' DETF_refined.tsv > DETF-refined.txt
@@ -43,6 +52,6 @@ for gff in $files; do
     printf "\n========================================================\n"
     printf "$gff\n"
     printf "========================================================\n"
-    time ./ms-extract --max-nt-distance 10000000 --output-dir Hoods \
-	$gff $gene_list
+    time ./ms-extract --output-dir Hoods \
+	$flags $gff $gene_list
 done
