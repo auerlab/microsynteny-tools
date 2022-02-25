@@ -59,7 +59,7 @@ int     main(int argc,char *argv[])
 	}
 	else if ( strcmp(argv[arg], "--adjacent-genes") == 0 )
 	{
-	    gene_count = strtoul(argv[++arg], &end, 10);
+	    adjacent_genes = strtoul(argv[++arg], &end, 10);
 	    if ( *end != '\0' )
 	    {
 		fprintf(stderr, "ms-extract: Invalid --adjacent-genes: %s\n",
