@@ -1,0 +1,12 @@
+gff-region-mutators.o: gff-region-mutators.c gff-region.h \
+  gff-region-rvs.h gff-region-accessors.h gff-region-mutators.h
+	${CC} -c ${CFLAGS} gff-region-mutators.c
+
+gff-region.o: gff-region.c gff-region.h gff-region-rvs.h \
+  gff-region-accessors.h gff-region-mutators.h
+	${CC} -c ${CFLAGS} gff-region.c
+
+ms-common-to.o: ms-common-to.c gff-region.h gff-region-rvs.h \
+  gff-region-accessors.h gff-region-mutators.h
+	${CC} -c ${CFLAGS} ms-common-to.c
+

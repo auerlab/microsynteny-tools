@@ -1,3 +1,8 @@
+
+#ifndef _BIOLIBC_GFF_H_
+#include <biolibc/gff.h>
+#endif
+
 typedef struct
 {
     size_t      count;
@@ -6,6 +11,10 @@ typedef struct
     char        *species;
     char        *goi;
 }   bl_gff_region_t;
+
+#include "gff-region-rvs.h"
+#include "gff-region-accessors.h"
+#include "gff-region-mutators.h"
 
 /* gff-region.c */
 int bl_gff_region_load(bl_gff_region_t *region, const char *filename);

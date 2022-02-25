@@ -56,7 +56,7 @@ BINS    = ${BIN1} ${BIN2}
 # List object files that comprise BIN.
 
 OBJS1   = ms-extract.o
-OBJS2   = ms-common-to.o gff-region.o
+OBJS2   = ms-common-to.o gff-region.o gff-region-mutators.o
 OBJS    = ${OBJS1} ${OBJS2}
 
 ############################################################################

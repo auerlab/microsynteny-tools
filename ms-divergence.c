@@ -15,7 +15,7 @@
 #include <errno.h>
 #include <xtend/mem.h>
 #include <biolibc/gff.h>
-#include "gff-hood.h"
+#include "gff-region.h"
 
 int     compare_adjacent(int argc, char *argv[]);
 void    usage(char *argv[]);
