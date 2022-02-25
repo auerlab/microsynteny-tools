@@ -47,7 +47,7 @@ for species in \
 	list="$list $file"
     fi
 done
-make
+make > /dev/null
 if [ $(echo $list | wc -w) -ge 2 ]; then
     printf "\n$gene\n\n"
     ./ms-common-to $list
