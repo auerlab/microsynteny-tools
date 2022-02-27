@@ -113,8 +113,11 @@ int     main(int argc,char *argv[])
 
     // For consistent output and easy comparison by other programs
     for (c = 0; c < gene_count; ++c)
+    {
+	fprintf(stderr, "gene: %s\n", gene_names[c]);
 	strlower(gene_names[c]);
-
+    }
+    
     genes_found = 0;
     while ( (genes_found < gene_count) &&
 	    (bl_gff_read(&feature, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK) )

@@ -38,10 +38,7 @@ if [ $# != 1 ]; then
 fi
 gene=$1
 
-for species in \
-    Danio_rerio \
-    Takifugu_rubripes \
-    Oryzias_latipes; do
+for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
     file=Hoods/$species-$gene.gff3
     if [ -e $file ]; then
 	list="$list $file"
