@@ -1,3 +1,3 @@
 #!/bin/sh -e
 
-time ./hoods.sh DETF-names.txt "$@"
+time ./hoods.sh Genes/detf-names.txt "$@"

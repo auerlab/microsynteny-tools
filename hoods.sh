@@ -46,12 +46,10 @@ printf "%s\n" "$flags"
 printf "$files\n"
 
 make clean all
-awk '{ print $2 }' DETF_refined.tsv > DETF-refined.txt
 mkdir -p Hoods
 for gff in $files; do
     printf "\n========================================================\n"
     printf "$gff\n"
     printf "========================================================\n"
-    time ./ms-extract --output-dir Hoods \
-	$flags $gff $gene_list
+    time ./ms-extract --output-dir Hoods $flags $gff $gene_list
 done
