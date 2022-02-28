@@ -256,7 +256,7 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 
 {
     size_t          n = 0, c1, c2;
-    char            *n1, *n2;
+    char            *n1, *n2, *attr;
     bl_gff_region_t *intersect;
 
     if ( (intersect = xt_malloc(1, sizeof(*intersect))) == NULL )
@@ -305,12 +305,14 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 		}
 		
 		/*
-		 *  Only the feature ID and feature name are common to
-		 *  both species and only the name is useful for comparison,
-		 *  so leave other fields blank
+		 *  Only the feature name is common to both species and
+		 *  so leave other fields blank.
 		 */
 		bl_gff_init(&intersect->features[n]);
+		bl_gff_set_type_cpy(&intersect->features[n], "gene", BL_GFF_TYPE_MAX_CHARS + 1);
 		bl_gff_set_feature_name(&intersect->features[n], strdup(n2));
+		asprintf(&attr, "Name=%s;", n2);
+		bl_gff_set_attributes(&intersect->features[n], attr);
 		++n;
 	    }
 	}

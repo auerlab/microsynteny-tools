@@ -13,7 +13,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/param.h>  // PATH_MAX
 #include <xtend/mem.h>
+#include <xtend/file.h>
 #include <biolibc/gff.h>
 #include "gff-region.h"
 
@@ -31,26 +33,8 @@ int     main(int argc,char *argv[])
 
 
 /***************************************************************************
- *  Use auto-c2man to generate a man page from this comment
- *
- *  Library:
- *      #include <>
- *      -l
- *
  *  Description:
- *  
- *  Arguments:
- *
- *  Returns:
- *
- *  Examples:
- *
- *  Files:
- *
- *  Environment
- *
- *  See also:
- *
+ *      
  *  History: 
  *  Date        Name        Modification
  *  2022-02-23  Jason Bacon Begin
@@ -59,47 +43,76 @@ int     main(int argc,char *argv[])
 int     common_to(int argc, char *argv[])
 
 {
-    int             arg, count, common_count;
-    bl_gff_region_t h1, h2, hn, *intersect, *new_intersect;
+    int             arg, count, common_count, c;
+    bl_gff_region_t r1, rn, *intersect, *new_intersect;
+    char            intersect_file[PATH_MAX + 1];
+    FILE            *intersect_stream;
     
-    bl_gff_region_init(&h1);
-    bl_gff_region_init(&h2);
-    bl_gff_region_init(&hn);
+    bl_gff_region_init(&r1);
+    bl_gff_region_init(&rn);
 
-    if ( (common_count = bl_gff_region_load(&h1, argv[1])) == 0 )
+    if ( (common_count = bl_gff_region_load(&r1, argv[1])) == 0 )
     {
 	fprintf(stderr, "%s: Error reading %s: %s\n", argv[0],
 		argv[1], strerror(errno));
 	return EX_NOINPUT;
     }
-    if ( (common_count = bl_gff_region_load(&h2, argv[2])) == 0 )
+    if ( (common_count = bl_gff_region_load(&rn, argv[2])) == 0 )
     {
 	fprintf(stderr, "%s: Error reading %s: %s\n", argv[0],
 		argv[2], strerror(errno));
 	return EX_NOINPUT;
     }
     printf("%-20s %9s %6s\n", "Species", "Neighbors", "Common");
-    printf("%-20s %9zu %6zu\n", h1.species, h1.count - 1, h1.count - 1);
-    intersect = bl_gff_region_intersect(&h1, &h2);
-    printf("%-20s %9zu %6zu\n", h2.species, h2.count - 1, intersect->count);
+    printf("%-20s %9zu %6zu\n", BL_GFF_REGION_SPECIES(&r1),
+	   BL_GFF_REGION_COUNT(&r1) - 1, BL_GFF_REGION_COUNT(&r1) - 1);
+    intersect = bl_gff_region_intersect(&r1, &rn);
+    printf("%-20s %9zu %6zu\n", BL_GFF_REGION_SPECIES(&rn),
+	   BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect));
+    
+    snprintf(intersect_file, PATH_MAX + 1, "Intersects/%s-%s-%s",
+	     BL_GFF_REGION_GOI(&r1), BL_GFF_REGION_SPECIES(&r1),
+	     BL_GFF_REGION_SPECIES(&rn));
     
     for (arg = 3; arg < argc; ++arg)
     {
-	if ( (count = bl_gff_region_load(&hn, argv[arg])) == 0 )
+	if ( (count = bl_gff_region_load(&rn, argv[arg])) == 0 )
 	{
 	    fprintf(stderr, "%s: Error reading %s: %s\n", argv[0],
 		    argv[arg], strerror(errno));
 	    return EX_NOINPUT;
 	}
 	
-	new_intersect = bl_gff_region_intersect(intersect, &hn);
+	new_intersect = bl_gff_region_intersect(intersect, &rn);
 	bl_gff_region_free(intersect);
 	free(intersect);
 	intersect = new_intersect;
 	
-	printf("%-20s %9zu %6zu\n", BL_GFF_REGION_SPECIES(&hn),
-		BL_GFF_REGION_COUNT(&hn) - 1, BL_GFF_REGION_COUNT(intersect));
+	printf("%-20s %9zu %6zu\n", BL_GFF_REGION_SPECIES(&rn),
+		BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect));
+	
+	strlcat(intersect_file, "-", PATH_MAX + 1);
+	strlcat(intersect_file, BL_GFF_REGION_SPECIES(&rn), PATH_MAX + 1);
+	strlcat(intersect_file, ".gff3", PATH_MAX + 1);
     }
+    
+    // Write GFF for intersect
+    rmkdir("Intersects", 0777);
+    if ( (intersect_stream = fopen(intersect_file, "w")) == NULL )
+    {
+	fprintf(stderr, "ms-common-to: Could not open %s for write: %s.\n",
+		intersect_file, strerror(errno));
+	exit(EX_CANTCREAT);
+    }
+    fprintf(intersect_stream, "##gff-version 3\n");
+    fprintf(intersect_stream, "## %s\n", intersect_file);
+    fprintf(intersect_stream, "## This file is simply a list of genes shared by multiple species.\n");
+    fprintf(intersect_stream, "## There is no chrom, start, end, etc. since they will differ across species.\n");
+    for (c = 0; c < BL_GFF_REGION_COUNT(intersect); ++c)
+	bl_gff_write(&BL_GFF_REGION_FEATURES_AE(intersect, c),
+		     intersect_stream, BL_GFF_FIELD_ALL);
+    fclose(intersect_stream);
+
     return EX_OK;
 }
 
