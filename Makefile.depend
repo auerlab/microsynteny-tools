@@ -6,14 +6,10 @@ gff-region.o: gff-region.c gff-region.h gff-region-rvs.h \
   gff-region-accessors.h gff-region-mutators.h
 	${CC} -c ${CFLAGS} gff-region.c
 
-ms-common-to.o: ms-common-to.c gff-region.h gff-region-rvs.h \
-  gff-region-accessors.h gff-region-mutators.h
-	${CC} -c ${CFLAGS} ms-common-to.c
-
-ms-divergence.o: ms-divergence.c gff-region.h gff-region-rvs.h \
-  gff-region-accessors.h gff-region-mutators.h
-	${CC} -c ${CFLAGS} ms-divergence.c
-
 ms-extract.o: ms-extract.c ms-extract.h
 	${CC} -c ${CFLAGS} ms-extract.c
+
+ms-intersect.o: ms-intersect.c gff-region.h gff-region-rvs.h \
+  gff-region-accessors.h gff-region-mutators.h
+	${CC} -c ${CFLAGS} ms-intersect.c
 

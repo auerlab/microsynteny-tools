@@ -70,9 +70,9 @@ for filename in sys.argv[1:]:
         infile.close()
         print()
     else:
-        unrep.append(c[0])
+        unrep.append(filename)
 
 if len(unrep) > 0:
-    print("\nNo GFF found to the following species:")
+    print("\nThe following files were not found:")
     for file in unrep:
         print(file)
