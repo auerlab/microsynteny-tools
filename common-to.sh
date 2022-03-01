@@ -25,8 +25,8 @@ fi
 gene=$1
 
 make > /dev/null
-for species in Danio_rerio Oryzias_latipes Takifugu_rubripes Mus_musculus \
-    Rattus_norvegicus Homo_sapiens; do
+for species in Danio_rerio Oryzias_latipes Takifugu_rubripes \
+    Mus_musculus Rattus_norvegicus Homo_sapiens; do
     file=Hoods/$species-$gene.gff3
     list="$list $file"
 done
