@@ -5,6 +5,7 @@
 
 typedef struct
 {
+    size_t      array_size;
     size_t      count;
     size_t      goi_index;
     bl_gff_t    *features;  // Array of GFF features

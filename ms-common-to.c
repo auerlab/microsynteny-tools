@@ -20,6 +20,7 @@
 #include "gff-region.h"
 
 int     common_to(int argc, char *argv[]);
+void    print_region_feature_names(bl_gff_region_t *region);
 void    usage(char *argv[]);
 
 int     main(int argc,char *argv[])
@@ -51,49 +52,54 @@ int     common_to(int argc, char *argv[])
     bl_gff_region_init(&r1);
     bl_gff_region_init(&rn);
 
-    if ( (common_count = bl_gff_region_load(&r1, argv[1])) == 0 )
-    {
-	fprintf(stderr, "%s: Error reading %s: %s\n", argv[0],
-		argv[1], strerror(errno));
-	return EX_NOINPUT;
-    }
-    if ( (common_count = bl_gff_region_load(&rn, argv[2])) == 0 )
-    {
-	fprintf(stderr, "%s: Error reading %s: %s\n", argv[0],
-		argv[2], strerror(errno));
-	return EX_NOINPUT;
-    }
-    printf("%-20s %9s %6s\n", "Species", "Neighbors", "Common");
-    printf("%-20s %9zu %6zu\n", BL_GFF_REGION_SPECIES(&r1),
-	   BL_GFF_REGION_COUNT(&r1) - 1, BL_GFF_REGION_COUNT(&r1) - 1);
+    printf("%-20s %9s %6s   %s\n", "Species", "Neighbors", "Common", "Neighbor genes");
+    for (arg = 1; (arg < argc) &&
+		  (common_count = bl_gff_region_load(&r1, argv[arg])) == 0;
+		  ++arg)
+	printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&r1), '-', '-');
+    if ( arg == argc )
+	return EX_OK;
+    printf("%-20s %9zu %6c  ", BL_GFF_REGION_SPECIES(&r1),
+	   BL_GFF_REGION_COUNT(&r1) - 1, '*');
+    //print_region_feature_names(&r1);
+    putchar('\n');
+
+    for (++arg; (arg < argc) &&
+		  (common_count = bl_gff_region_load(&rn, argv[arg])) == 0;
+		  ++arg)
+	printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
+    if ( arg == argc )
+	return EX_OK;
     intersect = bl_gff_region_intersect(&r1, &rn);
-    printf("%-20s %9zu %6zu\n", BL_GFF_REGION_SPECIES(&rn),
+    printf("%-20s %9zu %6zu  ", BL_GFF_REGION_SPECIES(&rn),
 	   BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect));
+    print_region_feature_names(intersect);
+    putchar('\n');
     
     snprintf(intersect_file, PATH_MAX + 1, "Intersects/%s-%s-%s",
 	     BL_GFF_REGION_GOI(&r1), BL_GFF_REGION_SPECIES(&r1),
 	     BL_GFF_REGION_SPECIES(&rn));
     
-    for (arg = 3; arg < argc; ++arg)
+    for (++arg; arg < argc; ++arg)
     {
 	if ( (count = bl_gff_region_load(&rn, argv[arg])) == 0 )
+	    printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
+	else
 	{
-	    fprintf(stderr, "%s: Error reading %s: %s\n", argv[0],
-		    argv[arg], strerror(errno));
-	    return EX_NOINPUT;
+	    new_intersect = bl_gff_region_intersect(intersect, &rn);
+	    bl_gff_region_free(intersect);
+	    free(intersect);
+	    intersect = new_intersect;
+	    
+	    printf("%-20s %9zu %6zu  ", BL_GFF_REGION_SPECIES(&rn),
+		    BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect));
+	    print_region_feature_names(intersect);
+	    putchar('\n');
+	    // Update GFF filename
+	    strlcat(intersect_file, "-", PATH_MAX + 1);
+	    strlcat(intersect_file, BL_GFF_REGION_SPECIES(&rn), PATH_MAX + 1);
+	    strlcat(intersect_file, ".gff3", PATH_MAX + 1);
 	}
-	
-	new_intersect = bl_gff_region_intersect(intersect, &rn);
-	bl_gff_region_free(intersect);
-	free(intersect);
-	intersect = new_intersect;
-	
-	printf("%-20s %9zu %6zu\n", BL_GFF_REGION_SPECIES(&rn),
-		BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect));
-	
-	strlcat(intersect_file, "-", PATH_MAX + 1);
-	strlcat(intersect_file, BL_GFF_REGION_SPECIES(&rn), PATH_MAX + 1);
-	strlcat(intersect_file, ".gff3", PATH_MAX + 1);
     }
     
     // Write GFF for intersect
@@ -116,6 +122,45 @@ int     common_to(int argc, char *argv[])
     return EX_OK;
 }
 
+
+/***************************************************************************
+ *  Use auto-c2man to generate a man page from this comment
+ *
+ *  Library:
+ *      #include <>
+ *      -l
+ *
+ *  Description:
+ *  
+ *  Arguments:
+ *
+ *  Returns:
+ *
+ *  Examples:
+ *
+ *  Files:
+ *
+ *  Environment
+ *
+ *  See also:
+ *
+ *  History: 
+ *  Date        Name        Modification
+ *  2022-03-01  Jason Bacon Begin
+ ***************************************************************************/
+
+void    print_region_feature_names(bl_gff_region_t *region)
+
+{
+    int         c;
+    bl_gff_t    *gff;
+    
+    for (c = 0; c < BL_GFF_REGION_COUNT(region); ++c)
+    {
+	gff = &(BL_GFF_REGION_FEATURES_AE(region, c));
+	printf(" %s", BL_GFF_FEATURE_NAME(gff));
+    }
+}
 
 void    usage(char *argv[])
 

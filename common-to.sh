@@ -1,21 +1,7 @@
 #!/bin/sh -e
 
 ##########################################################################
-#   Synopsis:
-#       
 #   Description:
-#       
-#   Arguments:
-#       
-#   Returns:
-#
-#   Examples:
-#
-#   Files:
-#
-#   Environment:
-#
-#   See also:
 #       
 #   History:
 #   Date        Name        Modification
@@ -38,14 +24,23 @@ if [ $# != 1 ]; then
 fi
 gene=$1
 
-for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
-    file=Hoods/$species-$gene.gff3
-    if [ -e $file ]; then
-	list="$list $file"
-    fi
-done
 make > /dev/null
+for species in Danio_rerio Oryzias_latipes Takifugu_rubripes Mus_musculus \
+    Rattus_norvegicus Homo_sapiens; do
+    file=Hoods/$species-$gene.gff3
+    list="$list $file"
+done
 if [ $(echo $list | wc -w) -ge 2 ]; then
     printf "\n$gene\n\n"
+    ./ms-common-to $list
+fi
+
+printf '\n'
+list=''
+for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
+    file=Hoods/$species-$gene.gff3
+    list="$list $file"
+done
+if [ $(echo $list | wc -w) -ge 2 ]; then
     ./ms-common-to $list
 fi

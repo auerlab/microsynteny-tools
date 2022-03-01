@@ -41,14 +41,14 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 
 {
     FILE        *infile;
-    int         c;
     char        temp_filename[PATH_MAX + 1], *p, *species, *gene_name;
     const char  *basename;
     bl_gff_t    temp_feature;
-    
-    if ( (infile = xt_fopen(filename, "r")) == NULL )
-	return 0;
 
+    /*
+     *  Set species and goi even if input file does not exist
+     */
+    
     // Parse species and gene name from filename
     if ( (basename = strrchr(filename, '/')) == NULL )
 	basename = filename;
@@ -78,10 +78,13 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 	return 0;
     }
     
-    if ( region->count == 0 )
+    if ( (infile = xt_fopen(filename, "r")) == NULL )
+	return 0;
+    
+    if ( region->array_size == 0 )
     {
-	region->count = 16;
-	if ( (region->features = xt_malloc(region->count,
+	region->array_size = 16;
+	if ( (region->features = xt_malloc(region->array_size,
 	      sizeof(*region->features))) == NULL )
 	{
 	    fprintf(stderr, "%s: Could not allocate features array.\n", __FUNCTION__);
@@ -91,13 +94,13 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
     
     bl_gff_skip_header(infile);
     bl_gff_init(&temp_feature);
-    for (c = 0; (bl_gff_read(&temp_feature, infile, BL_GFF_FIELD_ALL)
+    for (region->count = 0; (bl_gff_read(&temp_feature, infile, BL_GFF_FIELD_ALL)
 		 == BL_READ_OK); )
     {
-	if ( c == region->count )
+	if ( region->count == region->array_size )
 	{
-	    region->count *= 2;
-	    if ( (region->features = xt_realloc(region->features, region->count,
+	    region->array_size *= 2;
+	    if ( (region->features = xt_realloc(region->features, region->array_size,
 		  sizeof(*region->features))) == NULL )
 	    {
 		fprintf(stderr, "%s: Could not expand region->features.\n",
@@ -105,17 +108,16 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 		return 0;
 	    }
 	}
-	bl_gff_copy(&region->features[c], &temp_feature);
+	bl_gff_copy(&region->features[region->count], &temp_feature);
 	/*printf("%s %" PRIu64 "\n",
 		BL_GFF_SEQID(&region->features[c]),
 		BL_GFF_START(&region->features[c]));*/
 	if ( strcasecmp(gene_name, BL_GFF_FEATURE_NAME(&temp_feature)) == 0 )
-	    region->goi_index = c;
-	++c;
+	    region->goi_index = region->count;
+	++region->count;
     }
-    region->count = c;
     fclose(infile);
-    return c;
+    return region->count;
 }
 
 
@@ -148,6 +150,7 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 void    bl_gff_region_init(bl_gff_region_t *region)
 
 {
+    region->array_size = 0;
     region->count = 0;
     region->goi_index = 0;
     region->features = NULL;
@@ -310,6 +313,7 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 		 */
 		bl_gff_init(&intersect->features[n]);
 		bl_gff_set_type_cpy(&intersect->features[n], "gene", BL_GFF_TYPE_MAX_CHARS + 1);
+		strlower(n2);
 		bl_gff_set_feature_name(&intersect->features[n], strdup(n2));
 		asprintf(&attr, "Name=%s;", n2);
 		bl_gff_set_attributes(&intersect->features[n], attr);
