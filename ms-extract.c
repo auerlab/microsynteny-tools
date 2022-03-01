@@ -114,7 +114,7 @@ int     main(int argc,char *argv[])
     // For consistent output and easy comparison by other programs
     for (c = 0; c < gene_count; ++c)
     {
-	fprintf(stderr, "gene: %s\n", gene_names[c]);
+	//fprintf(stderr, "gene: %s\n", gene_names[c]);
 	strlower(gene_names[c]);
     }
     
@@ -134,6 +134,7 @@ int     main(int argc,char *argv[])
 		fprintf(stderr, "bl_gff_index_add_pos() failed.\n");
 		return EX_SOFTWARE;
 	    }
+	    //printf("Added %s to index.\n", BL_GFF_FEATURE_NAME(&feature));
 	    
 	    for (c = 0; c < gene_count; ++c)
 	    {
@@ -222,6 +223,16 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
     {
 	if ( strcmp(BL_GFF_TYPE(&neighbor), "gene") == 0 )
 	{
+	    // Genes after GOI have not been indexed yet
+	    if ( g > adjacent_genes )
+	    {
+		if ( bl_gff_index_add(gi, &neighbor) != BL_GFF_INDEX_OK )
+		{
+		    fprintf(stderr, "bl_gff_index_add_pos() failed.\n");
+		    return EX_SOFTWARE;
+		}
+		//printf("Added %s to index.\n", BL_GFF_FEATURE_NAME(&neighbor));
+	    }
 	    ++g;
 	    neighbor_name = BL_GFF_FEATURE_NAME(&neighbor);
 	    if ( neighbor_name == NULL )
