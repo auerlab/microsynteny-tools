@@ -56,7 +56,7 @@ for filename in sys.argv[1:]:
     #   Parse file line by line
 
     if path.exists(filename):
-        print("%-20s" % c[0], end='')
+        print("%-18s" % c[0], end='')
         with open(filename) as infile:
             for line in infile:
                 if line[0] != '#':
@@ -72,7 +72,7 @@ for filename in sys.argv[1:]:
     else:
         unrep.append(filename)
 
-if len(unrep) > 0:
-    print("\nThe following files were not found:")
-    for file in unrep:
-        print(file)
+#if len(unrep) > 0:
+#    print("\nThe following files were not found:\n")
+#    for file in unrep:
+#        print(file)

@@ -28,6 +28,7 @@ if [ $# != 1 ]; then
     usage
 fi
 gene=$1
+printf "\n$gene\n\n"
 
 ./ms-stack.py \
     Regions/Danio_rerio-$gene.gff3 \

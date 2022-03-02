@@ -52,7 +52,7 @@ int     common_to(int argc, char *argv[])
     bl_gff_region_init(&r1);
     bl_gff_region_init(&rn);
 
-    printf("%-20s %9s %6s   %s\n", "Species", "Neighbors", "Common", "Neighbor genes");
+    printf("%-20s %9s %6s   %s\n", "Species", "Neighbors", "Common", "Common Neighbor genes");
     for (arg = 1; (arg < argc) &&
 		  (common_count = bl_gff_region_load(&r1, argv[arg])) == 0;
 		  ++arg)
@@ -61,7 +61,7 @@ int     common_to(int argc, char *argv[])
 	return EX_OK;
     printf("%-20s %9zu %6c  ", BL_GFF_REGION_SPECIES(&r1),
 	   BL_GFF_REGION_COUNT(&r1) - 1, '*');
-    print_region_feature_names(&r1);
+    // print_region_feature_names(&r1);
     putchar('\n');
 
     for (++arg; (arg < argc) &&
