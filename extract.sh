@@ -46,10 +46,10 @@ printf "%s\n" "$flags"
 printf "$files\n"
 
 make clean all
-mkdir -p Hoods
+mkdir -p Regions
 for gff in $files; do
     printf "\n========================================================\n"
     printf "$gff\n"
     printf "========================================================\n"
-    time ./ms-extract --output-dir Hoods $flags $gff $gene_list
+    time ./ms-extract --output-dir Regions $flags $gff $gene_list
 done

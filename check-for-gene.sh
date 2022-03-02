@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 ##########################################################################
 #   Description:
@@ -10,7 +10,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-name GFF-file\n"
+    printf "Usage: $0 gene-name GFF-file [GFF-file ...]\n"
     exit 1
 }
 
@@ -19,10 +19,13 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 2 ]; then
+if [ $# -lt 2 ]; then
     usage
 fi
 gene=$1
-file=$2
+shift
 
-awk '$3 == "gene"' $2 | fgrep -i "name=$gene"
+for file in "$@"; do
+    echo $file
+    awk '$3 == "gene"' $file | grep -i "name=$gene"
+done

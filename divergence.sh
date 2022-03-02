@@ -47,7 +47,7 @@ for species in \
     Mus_musculus \
     Rattus_norvegicus \
     Homo_sapiens; do
-    file=Hoods/$species-$gene.gff3
+    file=Regions/$species-$gene.gff3
     if [ -e $file ]; then
 	list="$list $file"
     fi

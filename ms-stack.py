@@ -20,9 +20,9 @@
 #       0 on success, non-zero error codes if a failure occurs
 #
 #   Examples:
-#       align-species Hoods/Danio_rerio-jun.gff3 \\\\
-#           Hoods/Takifugu_rubripes-jun.gff3 Hoods/Xenopus_tropicalis-jun.gff3 \\\\
-#           Hoods/Mus_musculus-jun.gff3
+#       align-species Regions/Danio_rerio-jun.gff3 \\\\
+#           Regions/Takifugu_rubripes-jun.gff3 Regions/Xenopus_tropicalis-jun.gff3 \\\\
+#           Regions/Mus_musculus-jun.gff3
 #       Danio   si:dkey-239i20.4 plpp6 prdx6 jun caiap si:dkey-86e18.1 faslg
 #       Fugu    unnamed plpp6 prdx6 jun si:dkey-86e18.1 faslg fam20b
 #       Xenopus mysm1 unnamed pan3 jun fggy XB5864909 [provisional:rnf170] hook1

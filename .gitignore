@@ -1,7 +1,7 @@
 # Executables
 ms-extract
 ms-divergence
-ms-common-to
+ms-intersect
 
 # Object files
 *.o
