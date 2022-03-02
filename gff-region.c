@@ -258,7 +258,7 @@ int     bl_gff_region_commonality(bl_gff_region_t *r1, bl_gff_region_t *r2)
 bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t *r2)
 
 {
-    size_t          n = 0, c1, c2;
+    size_t          c1, c2;
     char            *n1, *n2, *attr;
     bl_gff_region_t *intersect;
 
@@ -268,12 +268,21 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	return NULL;
     }
     bl_gff_region_init(intersect);
+    intersect->array_size = 16;
+    if ( (intersect->features = xt_malloc(intersect->array_size,
+	  sizeof(*intersect->features))) == NULL )
+    {
+	fprintf(stderr, "%s: Could not allocate features array.\n", __FUNCTION__);
+	return 0;
+    }
+    
     if ( (intersect->species = strdup("Intersection")) == NULL )
     {
 	fprintf(stderr, "%s: Could not strdup species.\n", __FUNCTION__);
 	free(intersect);
 	return NULL;
     }
+    
     if ( (intersect->goi = strdup(r1->goi)) == NULL )
     {
 	fprintf(stderr, "%s: Could not strdup GOI.\n", __FUNCTION__);
@@ -292,12 +301,14 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	    n2 = BL_GFF_FEATURE_NAME(&r2->features[c2]);
 	    // fprintf(stderr, "%s %s\n", n1, n2);
 	    if ( (strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0) &&
-		 (strcasecmp(n1, intersect->goi) != 0) )
+		 (strcasecmp(n1, intersect->goi) != 0) &&
+		 !bl_gff_region_duplicate_gene(intersect, n1) )
 	    {
-		if ( n == intersect->count )
+		if ( intersect->count == intersect->array_size )
 		{
+		    intersect->array_size *= 2;
 		    if ( (intersect->features = xt_realloc(intersect->features,
-			  1, sizeof(*intersect->features))) == NULL )
+			  intersect->array_size, sizeof(*intersect->features))) == NULL )
 		    {
 			fprintf(stderr, "%s: Could not expand features.\n", __FUNCTION__);
 			free(intersect->goi);
@@ -311,17 +322,63 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 		 *  Only the feature name is common to both species and
 		 *  so leave other fields blank.
 		 */
-		bl_gff_init(&intersect->features[n]);
-		bl_gff_set_type_cpy(&intersect->features[n], "gene", BL_GFF_TYPE_MAX_CHARS + 1);
+		bl_gff_init(&intersect->features[intersect->count]);
+		bl_gff_set_type_cpy(&intersect->features[intersect->count],
+		    "gene", BL_GFF_TYPE_MAX_CHARS + 1);
 		strlower(n2);
-		bl_gff_set_feature_name(&intersect->features[n], strdup(n2));
+		bl_gff_set_feature_name(&intersect->features[intersect->count],
+		    strdup(n2));
 		asprintf(&attr, "Name=%s;", n2);
-		bl_gff_set_attributes(&intersect->features[n], attr);
-		++n;
+		bl_gff_set_attributes(&intersect->features[intersect->count],
+		    attr);
+		++intersect->count;
 	    }
 	}
     }
-    intersect->count = n;
     //fprintf(stderr, "Returning %zu\n", n);
     return intersect;
+}
+
+
+/***************************************************************************
+ *  Use auto-c2man to generate a man page from this comment
+ *
+ *  Library:
+ *      #include <>
+ *      -l
+ *
+ *  Description:
+ *  
+ *  Arguments:
+ *
+ *  Returns:
+ *
+ *  Examples:
+ *
+ *  Files:
+ *
+ *  Environment
+ *
+ *  See also:
+ *
+ *  History: 
+ *  Date        Name        Modification
+ *  2022-03-02  Jason Bacon Begin
+ ***************************************************************************/
+
+bool    bl_gff_region_duplicate_gene(bl_gff_region_t *r, const char *feature_name)
+
+{
+    int     c;
+    
+    /*
+     *  FIXME: Maybe find a faster way.  Linear search is fine for now
+     *  since we are using very small lists (no more than 20) for
+     *  microsynteny-tools.
+     */
+    
+    for (c = 0; c < r->count; ++c)
+	if ( strcmp(BL_GFF_FEATURE_NAME(&r->features[c]), feature_name) == 0 )
+	    return true;
+    return false;
 }

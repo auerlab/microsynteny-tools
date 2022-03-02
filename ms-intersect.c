@@ -44,7 +44,7 @@ int     main(int argc,char *argv[])
 int     common_to(int argc, char *argv[])
 
 {
-    int             arg, count, common_count, c;
+    int             arg, count, common_count, c, old_count, new_count;
     bl_gff_region_t r1, rn, *intersect, *new_intersect;
     char            intersect_file[PATH_MAX + 1];
     FILE            *intersect_stream;
@@ -86,7 +86,9 @@ int     common_to(int argc, char *argv[])
 	    printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
 	else
 	{
+	    old_count = BL_GFF_REGION_COUNT(intersect);
 	    new_intersect = bl_gff_region_intersect(intersect, &rn);
+	    new_count = BL_GFF_REGION_COUNT(new_intersect);
 	    bl_gff_region_free(intersect);
 	    free(intersect);
 	    intersect = new_intersect;
@@ -95,6 +97,13 @@ int     common_to(int argc, char *argv[])
 		    BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect));
 	    print_region_feature_names(intersect);
 	    putchar('\n');
+	    
+	    if ( new_count > old_count )
+	    {
+		fprintf(stderr, "Ooops, new intersect count cannot exceed old!\n");
+		exit(EX_SOFTWARE);
+	    }
+
 	    // Update GFF filename
 	    strlcat(intersect_file, "-", PATH_MAX + 1);
 	    strlcat(intersect_file, BL_GFF_REGION_SPECIES(&rn), PATH_MAX + 1);

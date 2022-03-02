@@ -3,6 +3,10 @@
 #include <biolibc/gff.h>
 #endif
 
+#ifndef __bool_true_false_are_defined
+#include <stdbool.h>
+#endif
+
 typedef struct
 {
     size_t      array_size;
@@ -23,4 +27,5 @@ void bl_gff_region_init(bl_gff_region_t *region);
 void bl_gff_region_free(bl_gff_region_t *region);
 int bl_gff_region_commonality(bl_gff_region_t *h1, bl_gff_region_t *h2);
 bl_gff_region_t *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t *r2);
+bool bl_gff_region_duplicate_gene(bl_gff_region_t *r, const char *feature_name);
 
