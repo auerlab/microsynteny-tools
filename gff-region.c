@@ -71,6 +71,11 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 	free(region->goi);
 	region->goi = NULL;
     }
+    if ( region->chrom != NULL )
+    {
+	free(region->chrom);
+	region->chrom = NULL;
+    }
     if ( ((region->species = strdup(species)) == NULL) ||
 	 ((region->goi = strdup(gene_name)) == NULL) )
     {
@@ -113,7 +118,10 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 		BL_GFF_SEQID(&region->features[c]),
 		BL_GFF_START(&region->features[c]));*/
 	if ( strcasecmp(gene_name, BL_GFF_FEATURE_NAME(&temp_feature)) == 0 )
+	{
 	    region->goi_index = region->count;
+	    region->chrom = strdup(BL_GFF_SEQID(&temp_feature));
+	}
 	++region->count;
     }
     fclose(infile);
@@ -156,6 +164,7 @@ void    bl_gff_region_init(bl_gff_region_t *region)
     region->features = NULL;
     region->species = NULL;
     region->goi = NULL;
+    region->chrom = NULL;
 }
 
 
@@ -194,6 +203,8 @@ void    bl_gff_region_free(bl_gff_region_t *region)
 	free(region->species);
     if ( region->goi != NULL )
 	free(region->goi);
+    if ( region->chrom != NULL )
+	free(region->chrom);
     bl_gff_region_init(region);
 }
 

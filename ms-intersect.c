@@ -53,27 +53,32 @@ int     intersect(int argc, char *argv[])
     bl_gff_region_init(&r1);
     bl_gff_region_init(&rn);
 
-    printf("%-20s %9s %6s   %s\n", "Species", "Neighbors", "Common", "Common Neighbor genes");
+    printf("%-20s %2s %2s %2s  %s\n", "Species", "Ne", "Co",
+	    "Ch", "Common Neighbor genes");
     for (arg = 1; (arg < argc) &&
 		  (common_count = bl_gff_region_load(&r1, argv[arg])) == 0;
 		  ++arg)
-	printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&r1), '-', '-');
+	printf("%-20s %2c %2c %2c\n", BL_GFF_REGION_SPECIES(&r1),
+		'-', '-', '-');
     if ( arg == argc )
 	return EX_OK;
-    printf("%-20s %9zu %6c  ", BL_GFF_REGION_SPECIES(&r1),
-	   BL_GFF_REGION_COUNT(&r1) - 1, '*');
+    printf("%-20s %2zu %2c %2s ", BL_GFF_REGION_SPECIES(&r1),
+	   BL_GFF_REGION_COUNT(&r1) - 1, '*',
+	   BL_GFF_REGION_CHROM(&r1));
     // print_region_feature_names(&r1);
     putchar('\n');
 
     for (++arg; (arg < argc) && (strcmp(argv[arg], "--diverged") != 0) &&
 		  (common_count = bl_gff_region_load(&rn, argv[arg])) == 0;
 		  ++arg)
-	printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
+	printf("%-20s %2c %2c %2c\n", BL_GFF_REGION_SPECIES(&rn),
+		'-', '-', '-');
     if ( arg == argc )
 	return EX_OK;
     intersect = bl_gff_region_intersect(&r1, &rn);
-    printf("%-20s %9zu %6zu  ", BL_GFF_REGION_SPECIES(&rn),
-	   BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect));
+    printf("%-20s %2zu %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
+	   BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect),
+	   BL_GFF_REGION_CHROM(&rn));
     print_region_feature_names(intersect);
     putchar('\n');
     
@@ -84,7 +89,8 @@ int     intersect(int argc, char *argv[])
     for (++arg; (arg < argc) && (strcmp(argv[arg], "--diverged") != 0); ++arg)
     {
 	if ( (count = bl_gff_region_load(&rn, argv[arg])) == 0 )
-	    printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
+	    printf("%-20s %2c %2c %2c\n", BL_GFF_REGION_SPECIES(&rn),
+		    '-', '-', '-');
 	else
 	{
 	    old_count = BL_GFF_REGION_COUNT(intersect);
@@ -94,8 +100,10 @@ int     intersect(int argc, char *argv[])
 	    free(intersect);
 	    intersect = new_intersect;
 	    
-	    printf("%-20s %9zu %6zu  ", BL_GFF_REGION_SPECIES(&rn),
-		    BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect));
+	    printf("%-20s %2zu %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
+		    BL_GFF_REGION_COUNT(&rn) - 1,
+		    BL_GFF_REGION_COUNT(intersect),
+		    BL_GFF_REGION_CHROM(&rn));
 	    print_region_feature_names(intersect);
 	    putchar('\n');
 	    
@@ -136,16 +144,18 @@ int     intersect(int argc, char *argv[])
 	for (; arg < argc; ++arg)
 	{
 	    if ( (count = bl_gff_region_load(&rn, argv[arg])) == 0 )
-		printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
+		printf("%-20s %2c %2c %2c\n", BL_GFF_REGION_SPECIES(&rn),
+			'-', '-', '-');
 	    else
 	    {
 		old_count = BL_GFF_REGION_COUNT(intersect);
 		div_intersect = bl_gff_region_intersect(intersect, &rn);
 		new_count = BL_GFF_REGION_COUNT(div_intersect);
 		
-		printf("%-20s %9zu %6zu  ", BL_GFF_REGION_SPECIES(&rn),
+		printf("%-20s %2zu %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
 			BL_GFF_REGION_COUNT(&rn) - 1,
-			BL_GFF_REGION_COUNT(div_intersect));
+			BL_GFF_REGION_COUNT(div_intersect),
+			BL_GFF_REGION_CHROM(&rn));
 		print_region_feature_names(div_intersect);
 		putchar('\n');
 		

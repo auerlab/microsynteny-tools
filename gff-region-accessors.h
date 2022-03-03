@@ -17,3 +17,5 @@
 #define BL_GFF_REGION_SPECIES_AE(ptr,c) ((ptr)->species[c])
 #define BL_GFF_REGION_GOI(ptr)          ((ptr)->goi)
 #define BL_GFF_REGION_GOI_AE(ptr,c)     ((ptr)->goi[c])
+#define BL_GFF_REGION_CHROM(ptr)        ((ptr)->chrom)
+

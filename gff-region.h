@@ -13,8 +13,9 @@ typedef struct
     size_t      count;
     size_t      goi_index;
     bl_gff_t    *features;  // Array of GFF features
-    char        *species;
+    char        *species;   // FIXME: Maybe use fixed size strings
     char        *goi;
+    char        *chrom;
 }   bl_gff_region_t;
 
 #include "gff-region-rvs.h"
