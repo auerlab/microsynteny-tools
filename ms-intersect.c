@@ -1,6 +1,6 @@
 /***************************************************************************
  *  Description:
- *      Locate major divergence in gene neighborhoods along provided
+ *      Locate major divergence in gene regions along provided
  *      inputs.
  *
  *  History: 
@@ -19,7 +19,7 @@
 #include <biolibc/gff.h>
 #include "gff-region.h"
 
-int     common_to(int argc, char *argv[]);
+int     intersect(int argc, char *argv[]);
 void    print_region_feature_names(bl_gff_region_t *region);
 void    usage(char *argv[]);
 
@@ -29,7 +29,7 @@ int     main(int argc,char *argv[])
     if ( argc < 3 )
 	usage(argv);
 
-    return common_to(argc, argv);
+    return intersect(argc, argv);
 }
 
 
@@ -41,11 +41,12 @@ int     main(int argc,char *argv[])
  *  2022-02-23  Jason Bacon Begin
  ***************************************************************************/
 
-int     common_to(int argc, char *argv[])
+int     intersect(int argc, char *argv[])
 
 {
-    int             arg, count, common_count, c, old_count, new_count;
-    bl_gff_region_t r1, rn, *intersect, *new_intersect;
+    int             arg, count, common_count, c, old_count, new_count,
+		    first_diverged;
+    bl_gff_region_t r1, rn, *intersect, *new_intersect, *div_intersect;
     char            intersect_file[PATH_MAX + 1];
     FILE            *intersect_stream;
     
@@ -64,7 +65,7 @@ int     common_to(int argc, char *argv[])
     // print_region_feature_names(&r1);
     putchar('\n');
 
-    for (++arg; (arg < argc) &&
+    for (++arg; (arg < argc) && (strcmp(argv[arg], "--diverged") != 0) &&
 		  (common_count = bl_gff_region_load(&rn, argv[arg])) == 0;
 		  ++arg)
 	printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
@@ -80,7 +81,7 @@ int     common_to(int argc, char *argv[])
 	     BL_GFF_REGION_GOI(&r1), BL_GFF_REGION_SPECIES(&r1),
 	     BL_GFF_REGION_SPECIES(&rn));
     
-    for (++arg; arg < argc; ++arg)
+    for (++arg; (arg < argc) && (strcmp(argv[arg], "--diverged") != 0); ++arg)
     {
 	if ( (count = bl_gff_region_load(&rn, argv[arg])) == 0 )
 	    printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
@@ -128,6 +129,35 @@ int     common_to(int argc, char *argv[])
 		     intersect_stream, BL_GFF_FIELD_ALL);
     fclose(intersect_stream);
 
+    if ( arg < argc )   // Implies --diverged
+    {
+	first_diverged = ++arg;
+	puts("\nGenes conserved in each species through divergence from the group above:\n");
+	for (; arg < argc; ++arg)
+	{
+	    if ( (count = bl_gff_region_load(&rn, argv[arg])) == 0 )
+		printf("%-20s %9c %6c\n", BL_GFF_REGION_SPECIES(&rn), '-', '-');
+	    else
+	    {
+		old_count = BL_GFF_REGION_COUNT(intersect);
+		div_intersect = bl_gff_region_intersect(intersect, &rn);
+		new_count = BL_GFF_REGION_COUNT(div_intersect);
+		
+		printf("%-20s %9zu %6zu  ", BL_GFF_REGION_SPECIES(&rn),
+			BL_GFF_REGION_COUNT(&rn) - 1,
+			BL_GFF_REGION_COUNT(div_intersect));
+		print_region_feature_names(div_intersect);
+		putchar('\n');
+		
+		if ( new_count > old_count )
+		{
+		    fprintf(stderr, "Ooops, new intersect count cannot exceed old!\n");
+		    exit(EX_SOFTWARE);
+		}
+	    }
+	}
+    }
+
     return EX_OK;
 }
 
@@ -171,10 +201,12 @@ void    print_region_feature_names(bl_gff_region_t *region)
     }
 }
 
+
 void    usage(char *argv[])
 
 {
-    fprintf(stderr, "Usage: %s neighborhood1.gff3 neighborhood2.gff3 [...]\n",
+    fprintf(stderr, "Usage: %s region.gff3 region.gff3 [...]\n"
+		    "       [--diverged region.gff3 [region.gff3 ...]]\n",
 	    argv[0]);
     exit(EX_USAGE);
 }

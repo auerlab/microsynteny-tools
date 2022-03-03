@@ -25,22 +25,25 @@ fi
 gene=$1
 
 make > /dev/null
-for species in Danio_rerio Oryzias_latipes Takifugu_rubripes \
-    Mus_musculus Rattus_norvegicus Homo_sapiens; do
+for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
     file=Regions/$species-$gene.gff3
-    list="$list $file"
+    regen="$regen $file"
 done
-if [ $(echo $list | wc -w) -ge 2 ]; then
-    printf "\n$gene\n\n"
-    ./ms-intersect $list
-fi
-
-printf '\n'
-list=''
 for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
     file=Regions/$species-$gene.gff3
-    list="$list $file"
+    noregen="$noregen $file"
 done
-if [ $(echo $list | wc -w) -ge 2 ]; then
-    ./ms-intersect $list
+
+if [ $(echo $regen | wc -w) -ge 2 ]; then
+    printf "\n====================\n"
+    printf "$gene\n"
+    printf "====================\n\n"
+    printf "Neighboring genes conserved among the original group:\n\n"
+    ./ms-intersect $regen --diverged $noregen
+
+    if [ $(echo $noregen | wc -w) -ge 2 ]; then
+	printf "\nNeighboring genes conserved among the diverged group:\n\n"
+	./ms-intersect $noregen
+    fi
 fi
+
