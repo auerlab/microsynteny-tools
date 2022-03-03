@@ -1,3 +1,7 @@
+#ifdef __linux__
+#define _GNU_SOURCE         // asprintf()
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

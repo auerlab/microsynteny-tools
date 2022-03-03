@@ -13,9 +13,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <sys/param.h>  // PATH_MAX
+#include <sys/param.h>      // PATH_MAX
 #include <xtend/mem.h>
 #include <xtend/file.h>
+#include <xtend/string.h>   // strlcat() on Linux
 #include <biolibc/gff.h>
 #include "gff-region.h"
 
@@ -44,8 +45,7 @@ int     main(int argc,char *argv[])
 int     intersect(int argc, char *argv[])
 
 {
-    int             arg, count, common_count, c, old_count, new_count,
-		    first_diverged;
+    int             arg, count, common_count, c, old_count, new_count;
     bl_gff_region_t r1, rn, *intersect, *new_intersect, *div_intersect;
     char            intersect_file[PATH_MAX + 1];
     FILE            *intersect_stream;
@@ -139,7 +139,7 @@ int     intersect(int argc, char *argv[])
 
     if ( arg < argc )   // Implies --diverged
     {
-	first_diverged = ++arg;
+	++arg;
 	puts("\nGenes conserved in each species through divergence from the group above:\n");
 	for (; arg < argc; ++arg)
 	{
