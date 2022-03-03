@@ -113,7 +113,7 @@ int     intersect(int argc, char *argv[])
     }
     
     // Write GFF for intersect
-    rmkdir("Intersects", 0777);
+    xt_rmkdir("Intersects", 0777);
     if ( (intersect_stream = fopen(intersect_file, "w")) == NULL )
     {
 	fprintf(stderr, "ms-common-to: Could not open %s for write: %s.\n",
