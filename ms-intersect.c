@@ -54,7 +54,7 @@ int     intersect(int argc, char *argv[])
     bl_gff_region_init(&rn);
 
     printf("%-20s %2s %2s %2s  %s\n", "Species", "Ne", "Co",
-	    "Ch", "Common Neighbor genes");
+	    "Ch", "Intersection with all previous genes");
     for (arg = 1; (arg < argc) &&
 		  (common_count = bl_gff_region_load(&r1, argv[arg])) == 0;
 		  ++arg)
@@ -62,11 +62,10 @@ int     intersect(int argc, char *argv[])
 		'-', '-', '-');
     if ( arg == argc )
 	return EX_OK;
-    printf("%-20s %2zu %2c %2s ", BL_GFF_REGION_SPECIES(&r1),
+    printf("%-20s %2zu %2c %2s  ", BL_GFF_REGION_SPECIES(&r1),
 	   BL_GFF_REGION_COUNT(&r1) - 1, '*',
 	   BL_GFF_REGION_CHROM(&r1));
-    // print_region_feature_names(&r1);
-    putchar('\n');
+    puts("(NA)");
 
     for (++arg; (arg < argc) && (strcmp(argv[arg], "--diverged") != 0) &&
 		  (common_count = bl_gff_region_load(&rn, argv[arg])) == 0;
