@@ -48,15 +48,18 @@ if len(sys.argv) < 2:
 
 unrep = []
 
+print("%-18s %2s  %s\n" % ("Species", "Ch", "Genes"), end='')
 for filename in sys.argv[1:]:
     basename = path.basename(filename)
     c = basename.split("-")
+    species = c[0]
+    chrom = c[2]
     
     #############################################################################
     #   Parse file line by line
 
     if path.exists(filename):
-        print("%-18s" % c[0], end='')
+        print("%-18s %2s " % (species, chrom), end='')
         with open(filename) as infile:
             for line in infile:
                 if line[0] != '#':
@@ -64,9 +67,9 @@ for filename in sys.argv[1:]:
                     gene = cols[1]
                     strand = cols[6]
                     if strand == '+':
-                        print("%s+ " % gene, end='')
+                        print(" %s+" % (gene), end='')
                     else:
-                        print("-%s " % gene, end='')
+                        print(" -%s" % (gene), end='')
         infile.close()
         print()
     else:
