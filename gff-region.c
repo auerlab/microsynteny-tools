@@ -58,10 +58,12 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 	basename = filename;
     else
 	++basename;
+    
+    // FIXME: Make a libxtend function for this?
     strlcpy(temp_filename, basename, PATH_MAX + 1);
     p = temp_filename;
     species = strsep(&p, "-");
-    gene_name = strsep(&p, ".");
+    gene_name = strsep(&p, "-");
     //printf("Loading %s %s\n", species, gene_name);
     
     // Free memory in previously used objects
@@ -121,10 +123,15 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 	/*printf("%s %" PRIu64 "\n",
 		BL_GFF_SEQID(&region->features[c]),
 		BL_GFF_START(&region->features[c]));*/
+	//printf("%s %s\n", gene_name, BL_GFF_FEATURE_NAME(&temp_feature));
 	if ( strcasecmp(gene_name, BL_GFF_FEATURE_NAME(&temp_feature)) == 0 )
 	{
 	    region->goi_index = region->count;
-	    region->chrom = strdup(BL_GFF_SEQID(&temp_feature));
+	    if ( (region->chrom = strdup(BL_GFF_SEQID(&temp_feature))) == NULL )
+	    {
+		fprintf(stderr, "bl_gff_region_load(): Failed to strdup() chrom.\n");
+		return 0;
+	    }
 	}
 	++region->count;
     }

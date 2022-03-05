@@ -26,11 +26,11 @@ gene=$1
 
 make > /dev/null
 for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
-    file=Regions/$species-$gene.gff3
+    file=Regions/$species-$gene-*.gff3
     regen="$regen $file"
 done
 for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
-    file=Regions/$species-$gene.gff3
+    file=Regions/$species-$gene-*.gff3
     noregen="$noregen $file"
 done
 

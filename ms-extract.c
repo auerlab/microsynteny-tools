@@ -33,14 +33,13 @@ int     main(int argc,char *argv[])
 		*output_dir = ".",
 		*gff_basename,
 		*ext,
-		hood_file[PATH_MAX];
+		region_file[PATH_MAX];
     uint64_t    max_nt_distance = DEFAULT_NT_DISTANCE,
 		adjacent_genes = DEFAULT_ADJACENT_GENES;
     int         arg,
 		c,
 		status,
-		gene_count,
-		genes_found;
+		gene_count;
     bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
 
     for (arg = 1; (arg < argc) && (argv[arg][0] == '-'); ++arg)
@@ -118,9 +117,7 @@ int     main(int argc,char *argv[])
 	strlower(gene_names[c]);
     }
     
-    genes_found = 0;
-    while ( (genes_found < gene_count) &&
-	    (bl_gff_read(&feature, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK) )
+    while ( bl_gff_read(&feature, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK )
     {
 	// Only interested in gene features
 	if ( strcasecmp(BL_GFF_TYPE(&feature), "gene") == 0 )
@@ -139,17 +136,17 @@ int     main(int argc,char *argv[])
 	    for (c = 0; c < gene_count; ++c)
 	    {
 		// Ensembl GFFs are not consistent with capitalization.
-		// All lower case for some species, capitalized for others
+		// All lower case for Danio, capitalized for others
 		if ( strcasecmp(BL_GFF_FEATURE_NAME(&feature), gene_names[c]) == 0 )
 		{
-		    ++genes_found;
 		    printf("\n%s %s:\n", gff_basename, gene_names[c]);
 		    
-		    // Path name format is important, parsed by ms-divergence
-		    snprintf(hood_file, PATH_MAX, "%s/%s-%s.gff3",
-			     output_dir, gff_basename, gene_names[c]);
+		    // Path name format is important, parsed by other progs
+		    snprintf(region_file, PATH_MAX, "%s/%s-%s-%s-%lu.gff3",
+			     output_dir, gff_basename, gene_names[c],
+			     BL_GFF_SEQID(&feature), BL_GFF_START(&feature));
 		    status = extract_neighborhood(&feature, &gi, gff_stream,
-			header_stream, hood_file,
+			header_stream, region_file,
 			adjacent_genes, max_nt_distance);
 		    if ( status != EX_OK )
 		    {
@@ -171,7 +168,7 @@ int     main(int argc,char *argv[])
  *  Description:
  *      Extract the gene neighborhood of the given feature, aided by
  *      index gi for speed, saving the neighborhood in GFF3 format to
- *      hood_file.
+ *      region_file.
  *
  *  Returns:
  *      EX_OK on success or another sysexits constant on error
@@ -182,7 +179,7 @@ int     main(int argc,char *argv[])
  ***************************************************************************/
 
 int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
-	    FILE *gff_stream, FILE *header_stream, char *hood_file,
+	    FILE *gff_stream, FILE *header_stream, char *region_file,
 	    uint64_t adjacent_genes, uint64_t max_nt_distance)
 
 {
@@ -190,16 +187,16 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
     char        *neighbor_name;
     uint64_t    g, len;
     int64_t     distance;
-    FILE        *hood_stream;
+    FILE        *region_stream;
     
-    if ( (hood_stream = fopen(hood_file, "w")) == NULL )
+    if ( (region_stream = fopen(region_file, "w")) == NULL )
     {
 	fprintf(stderr, "ms-extract: Cannot open %s: %s\n",
-		hood_file, strerror(errno));
+		region_file, strerror(errno));
 	return EX_CANTCREAT;
     }
     // Add the original GFF header to each neighborhood GFF
-    bl_gff_copy_header(header_stream, hood_stream);
+    bl_gff_copy_header(header_stream, region_stream);
     
     /*
      *  Back up to at the position of this gene - adjacent_genes, but no
@@ -256,7 +253,7 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 		BL_GFF_SOURCE_MAX_CHARS);
 	    
 	    // Output gene neighborhood in GFF format for above
-	    bl_gff_write(&neighbor, hood_stream,
+	    bl_gff_write(&neighbor, region_stream,
 		BL_GFF_FIELD_ALL);
 	    
 	    // FIXME: Restructure the loop so this is a loop condition
@@ -266,7 +263,7 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 	}
 	bl_gff_free(&neighbor);
     }
-    fclose(hood_stream);
+    fclose(region_stream);
     
     return EX_OK;
 }
