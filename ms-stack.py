@@ -38,6 +38,9 @@
 
 import sys
 from os import path
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
 
 #############################################################################
 #   Process command line args
@@ -47,6 +50,9 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 unrep = []
+
+bar_len = 100
+bar_sep = 20
 
 print("%-18s %2s  %s\n" % ("Species", "Ch", "Genes"), end='')
 for filename in sys.argv[1:]:
@@ -59,19 +65,26 @@ for filename in sys.argv[1:]:
     #   Parse file line by line
 
     if path.exists(filename):
+        start = 0
+        end = bar_len
         print("%-18s %2s " % (species, chrom), end='')
         with open(filename) as infile:
-            for line in infile:
-                if line[0] != '#':
-                    cols = line.split("\t")
+            for gff_line in infile:
+                if gff_line[0] != '#':
+                    cols = gff_line.split("\t")
                     gene = cols[1]
                     strand = cols[6]
                     if strand == '+':
                         print(" %s+" % (gene), end='')
                     else:
                         print(" -%s" % (gene), end='')
+                    plt.plot([start, end], [0, 0], linewidth=10, color='teal')
+                    print(start, end)
+                    start = end + bar_sep
+                    end = start + bar_len
         infile.close()
         print()
+        plt.show()
     else:
         unrep.append(filename)
 
@@ -79,3 +92,4 @@ for filename in sys.argv[1:]:
 #    print("\nThe following files were not found:\n")
 #    for file in unrep:
 #        print(file)
+
