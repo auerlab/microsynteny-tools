@@ -113,7 +113,7 @@ for filename in sys.argv[1:]:
 
     bar_y += 10
 
-plt.title(goi + ' neighborhoods')
+plt.title(goi + ' neighborhoods and gene start positions')
 plt.box(False)
 plt.xticks([])
 plt.yticks([])
