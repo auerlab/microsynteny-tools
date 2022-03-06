@@ -51,42 +51,65 @@ if len(sys.argv) < 2:
 
 unrep = []
 
-bar_len = 100
+bar_len = 60
 bar_sep = 20
+bar_y   = 0
+
+# plt.show() makes the width too small, so genes overlap even though they
+# are explicitly spaced out.  Can we fix just the width?
+plt.rcParams["figure.figsize"] = (14, 5)
 
 print("%-18s %2s  %s\n" % ("Species", "Ch", "Genes"), end='')
 for filename in sys.argv[1:]:
     basename = path.basename(filename)
+    
+    # This depends on filename format used by ms-extract.c
     c = basename.split("-")
     species = c[0]
+    goi = c[1]
     chrom = c[2]
     
     #############################################################################
     #   Parse file line by line
 
     if path.exists(filename):
-        start = 0
-        end = bar_len
+        bar_left = 120
+        bar_right = bar_left + bar_len
         print("%-18s %2s " % (species, chrom), end='')
         with open(filename) as infile:
             for gff_line in infile:
+                plt.text(0, bar_y - 1, species)
+                plt.text(96, bar_y - 1, chrom)
                 if gff_line[0] != '#':
                     cols = gff_line.split("\t")
                     gene = cols[1]
+                    start = cols[4]
                     strand = cols[6]
                     if strand == '+':
                         print(" %s+" % (gene), end='')
+                        trunc = gene[0:8:] + ' +'
                     else:
                         print(" -%s" % (gene), end='')
-                    plt.plot([start, end], [0, 0], linewidth=10, color='teal')
-                    print(start, end)
-                    start = end + bar_sep
-                    end = start + bar_len
+                        trunc = '- ' + gene[0:8:]
+                    plt.plot([bar_left, bar_right], [bar_y, bar_y],
+                             linestyle='-', linewidth=16, color='#66CCCC')
+                    plt.text(bar_left + 4, bar_y - 1, trunc, color='black')
+                    plt.text(bar_left + 2, bar_y - 6,
+                             str(int(int(start) / 1000)) + 'k')
+                    bar_left = bar_right + bar_sep
+                    bar_right = bar_left + bar_len
         infile.close()
         print()
-        plt.show()
     else:
         unrep.append(filename)
+
+    bar_y += 10
+
+plt.title(goi + ' neighborhoods')
+plt.box(False)
+plt.xticks([])
+plt.yticks([])
+plt.show()
 
 #if len(unrep) > 0:
 #    print("\nThe following files were not found:\n")

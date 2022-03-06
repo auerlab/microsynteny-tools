@@ -34,8 +34,6 @@ printf "\n$gene\n\n"
     Regions/Danio_rerio-$gene-*.gff3 \
     Regions/Oryzias_latipes-$gene-*.gff3 \
     Regions/Takifugu_rubripes-$gene-*.gff3 \
-    Regions/Xenopus_tropicalis-$gene-*.gff3 \
-    Regions/Gallus_gallus-$gene-*.gff3 \
     Regions/Mus_musculus-$gene-*.gff3 \
     Regions/Rattus_norvegicus-$gene-*.gff3 \
     Regions/Homo_sapiens-$gene-*.gff3
