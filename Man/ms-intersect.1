@@ -1,0 +1,102 @@
+.TH ms-intersect 1
+.SH NAME    \" Section header
+.PP
+
+ms-intersect - Report genes common to some species and missing from others
+
+\" Convention:
+\" Underline anything that is typed verbatim - commands, etc.
+.SH SYNOPSIS
+.PP
+.nf 
+.na 
+ms-intersect file.gff3 file.gff3 [--diverged file.gff3 file.gff3]
+.ad
+.fi
+
+.SH OPTIONS
+.TP
+\fB--diverged\fR
+Begin list of diverged species, each of which is individually compared to
+the intersection of the initial group.
+
+\" Optional sections
+.SH "DESCRIPTION"
+.B ms-intersect
+finds the intersection of gene groups in a list of GFF3 files such as those
+output by ms-extract(1).  I.e., it produces a list of genes neighboring a
+gene of interest (GOI) common to 2 or more species.  This is useful since
+neighboring genes often contain regulatory elements for the GOI in their
+introns.
+
+Each GFF3 file should contain a small group of genes surrounding a gene
+of interest (GOI) for a given species.
+
+The filename of the GFF3 must be of the form
+
+species-gene-chrom-start.gff3
+
+where gene is the gene name (not ID), chrom is the chromosome name or
+number, and start is the starting position of the gene on the chromosome.
+This is the filename format produced by ms-extract(1).
+
+Starting with the second GFF3 file, the intersection of genes in the file
+will all previous gene groups is output.  Hence, the order in which files
+are given on the command line determines the progression of intersection
+output, though the final intersection of all species will be the same
+regardless of order, since it represents a list of genes shared by all
+species.
+
+If the --diverged flag is present, each GFF3 file after it is compared
+independently to the intersection of all groups before --diverged.  This
+allows the user to see what genes are present in the neighboris shared by each of the diverged species
+
+.SH EXAMPLE
+
+The following command shows that 3 fish species all have rbm27, rad50,
+and drd1b near the pou4f3 gene, while the mammals are missing rad50 and
+drd1b.  The absence of the latter two genes may explain differences in
+gene regulation between fish and mammals, since they could contain
+regulator elements (e.g. enhancers) for pou4f3 in their introns.
+
+.nf
+.na
+ms-intersect \\
+    Danio_rerio-pou4f3-9-54290896.gff3 \\
+    Oryzias_latipes-pou4f3-14-7315063.gff3 \\
+    Takifugu_rubripes-pou4f3-15-5176582.gff3 \\
+    --diverged \\
+    Homo_sapiens-pou4f3-5-146338839.gff3 \\
+    Mus_musculus-pou4f3-18-42527604.gff3 \\
+    Rattus_norvegicus-pou4f3-18-34390205.gff3
+
+====================
+pou4f3
+====================
+
+Neighboring genes conserved among the original group:
+
+Species              Ne Co Ch  Intersection with all previous genes
+Danio_rerio           8  *  9  (NA)
+Oryzias_latipes       8  3 14  rbm27 rad50 drd1b
+Takifugu_rubripes     8  3 15  rbm27 rad50 drd1b
+
+Genes conserved in each species through divergence from the group above:
+
+Mus_musculus          8  1 18  rbm27
+Rattus_norvegicus     8  1 18  rbm27
+Homo_sapiens          8  1  5  rbm27
+.ad
+.fi
+
+.SH "SEE ALSO"
+ms-extract(1), ms-stack(1), ms-plot(1)
+
+.SH BUGS
+Please report bugs to the author and send patches in unified diff format.
+(man diff for more information)
+
+.SH AUTHOR
+.nf
+.na
+J. Bacon

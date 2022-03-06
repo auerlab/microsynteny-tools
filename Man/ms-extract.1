@@ -13,7 +13,7 @@ ms-extract - Show genes in the neighborhood of specified gene
 ms-extract [--output-dir dir]
     [--adjacent-genes genes=4]
     [--max-nt-distance nucleotides=1000000]
-    file.gff3 gene-name [gene-name ...]
+    file.gff3 gene-list.txt
 .ad
 .fi
 
@@ -26,18 +26,21 @@ Default is ".".
 .TP
 \fB--adjacent-genes\fR \fIgenes=4\fR
 Name of the directory where gene neighborhood GFF files are stored.
-Default is ".".
+Default is 4.
 
 .TP
 \fB--max-nt-distance\fR \fInucleotides=1000000\fR
 Name of the directory where gene neighborhood GFF files are stored.
-Default is ".".
+Default is 1,000,000.
 
 \" Optional sections
 .SH "DESCRIPTION"
 .B ms-extract
-extracts gene neighborhoods for one or more genes from the given GFF3 file,
-writing the output to GFF3 files.
+extracts gene neighborhoods for each gene in gene-list.txt from the given
+GFF3 file, writing the output to separate GFF3 files, one for each gene.
+
+The gene list file should contain one gene name per line.
+
 By default, 4 upstream and 4 downstream genes are written along with the
 gene of interest, as long as they overlap the maximum distance boundary
 of 1,000,000 nucleotides.
@@ -50,7 +53,7 @@ This allows multiple genes to be extracted in a single pass through the
 input GFF file rather than sweeping it repeatedly for each gene.
 
 .SH "SEE ALSO"
-ms-stack(1), ms-plot(1)
+ms-intersect(1), ms-stack(1), ms-plot(1)
 
 .SH BUGS
 Please report bugs to the author and send patches in unified diff format.
