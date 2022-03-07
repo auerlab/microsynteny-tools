@@ -98,9 +98,13 @@ for filename in sys.argv[1:]:
                     #plt.plot([bar_left, bar_right], [bar_y, bar_y],
                     #         linewidth=12, linestyle='-', color='#66CCCC',
                     #         markersize=0)
+                    if gene.lower() == goi.lower():
+                        color='#DDDD11'
+                    else:
+                        color='#66DDDD'
                     plt.arrow(arrow_start, bar_y, dx, 0,
-                              width=3, length_includes_head=True,
-                              head_width=4,color='#55BBBB');
+                              width=3, head_length=10, length_includes_head=True,
+                              head_width=4,color=color);
                     plt.text(bar_left + 6, bar_y - 1, trunc, color='black')
                     plt.text(bar_left + 2, bar_y - 6,
                              str(int(int(start) / 10000) / 100) + 'M')
