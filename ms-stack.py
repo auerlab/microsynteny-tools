@@ -57,7 +57,7 @@ bar_y   = 0
 
 # plt.show() makes the width too small, so genes overlap even though they
 # are explicitly spaced out.  Can we fix just the width?
-plt.rcParams["figure.figsize"] = (12, 5)
+plt.rcParams["figure.figsize"] = (12, len(sys.argv) * 0.75)
 
 print("%-18s %2s  %s\n" % ("Species", "Ch", "Genes"), end='')
 for filename in sys.argv[1:]:
@@ -90,22 +90,24 @@ for filename in sys.argv[1:]:
                         trunc = gene[0:8:]
                         arrow_start = bar_left
                         dx = bar_len
+                        text_offset = 6
                     else:
                         print(" -%s" % (gene), end='')
                         trunc = gene[0:8:]
                         arrow_start = bar_right
                         dx = -bar_len
+                        text_offset = 9
                     #plt.plot([bar_left, bar_right], [bar_y, bar_y],
-                    #         linewidth=12, linestyle='-', color='#66CCCC',
+                    #         linewidth=12, linestyle='-', color='#33bbbb',
                     #         markersize=0)
                     if gene.lower() == goi.lower():
                         color='#DDDD11'
                     else:
-                        color='#66DDDD'
+                        color='#33bbbb'
                     plt.arrow(arrow_start, bar_y, dx, 0,
                               width=3, head_length=10, length_includes_head=True,
                               head_width=4,color=color);
-                    plt.text(bar_left + 6, bar_y - 1, trunc, color='black')
+                    plt.text(bar_left + text_offset, bar_y - 0.7, trunc)
                     plt.text(bar_left + 2, bar_y - 6,
                              str(int(int(start) / 10000) / 100) + 'M')
                     bar_left = bar_right + bar_sep
