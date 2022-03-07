@@ -85,15 +85,16 @@ for filename in sys.argv[1:]:
                     gene = cols[1]
                     start = cols[4]
                     strand = cols[6]
+                    trunc = gene[0:7:]
+                    if len(gene) > len(trunc):
+                        trunc = trunc + '*' # Indicate truncation
                     if strand == '+':
                         print(" %s+" % (gene), end='')
-                        trunc = gene[0:8:]
                         arrow_start = bar_left
                         dx = bar_len
                         text_offset = 6
                     else:
                         print(" -%s" % (gene), end='')
-                        trunc = gene[0:8:]
                         arrow_start = bar_right
                         dx = -bar_len
                         text_offset = 9
@@ -106,7 +107,7 @@ for filename in sys.argv[1:]:
                         color='#33bbbb'
                     plt.arrow(arrow_start, bar_y, dx, 0,
                               width=3, head_length=10, length_includes_head=True,
-                              head_width=4,color=color);
+                              head_width=4, facecolor=color, edgecolor='black');
                     plt.text(bar_left + text_offset, bar_y - 0.7, trunc)
                     plt.text(bar_left + 2, bar_y - 6,
                              str(int(int(start) / 10000) / 100) + 'M')
