@@ -142,7 +142,7 @@ int     main(int argc,char *argv[])
 		    printf("\n%s %s:\n", gff_basename, gene_names[c]);
 		    
 		    // Path name format is important, parsed by other progs
-		    snprintf(region_file, PATH_MAX, "%s/%s-%s-%s-%lu.gff3",
+		    snprintf(region_file, PATH_MAX, "%s/%s-%s-%s-%" PRIu64 ".gff3",
 			     output_dir, gff_basename, gene_names[c],
 			     BL_GFF_SEQID(&feature), BL_GFF_START(&feature));
 		    status = extract_neighborhood(&feature, &gi, gff_stream,
