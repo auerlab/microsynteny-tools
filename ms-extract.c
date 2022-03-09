@@ -20,6 +20,7 @@
 #include <xtend/mem.h>
 #include <xtend/file.h>
 #include "ms-extract.h"
+#include "alt-str.h"
 
 int     main(int argc,char *argv[])
 
@@ -27,7 +28,6 @@ int     main(int argc,char *argv[])
     bl_gff_t    feature = BL_GFF_INIT;
     FILE        *gff_stream, *header_stream, *gene_stream;
     char        *gene_file,
-		**gene_names,
 		*gff_file,
 		*end,
 		*output_dir = ".",
@@ -41,6 +41,7 @@ int     main(int argc,char *argv[])
 		status,
 		gene_count;
     bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
+    alt_str_t   *gene_names;
 
     for (arg = 1; (arg < argc) && (argv[arg][0] == '-'); ++arg)
     {
@@ -94,7 +95,7 @@ int     main(int argc,char *argv[])
 		gene_file, strerror(errno));
 	return EX_NOINPUT;
     }
-    if ( (gene_count = xt_inhale_strings(gene_stream, &gene_names)) == 0 )
+    if ( (gene_count = xt_alt_str_inhale_list(&gene_names, gene_stream)) == 0 )
     {
 	fprintf(stderr, "ms-extract: Unable to read genes from %s.\n", gene_file);
 	return EX_NOINPUT;
@@ -114,7 +115,7 @@ int     main(int argc,char *argv[])
     for (c = 0; c < gene_count; ++c)
     {
 	//fprintf(stderr, "gene: %s\n", gene_names[c]);
-	strlower(gene_names[c]);
+	//strlower(gene_names[c].strings[c]);
     }
     
     while ( bl_gff_read(&feature, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK )
@@ -135,16 +136,19 @@ int     main(int argc,char *argv[])
 	    
 	    for (c = 0; c < gene_count; ++c)
 	    {
+		int t;
+		
 		// Ensembl GFFs are not consistent with capitalization.
 		// All lower case for Danio, capitalized for others
-		if ( strcasecmp(BL_GFF_FEATURE_NAME(&feature),
-				gene_names[c]) == 0 )
+		if ( (t = xt_alt_str_case_contains(&gene_names[c],
+			BL_GFF_FEATURE_NAME(&feature))) >= 0 )
 		{
-		    printf("\n%s %s:\n", gff_basename, gene_names[c]);
+		    printf("\n%s %s:\n", gff_basename, gene_names[c].strings[t]);
 		    
 		    // Path name format is important, parsed by other progs
-		    snprintf(region_file, PATH_MAX, "%s/%s-%s-%s-%" PRIu64 ".gff3",
-			     output_dir, gff_basename, gene_names[c],
+		    snprintf(region_file, PATH_MAX,
+			     "%s/%s-%s-%s-%" PRIu64 ".gff3",
+			     output_dir, gff_basename, gene_names[c].strings[t],
 			     BL_GFF_SEQID(&feature), BL_GFF_START(&feature));
 		    status = extract_neighborhood(&feature, &gi, gff_stream,
 						  header_stream, region_file,
@@ -281,4 +285,3 @@ void    usage(char *argv[])
 		    "   species.gff3 gene-list.txt\n", argv[0]);
     exit(EX_USAGE);
 }
-

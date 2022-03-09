@@ -55,7 +55,7 @@ BINS    = ${BIN1} ${BIN2}
 ############################################################################
 # List object files that comprise BIN.
 
-OBJS1   = ms-extract.o eqv-genes.o
+OBJS1   = ms-extract.o alt-str.o
 OBJS2   = ms-intersect.o gff-region.o gff-region-mutators.o
 OBJS    = ${OBJS1} ${OBJS2}
 
@@ -166,7 +166,7 @@ depend:
 # Remove generated files (objs and nroff output from man pages)
 
 clean:
-	rm -f ${OBJS} ${BINS} *.nr
+	rm -f *.o ${BINS} *.nr
 
 # Keep backup files during normal clean, but provide an option to remove them
 realclean: clean
