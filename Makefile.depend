@@ -1,3 +1,6 @@
+eqv-genes.o: eqv-genes.c eqv-genes.h
+	${CC} -c ${CFLAGS} eqv-genes.c
+
 gff-region-mutators.o: gff-region-mutators.c gff-region.h \
   gff-region-rvs.h gff-region-accessors.h gff-region-mutators.h
 	${CC} -c ${CFLAGS} gff-region-mutators.c

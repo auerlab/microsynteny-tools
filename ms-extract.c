@@ -137,7 +137,8 @@ int     main(int argc,char *argv[])
 	    {
 		// Ensembl GFFs are not consistent with capitalization.
 		// All lower case for Danio, capitalized for others
-		if ( strcasecmp(BL_GFF_FEATURE_NAME(&feature), gene_names[c]) == 0 )
+		if ( strcasecmp(BL_GFF_FEATURE_NAME(&feature),
+				gene_names[c]) == 0 )
 		{
 		    printf("\n%s %s:\n", gff_basename, gene_names[c]);
 		    
@@ -146,8 +147,9 @@ int     main(int argc,char *argv[])
 			     output_dir, gff_basename, gene_names[c],
 			     BL_GFF_SEQID(&feature), BL_GFF_START(&feature));
 		    status = extract_neighborhood(&feature, &gi, gff_stream,
-			header_stream, region_file,
-			adjacent_genes, max_nt_distance);
+						  header_stream, region_file,
+						  adjacent_genes,
+						  max_nt_distance);
 		    if ( status != EX_OK )
 		    {
 			fclose(gff_stream);

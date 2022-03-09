@@ -26,6 +26,16 @@ gene=$1
 shift
 
 for file in "$@"; do
-    echo $file
-    awk '$3 == "gene"' $file | grep -i "name=$gene"
+    printf "\n$file\n"
+    awk -v gene=$gene '$3 == "gene" {
+	split($9, a, ";");
+	for (f in a) {
+	    str = "Name=" gene;
+	    #print a[f];
+	    if ( tolower(a[f]) ~ tolower(str) ) {
+		print $1, $4, a[f];
+		break;
+	    }
+	}
+    }' $file
 done
