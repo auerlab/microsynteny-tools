@@ -15,7 +15,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene\n"
+    printf "Usage: $0 gene-name [gene-name ...]\n"
     exit 1
 }
 
@@ -24,17 +24,19 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# -lt 1 ]; then
     usage
 fi
-gene=$1
-printf "\n$gene\n\n"
+printf "\n$*\n\n"
 
-./ms-stack.py \
-    Regions/Danio_rerio-$gene-*.gff3 \
-    Regions/Oryzias_latipes-$gene-*.gff3 \
-    Regions/Takifugu_rubripes-$gene-*.gff3 \
-    Regions/Mus_musculus-$gene-*.gff3 \
-    Regions/Rattus_norvegicus-$gene-*.gff3 \
-    Regions/Homo_sapiens-$gene-*.gff3
+for species in Danio_rerio Orizias_latipes Takifugu_rubripes \
+    Mus_musculus Rattus_norvegicus Homo_sapiens; do
+    for gene in $@; do
+	file=Regions/$species-$gene-*.gff3
+	if [ -e $file ]; then
+	    files="$files $file"
+	fi
+    done
+done
 
+./ms-stack.py $files

@@ -45,8 +45,8 @@ int     xt_alt_str_read_line_malloc(alt_str_t *alt_str, FILE *stream)
     //fprintf(stderr, "%s\n", buff);
     if ( len > 0 )
 	alt_str->count = strsplit(buff, &alt_str->strings, "|");
-    for (c = 0; c < alt_str->count; ++c)
-	fprintf(stderr, "%zu %s\n", c, alt_str->strings[c]);
+    //for (c = 0; c < alt_str->count; ++c)
+    //    fprintf(stderr, "%zu %s\n", c, alt_str->strings[c]);
     return status;
 }
 

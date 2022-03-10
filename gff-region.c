@@ -247,7 +247,7 @@ int     bl_gff_region_commonality(bl_gff_region_t *r1, bl_gff_region_t *r2)
 		++n;
 	}
     }
-    return n - 1;   // Don't count GOI
+    return n;
 }
 
 
@@ -322,8 +322,8 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	{
 	    n2 = BL_GFF_FEATURE_NAME(&r2->features[c2]);
 	    // fprintf(stderr, "%s %s\n", n1, n2);
+	    //     (strcasecmp(n1, intersect->goi) != 0) &&
 	    if ( (strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0) &&
-		 (strcasecmp(n1, intersect->goi) != 0) &&
 		 !bl_gff_region_duplicate_gene(intersect, n1) )
 	    {
 		if ( intersect->count == intersect->array_size )
