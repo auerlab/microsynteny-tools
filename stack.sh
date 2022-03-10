@@ -15,7 +15,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-name [gene-name ...]\n"
+    printf "Usage: $0 [--show-gene-lens] gene-name [gene-name ...]\n"
     exit 1
 }
 
@@ -23,6 +23,11 @@ usage()
 ##########################################################################
 #   Main
 ##########################################################################
+
+if [ 0$1 == 0'--show-gene-lens' ]; then
+    flags=$1
+    shift
+fi
 
 if [ $# -lt 1 ]; then
     usage
@@ -40,4 +45,4 @@ for species in Danio_rerio Orizias_latipes Takifugu_rubripes \
 	done
     done
 done
-./ms-stack.py $files
+./ms-stack.py $flags $files

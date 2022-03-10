@@ -45,15 +45,23 @@ import numpy as np
 #############################################################################
 #   Process command line args
 
-if len(sys.argv) < 2:
-    print("Usage: %s %s" % (sys.argv[0], "file.gff3 [file.gff3 ...]"))
+show_gene_lens = sys.argv[1] == '--show-gene-lens'
+if show_gene_lens:
+    min_args = 3
+    first_file_arg = 2
+    bar_y_sep   = 12
+else:
+    min_args = 2
+    first_file_arg = 1
+    bar_y_sep = 10
+
+if len(sys.argv) < min_args:
+    print("Usage: %s %s" % (sys.argv[0], "[--show-gene-lens] file.gff3 [file.gff3 ...]"))
     sys.exit(1)
 
-unrep = []
-
-bar_len = 90
-bar_sep = 20
-bar_y   = 0
+bar_len     = 90
+bar_x_sep   = 20
+bar_y       = 0
 
 # plt.show() makes the width too small, so genes overlap even though they
 # are explicitly spaced out.  Can we fix just the width?
@@ -61,7 +69,7 @@ plt.rcParams["figure.figsize"] = (12, len(sys.argv) * 0.75)
 
 print("%-18s %2s  %s\n" % ("Species", "Ch", "Genes"), end='')
 last_goi = gois = ''
-for filename in sys.argv[1:]:
+for filename in sys.argv[first_file_arg:]:
     basename = path.basename(filename)
     
     # This depends on filename format used by ms-extract.c
@@ -119,23 +127,27 @@ for filename in sys.argv[1:]:
                               head_width=4, facecolor=color, edgecolor='black');
                     plt.text(bar_left + text_offset, bar_y - 0.7, trunc)
                     
+                    # Gene length
+                    if show_gene_lens:
+                        gene_len = gene_end - gene_start
+                        plt.text(bar_left + text_offset, bar_y + 3,
+                                 str(int(gene_len / 100 + 5) / 10) + 'k')
+                    
                     # Intergenic distance
                     if genes > 0:
                         gap = gene_start - previous_end
                         # Kb rounded to 1 decimal digit
                         plt.text(bar_left - 30, bar_y - 5,
-                            str(int((gap / 100) + 5) / 10) + 'k')
+                            str(int(gap / 100 + 5) / 10) + 'k')
                     
-                    bar_left = bar_right + bar_sep
+                    bar_left = bar_right + bar_x_sep
                     bar_right = bar_left + bar_len
                     previous_end = gene_end
                     genes = genes + 1
         infile.close()
         print()
-    else:
-        unrep.append(filename)
 
-    bar_y += 10
+    bar_y += bar_y_sep
 
 plt.title(gois + ' neighborhoods and intergenic distances')
 plt.box(False)
