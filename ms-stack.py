@@ -59,9 +59,10 @@ if len(sys.argv) < min_args:
     print("Usage: %s %s" % (sys.argv[0], "[--show-gene-lens] file.gff3 [file.gff3 ...]"))
     sys.exit(1)
 
-bar_len     = 90
+bar_len     = 100
 bar_x_sep   = 20
 bar_y       = 0
+text_height = 0.7
 
 # plt.show() makes the width too small, so genes overlap even though they
 # are explicitly spaced out.  Can we fix just the width?
@@ -86,15 +87,15 @@ for filename in sys.argv[first_file_arg:]:
     #   Parse file line by line
 
     if path.exists(filename):
-        bar_left = 160
+        bar_left = 200
         bar_right = bar_left + bar_len
         print("%-18s %2s " % (species, chrom), end='')
         with open(filename) as infile:
             genes = 0
             previous_end = 0
             for gff_line in infile:
-                plt.text(0, bar_y - 1, species)
-                plt.text(135, bar_y - 1, chrom)
+                plt.text(0, bar_y - text_height, species)
+                plt.text(170, bar_y - text_height, chrom)
                 if gff_line[0] != '#':
                     cols = gff_line.split("\t")
                     gene = cols[1]
@@ -125,7 +126,7 @@ for filename in sys.argv[first_file_arg:]:
                               width=3, head_length=10,
                               length_includes_head=True,
                               head_width=4, facecolor=color, edgecolor='black');
-                    plt.text(bar_left + text_offset, bar_y - 0.7, trunc)
+                    plt.text(bar_left + text_offset, bar_y - text_height, trunc)
                     
                     # Gene length
                     if show_gene_lens:
@@ -137,7 +138,7 @@ for filename in sys.argv[first_file_arg:]:
                     if genes > 0:
                         gap = gene_start - previous_end
                         # Kb rounded to 1 decimal digit
-                        plt.text(bar_left - 30, bar_y - 5,
+                        plt.text(bar_left - 30, bar_y - 4.5,
                             str(int(gap / 100 + 5) / 10) + 'k')
                     
                     bar_left = bar_right + bar_x_sep
