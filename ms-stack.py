@@ -77,13 +77,16 @@ for filename in sys.argv[1:]:
         bar_right = bar_left + bar_len
         print("%-18s %2s " % (species, chrom), end='')
         with open(filename) as infile:
+            genes = 0
+            previous_end = 0
             for gff_line in infile:
                 plt.text(0, bar_y - 1, species)
                 plt.text(135, bar_y - 1, chrom)
                 if gff_line[0] != '#':
                     cols = gff_line.split("\t")
                     gene = cols[1]
-                    start = cols[4]
+                    start = int(cols[3])
+                    gene_end = int(cols[4])
                     strand = cols[6]
                     trunc = gene[0:7:]
                     if len(gene) > len(trunc):
@@ -109,10 +112,21 @@ for filename in sys.argv[1:]:
                               width=3, head_length=10, length_includes_head=True,
                               head_width=4, facecolor=color, edgecolor='black');
                     plt.text(bar_left + text_offset, bar_y - 0.7, trunc)
-                    plt.text(bar_left + 2, bar_y - 6,
-                             str(int(int(start) / 10000) / 100) + 'M')
+                    
+                    # Start position
+                    #plt.text(bar_left + 2, bar_y - 6,
+                    #         str(int(int(start) / 10000) / 100) + 'M')
+                    
+                    # Intergenic distance
+                    if genes > 0:
+                        gap = start - previous_end
+                        plt.text(bar_left - 30, bar_y - 5,
+                            str(int(int(gap) / 10000) / 100) + 'M')
+                        previous_end = gene_end
+                    
                     bar_left = bar_right + bar_sep
                     bar_right = bar_left + bar_len
+                    genes = genes + 1
         infile.close()
         print()
     else:

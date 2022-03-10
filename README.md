@@ -52,12 +52,6 @@ hence a good vehicle to learn how to create packages.
 For an overview of available package managers, see the
 [Repology website](https://repology.org/).
 
-I maintain a FreeBSD port and a pkgsrc package, which is sufficient to install
-cleanly on virtually any POSIX platform.  If you would like to see a
-package in another package manager, please consider creating a package
-yourself.  This will be one of the easiest packages in the collection and
-hence a good vehicle to learn how to create packages.
-
 ### Installing microsynteny-tools on FreeBSD:
 
 FreeBSD is a highly underrated platform for scientific computing, with over
