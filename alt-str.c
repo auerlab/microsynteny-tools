@@ -36,7 +36,7 @@ int     xt_alt_str_read_line_malloc(alt_str_t *alt_str, FILE *stream)
 
 {
     char    *buff;
-    size_t  buff_size, len, c;
+    size_t  buff_size, len;
     int     status;
     
     //fprintf(stderr, "Reading alt_str...\n");
