@@ -32,11 +32,12 @@ printf "\n$*\n\n"
 for species in Danio_rerio Orizias_latipes Takifugu_rubripes \
     Mus_musculus Rattus_norvegicus Homo_sapiens; do
     for gene in $@; do
-	file=Regions/$species-$gene-*.gff3
-	if [ -e $file ]; then
-	    files="$files $file"
-	fi
+	gene_files="Regions/$species-$gene-*.gff3"
+	for file in $gene_files; do
+	    if [ -e $file ]; then
+		files="$files $file"
+	    fi
+	done
     done
 done
-
 ./ms-stack.py $files

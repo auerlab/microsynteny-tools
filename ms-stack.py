@@ -51,7 +51,7 @@ if len(sys.argv) < 2:
 
 unrep = []
 
-bar_len = 80
+bar_len = 90
 bar_sep = 20
 bar_y   = 0
 
@@ -60,6 +60,7 @@ bar_y   = 0
 plt.rcParams["figure.figsize"] = (12, len(sys.argv) * 0.75)
 
 print("%-18s %2s  %s\n" % ("Species", "Ch", "Genes"), end='')
+last_goi = gois = ''
 for filename in sys.argv[1:]:
     basename = path.basename(filename)
     
@@ -68,6 +69,10 @@ for filename in sys.argv[1:]:
     species = c[0]
     goi = c[1]
     chrom = c[2]
+    
+    if goi != last_goi:
+        gois = gois + ' ' + goi
+        last_goi = goi
     
     #############################################################################
     #   Parse file line by line
@@ -85,12 +90,13 @@ for filename in sys.argv[1:]:
                 if gff_line[0] != '#':
                     cols = gff_line.split("\t")
                     gene = cols[1]
-                    start = int(cols[3])
+                    gene_start = int(cols[3])
                     gene_end = int(cols[4])
                     strand = cols[6]
                     trunc = gene[0:7:]
                     if len(gene) > len(trunc):
                         trunc = trunc + '*' # Indicate truncation
+                    
                     if strand == '+':
                         print(" %s+" % (gene), end='')
                         arrow_start = bar_left
@@ -101,31 +107,28 @@ for filename in sys.argv[1:]:
                         arrow_start = bar_right
                         dx = -bar_len
                         text_offset = 9
-                    #plt.plot([bar_left, bar_right], [bar_y, bar_y],
-                    #         linewidth=12, linestyle='-', color='#33bbbb',
-                    #         markersize=0)
+
                     if gene.lower() == goi.lower():
                         color='#DDDD11'
                     else:
                         color='#33bbbb'
+                    
                     plt.arrow(arrow_start, bar_y, dx, 0,
-                              width=3, head_length=10, length_includes_head=True,
+                              width=3, head_length=10,
+                              length_includes_head=True,
                               head_width=4, facecolor=color, edgecolor='black');
                     plt.text(bar_left + text_offset, bar_y - 0.7, trunc)
                     
-                    # Start position
-                    #plt.text(bar_left + 2, bar_y - 6,
-                    #         str(int(int(start) / 10000) / 100) + 'M')
-                    
                     # Intergenic distance
                     if genes > 0:
-                        gap = start - previous_end
+                        gap = gene_start - previous_end
+                        # Kb rounded to 1 decimal digit
                         plt.text(bar_left - 30, bar_y - 5,
-                            str(int(int(gap) / 10000) / 100) + 'M')
-                        previous_end = gene_end
+                            str(int((gap / 100) + 5) / 10) + 'k')
                     
                     bar_left = bar_right + bar_sep
                     bar_right = bar_left + bar_len
+                    previous_end = gene_end
                     genes = genes + 1
         infile.close()
         print()
@@ -134,14 +137,8 @@ for filename in sys.argv[1:]:
 
     bar_y += 10
 
-plt.title(goi + ' neighborhoods and gene start positions')
+plt.title(gois + ' neighborhoods and intergenic distances')
 plt.box(False)
 plt.xticks([])
 plt.yticks([])
 plt.show()
-
-#if len(unrep) > 0:
-#    print("\nThe following files were not found:\n")
-#    for file in unrep:
-#        print(file)
-
