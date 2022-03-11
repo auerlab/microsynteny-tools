@@ -120,7 +120,7 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 	    }
 	}
 	bl_gff_copy(&region->features[region->count], &temp_feature);
-	/*printf("%s %" PRIu64 "\n",
+	/*printf("%s %" PRId64 "\n",
 		BL_GFF_SEQID(&region->features[c]),
 		BL_GFF_START(&region->features[c]));*/
 	//printf("%s %s\n", gene_name, BL_GFF_FEATURE_NAME(&temp_feature));

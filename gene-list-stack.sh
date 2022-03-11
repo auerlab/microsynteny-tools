@@ -25,5 +25,5 @@ fi
 gene_file="$1"
 
 for gene in $(cat $gene_file); do
-    ./stack.sh $(echo $gene | tr '|' ' ')
+    ./stack.sh --show-gene-lens $(echo $gene | tr '|' ' ')
 done

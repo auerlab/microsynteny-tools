@@ -9,5 +9,5 @@
 void    usage(char *argv[]);
 int     extract_neighborhood(bl_gff_t *gene, bl_gff_index_t *gi,
 	    FILE *gff_stream, FILE *header_stream, char *hood_file,
-	    uint64_t adjacent_genes, uint64_t max_nt_distance);
+	    int64_t adjacent_genes, int64_t max_nt_distance);
 

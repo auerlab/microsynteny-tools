@@ -34,7 +34,7 @@ int     main(int argc,char *argv[])
 		*gff_basename,
 		*ext,
 		region_file[PATH_MAX];
-    uint64_t    max_nt_distance = DEFAULT_NT_DISTANCE,
+    int64_t     max_nt_distance = DEFAULT_NT_DISTANCE,
 		adjacent_genes = DEFAULT_ADJACENT_GENES;
     int         arg,
 		c,
@@ -147,7 +147,7 @@ int     main(int argc,char *argv[])
 		    
 		    // Path name format is important, parsed by other progs
 		    snprintf(region_file, PATH_MAX,
-			     "%s/%s-%s-%s-%" PRIu64 ".gff3",
+			     "%s/%s-%s-%s-%" PRId64 ".gff3",
 			     output_dir, gff_basename, gene_names[c].strings[t],
 			     BL_GFF_SEQID(&feature), BL_GFF_START(&feature));
 		    status = extract_neighborhood(&feature, &gi, gff_stream,
@@ -186,13 +186,12 @@ int     main(int argc,char *argv[])
 
 int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 	    FILE *gff_stream, FILE *header_stream, char *region_file,
-	    uint64_t adjacent_genes, uint64_t max_nt_distance)
+	    int64_t adjacent_genes, int64_t max_nt_distance)
 
 {
     bl_gff_t    neighbor = BL_GFF_INIT;
     char        *neighbor_name;
-    uint64_t    g, len;
-    int64_t     distance;
+    int64_t     g, len, distance;
     FILE        *region_stream;
     
     if ( (region_stream = fopen(region_file, "w")) == NULL )
@@ -219,6 +218,7 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
     
     printf("%-3s %10s %10s %10s %10s %s\n",
 	    "Chr", "Start", "End", "Len", "Distance", "Name");
+    
     // From leftmost neighbor read adjacent_genes before and after GOI
     for (g = 0; (g < adjacent_genes * 2 + 1) &&
 		bl_gff_read(&neighbor, gff_stream,
@@ -246,9 +246,14 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 		distance = BL_GFF_START(&neighbor) - BL_GFF_END(goi);
 	    else
 		distance = 0;
+	    
+	    // FIXME: Restructure the loop so this is a loop condition
+	    if ( distance > max_nt_distance )
+		break;
+
 	    len = BL_GFF_END(&neighbor) - BL_GFF_START(&neighbor);
 	    
-	    printf("%-3s %10" PRIu64 " %10" PRIu64 " %10" PRId64 " %10" PRId64 " %s\n",
+	    printf("%-3s %10" PRId64 " %10" PRId64 " %10" PRId64 " %10" PRId64 " %s\n",
 		    BL_GFF_SEQID(&neighbor),
 		    BL_GFF_START(&neighbor),
 		    BL_GFF_END(&neighbor), len, distance, neighbor_name);
@@ -261,11 +266,6 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 	    // Output gene neighborhood in GFF format for above
 	    bl_gff_write(&neighbor, region_stream,
 		BL_GFF_FIELD_ALL);
-	    
-	    // FIXME: Restructure the loop so this is a loop condition
-	    if ( BL_GFF_START(&neighbor) >
-		    BL_GFF_END(goi) + max_nt_distance )
-		break;
 	}
 	bl_gff_free(&neighbor);
     }

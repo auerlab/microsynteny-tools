@@ -36,7 +36,7 @@
 #   2022-02-06  Jason Bacon Begin
 ##########################################################################
 
-import sys
+import sys, os
 from os import path
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -154,4 +154,8 @@ plt.title(gois + ' neighborhoods and intergenic distances')
 plt.box(False)
 plt.xticks([])
 plt.yticks([])
+os.makedirs("Stacks", exist_ok=True)
+plt.savefig("Stacks/" + goi + "-stack.png")
+# Creates a new blank figure, so do after savefig()
 plt.show()
+
