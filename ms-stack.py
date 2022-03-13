@@ -38,14 +38,18 @@
 
 import sys, os
 from os import path
-import matplotlib as mpl
+#import matplotlib as mpl
 import matplotlib.pyplot as plt
-import numpy as np
+#import numpy as np
 
 #############################################################################
 #   Process command line args
 
-show_gene_lens = sys.argv[1] == '--show-gene-lens'
+if len(sys.argv) > 1:
+    show_gene_lens = sys.argv[1] == '--show-gene-lens'
+else:
+    show_gene_lens = False
+
 if show_gene_lens:
     min_args = 3
     first_file_arg = 2
@@ -94,7 +98,13 @@ for filename in sys.argv[first_file_arg:]:
             genes = 0
             previous_end = 0
             for gff_line in infile:
+                # pyplot doesn't respect text, so the species will be
+                # off the screen unless we plot an element it cares about
+                # with low enough coordinates
+                plt.plot([50, 50], [bar_y, bar_y])
+                
                 plt.text(0, bar_y - text_height, species)
+                # FIXME: Compute X position based on max number of neighbors
                 plt.text(170, bar_y - text_height, chrom)
                 if gff_line[0] != '#':
                     cols = gff_line.split("\t")
@@ -158,4 +168,3 @@ os.makedirs("Stacks", exist_ok=True)
 plt.savefig("Stacks/" + goi + "-stack.png")
 # Creates a new blank figure, so do after savefig()
 plt.show()
-
