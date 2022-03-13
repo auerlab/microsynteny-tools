@@ -138,7 +138,7 @@ for filename in sys.argv[first_file_arg:]:
                     if genes > 0:
                         gap = gene_start - previous_end
                         # Kb rounded to 1 decimal digit
-                        plt.text(bar_left - 30, bar_y - 4.5,
+                        plt.text(bar_left - 20, bar_y - 4.5,
                             str(int(gap / 100 + 5) / 10) + 'k')
                     
                     bar_left = bar_right + bar_x_sep

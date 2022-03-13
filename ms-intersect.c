@@ -63,7 +63,7 @@ int     intersect(int argc, char *argv[])
     if ( arg == argc )
 	return EX_OK;
     printf("%-20s %2zu %2c %2s  ", BL_GFF_REGION_SPECIES(&r1),
-	   BL_GFF_REGION_COUNT(&r1) - 1, '*',
+	   BL_GFF_REGION_COUNT(&r1), '*',
 	   BL_GFF_REGION_CHROM(&r1));
     puts("(NA)");
 
@@ -76,7 +76,7 @@ int     intersect(int argc, char *argv[])
 	return EX_OK;
     intersect = bl_gff_region_intersect(&r1, &rn);
     printf("%-20s %2zu %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
-	   BL_GFF_REGION_COUNT(&rn) - 1, BL_GFF_REGION_COUNT(intersect) - 1,
+	   BL_GFF_REGION_COUNT(&rn), BL_GFF_REGION_COUNT(intersect),
 	   BL_GFF_REGION_CHROM(&rn));
     print_region_feature_names(intersect);
     putchar('\n');
@@ -100,8 +100,8 @@ int     intersect(int argc, char *argv[])
 	    intersect = new_intersect;
 	    
 	    printf("%-20s %2zu %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
-		    BL_GFF_REGION_COUNT(&rn) - 1,
-		    BL_GFF_REGION_COUNT(intersect) - 1,
+		    BL_GFF_REGION_COUNT(&rn),
+		    BL_GFF_REGION_COUNT(intersect),
 		    BL_GFF_REGION_CHROM(&rn));
 	    print_region_feature_names(intersect);
 	    putchar('\n');
@@ -152,7 +152,7 @@ int     intersect(int argc, char *argv[])
 		new_count = BL_GFF_REGION_COUNT(div_intersect);
 		
 		printf("%-20s %2zu %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
-			BL_GFF_REGION_COUNT(&rn) - 1,
+			BL_GFF_REGION_COUNT(&rn),
 			BL_GFF_REGION_COUNT(div_intersect),
 			BL_GFF_REGION_CHROM(&rn));
 		print_region_feature_names(div_intersect);

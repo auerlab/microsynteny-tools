@@ -44,7 +44,6 @@ for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
 	done
     done
 done
-echo $regen $noregen
 
 if [ $(echo $regen | wc -w) -ge 2 ]; then
     printf "\n====================\n"

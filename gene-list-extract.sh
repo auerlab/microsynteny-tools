@@ -12,7 +12,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-list.txt [file.gff3 ...]\n"
+    printf "Usage: $0 [ms-extract-flags] gene-list.txt [file.gff3 ...]\n"
     exit 1
 }
 
@@ -21,12 +21,9 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# = 0 ]; then
+if [ $# -lt 1 ]; then
     usage
 fi
-
-gene_list=$1
-shift
 
 if [ $# != 0 ]; then
     while [ 0$(echo $1 | cut -c 1) = 0'-' ]; do
@@ -37,11 +34,15 @@ if [ $# != 0 ]; then
     done
 fi
 
+gene_list=$1
+shift
+
 if [ $# = 0 ]; then
     files=$(ls GFF/*.gff3)
 else
     files="$@"
 fi
+
 printf "%s\n" "$flags"
 printf "$files\n"
 
