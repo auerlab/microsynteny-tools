@@ -34,7 +34,7 @@ if [ $# -lt 1 ]; then
 fi
 printf "\n$*\n\n"
 
-for species in Danio_rerio Orizias_latipes Takifugu_rubripes \
+for species in Danio_rerio Oryzias_latipes Takifugu_rubripes \
     Mus_musculus Rattus_norvegicus Homo_sapiens; do
     for gene in $@; do
 	gene_files="Regions/$species-$gene-*.gff3"

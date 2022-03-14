@@ -69,8 +69,11 @@ arrow_x_sep   = 20
 text_height = 0.7
 
 # Starting point for first file
-# FIXME: Go top-down instead of bottom-up?
-arrow_y       = 0
+files = 0
+for filename in sys.argv[first_file_arg:]:
+    if path.exists(filename):
+        files += 1
+arrow_y       = (files - 1) * arrow_y_sep
 
 # plt.show() makes the width too small, so genes overlap even though they
 # are explicitly spaced out.  Can we fix just the width?
@@ -187,7 +190,7 @@ for filename in sys.argv[first_file_arg:]:
         infile.close()
         print()
 
-    arrow_y += arrow_y_sep
+    arrow_y -= arrow_y_sep
 
 plt.title(gois + ' neighborhoods and intergenic distances')
 plt.box(False)
