@@ -53,20 +53,24 @@ else:
 if show_gene_lens:
     min_args = 3
     first_file_arg = 2
-    bar_y_sep   = 12
+    arrow_y_sep   = 12
 else:
     min_args = 2
     first_file_arg = 1
-    bar_y_sep = 10
+    arrow_y_sep = 10
 
 if len(sys.argv) < min_args:
     print("Usage: %s %s" % (sys.argv[0], "[--show-gene-lens] file.gff3 [file.gff3 ...]"))
     sys.exit(1)
 
-bar_len     = 100
-bar_x_sep   = 20
-bar_y       = 0
+# Plotting parameters for all files
+arrow_len     = 100
+arrow_x_sep   = 20
 text_height = 0.7
+
+# Starting point for first file
+# FIXME: Go top-down instead of bottom-up?
+arrow_y       = 0
 
 # plt.show() makes the width too small, so genes overlap even though they
 # are explicitly spaced out.  Can we fix just the width?
@@ -91,21 +95,41 @@ for filename in sys.argv[first_file_arg:]:
     #   Parse file line by line
 
     if path.exists(filename):
-        bar_left = 200
-        bar_right = bar_left + bar_len
         print("%-18s %2s " % (species, chrom), end='')
         with open(filename) as infile:
+            # Determine orientation of GOI
+            genes = 0
+            for gff_line in infile:
+                if gff_line[0] != '#':
+                    genes += 1
+                    cols = gff_line.split("\t")
+                    gene = cols[1]
+                    strand = cols[6]
+                    if gene.lower() == goi.lower():
+                        goi_strand = strand
+            
+            x_increment = arrow_len + arrow_x_sep
+            if goi_strand == '+':
+                arrow_left = 200
+            else:
+                arrow_left = 200 + (genes - 1) * x_increment
+                x_increment = -x_increment
+            arrow_right = arrow_left + arrow_len
+                
+            #   Plot genes
+            infile.seek(0)
             genes = 0
             previous_end = 0
             for gff_line in infile:
-                # pyplot doesn't respect text, so the species will be
-                # off the screen unless we plot an element it cares about
-                # with low enough coordinates
-                plt.plot([50, 50], [bar_y, bar_y])
                 
-                plt.text(0, bar_y - text_height, species)
+                # pyplot doesn't respect text, so the species name will be
+                # off the screen unless we plot an element that pyplot
+                # cares about with low enough coordinates
+                plt.plot([50, 50], [arrow_y, arrow_y])
+                
+                plt.text(0, arrow_y - text_height, species + goi_strand)
                 # FIXME: Compute X position based on max number of neighbors
-                plt.text(170, bar_y - text_height, chrom)
+                plt.text(170, arrow_y - text_height, chrom)
                 if gff_line[0] != '#':
                     cols = gff_line.split("\t")
                     gene = cols[1]
@@ -116,49 +140,54 @@ for filename in sys.argv[first_file_arg:]:
                     if len(gene) > len(trunc):
                         trunc = trunc + '*' # Indicate truncation
                     
-                    if strand == '+':
+                    if strand == goi_strand:
                         print(" %s+" % (gene), end='')
-                        arrow_start = bar_left
-                        dx = bar_len
+                        arrow_start = arrow_left
+                        dx = arrow_len
                         text_offset = 6
                     else:
                         print(" -%s" % (gene), end='')
-                        arrow_start = bar_right
-                        dx = -bar_len
+                        arrow_start = arrow_right
+                        dx = -arrow_len
                         text_offset = 9
 
+                    if goi_strand == '+':
+                        ig_x = arrow_left - 20
+                    else:
+                        ig_x = arrow_left - 20 - x_increment
+                    
                     if gene.lower() == goi.lower():
                         color='#DDDD11'
                     else:
                         color='#33bbbb'
                     
-                    plt.arrow(arrow_start, bar_y, dx, 0,
+                    plt.arrow(arrow_start, arrow_y, dx, 0,
                               width=3, head_length=10,
                               length_includes_head=True,
                               head_width=4, facecolor=color, edgecolor='black');
-                    plt.text(bar_left + text_offset, bar_y - text_height, trunc)
+                    plt.text(arrow_left + text_offset, arrow_y - text_height, trunc)
                     
                     # Gene length
                     if show_gene_lens:
                         gene_len = gene_end - gene_start
-                        plt.text(bar_left + text_offset, bar_y + 3,
+                        plt.text(arrow_left + text_offset, arrow_y + 3,
                                  str(int(gene_len / 100 + 5) / 10) + 'k')
                     
                     # Intergenic distance
                     if genes > 0:
                         gap = gene_start - previous_end
                         # Kb rounded to 1 decimal digit
-                        plt.text(bar_left - 20, bar_y - 4.5,
+                        plt.text(ig_x, arrow_y - 4.5,
                             str(int(gap / 100 + 5) / 10) + 'k')
                     
-                    bar_left = bar_right + bar_x_sep
-                    bar_right = bar_left + bar_len
+                    arrow_left += x_increment
+                    arrow_right = arrow_left + arrow_len
                     previous_end = gene_end
-                    genes = genes + 1
+                    genes += 1
         infile.close()
         print()
 
-    bar_y += bar_y_sep
+    arrow_y += arrow_y_sep
 
 plt.title(gois + ' neighborhoods and intergenic distances')
 plt.box(False)
