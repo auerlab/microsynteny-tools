@@ -15,7 +15,16 @@
 
 usage()
 {
-    printf "Usage: $0 [--show-gene-lens] gene-name [gene-name ...]\n"
+    cat << EOM
+
+Usage: $0 [--show-gene-lens] adjacent-genes max-nt \\
+	gene-name [gene-name ...]
+
+Example: $0 4 100000 jun
+
+	 will display a stack of Regions/*-jun-*-4-1000000.gff3
+
+EOM
     exit 1
 }
 
@@ -24,20 +33,24 @@ usage()
 #   Main
 ##########################################################################
 
-if [ 0$1 == 0'--show-gene-lens' ]; then
-    flags=$1
+while [ $(echo $1 | cut -c 1,1) = '-' ]; do
+    flags="$flags $1"
     shift
-fi
+done
 
-if [ $# -lt 1 ]; then
+if [ $# -lt 3 ]; then
     usage
 fi
+adjacent_genes=$1
+max_nt=$2
+shift
+shift
 printf "\n$*\n\n"
 
 for species in Danio_rerio Oryzias_latipes Takifugu_rubripes \
     Mus_musculus Rattus_norvegicus Homo_sapiens; do
     for gene in $@; do
-	gene_files="Regions/$species-$gene-*.gff3"
+	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt*.gff3"
 	for file in $gene_files; do
 	    if [ -e $file ]; then
 		files="$files $file"

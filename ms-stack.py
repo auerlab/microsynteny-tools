@@ -42,37 +42,53 @@ import matplotlib.pyplot as plt
 import re
 
 #############################################################################
-#   Process command line args
+#   Description:
+#
+#   Arguments:
+#   
+#   Returns:
+#   
+#   History: 
+#   Date        Name        Modification
+#   2022-03-15  Jason Bacon Begin
 
-if len(sys.argv) > 1:
-    show_gene_lens = sys.argv[1] == '--show-gene-lens'
-else:
-    show_gene_lens = False
-
-if show_gene_lens:
-    min_args = 3
-    first_file_arg = 2
-    arrow_y_sep   = 12
-else:
-    min_args = 2
-    first_file_arg = 1
-    arrow_y_sep = 10
-
-if len(sys.argv) < min_args:
-    print("Usage: %s %s" % (sys.argv[0], "[--show-gene-lens] file.gff3 [file.gff3 ...]"))
+def usage():
+    print("Usage: %s %s" % (sys.argv[0], "[--show-gene-lens] [--batch] file.gff3 [file.gff3 ...]"))
     sys.exit(1)
 
+#############################################################################
+#   Process command line args
+
+show_gene_lens = batch_mode = False
+if len(sys.argv) > 1:
+    arg = 1
+    while (arg < len(sys.argv)) and (sys.argv[arg][0] == '-'):
+        if sys.argv[arg] == '--show-gene-lens':
+            show_gene_lens = True
+        elif sys.argv[arg] == '--batch':
+            batch_mode = True
+        arg += 1
+else:
+    usage()
+
+if show_gene_lens:
+    arrow_y_sep   = 12  # A little extra room between lines
+else:
+    arrow_y_sep = 10
+
 # Plotting parameters for all files
-arrow_len     = 100
-arrow_x_sep   = 20
+arrow_len   = 100
+arrow_x_sep = 20
 text_height = 0.7
 
 # Starting point for first file
 files = 0
-for filename in sys.argv[first_file_arg:]:
+for filename in sys.argv[arg:]:
     if path.exists(filename):
         files += 1
-arrow_y       = (files - 1) * arrow_y_sep
+if files < 1:
+    usage()
+arrow_y = (files - 1) * arrow_y_sep
 
 # plt.show() makes the width too small, so genes overlap even though they
 # are explicitly spaced out.  Can we fix just the width?
@@ -80,7 +96,7 @@ plt.rcParams["figure.figsize"] = (12, len(sys.argv) * 0.75)
 
 print("%-18s %2s  %s\n" % ("Species", "Ch", "Genes"), end='')
 last_goi = gois = ''
-for filename in sys.argv[first_file_arg:]:
+for filename in sys.argv[arg:]:
     basename = path.basename(filename)
     
     # This depends on filename format used by ms-extract.c
@@ -199,6 +215,7 @@ plt.box(False)
 plt.xticks([])
 plt.yticks([])
 os.makedirs("Stacks", exist_ok=True)
-plt.savefig("Stacks/" + goi + "-stack.png")
+plt.savefig("Stacks/" + goi + '-' + adjacent_genes + '-' + max_nt + "-stack.png")
 # Creates a new blank figure, so do after savefig()
-plt.show()
+if not batch_mode:
+    plt.show()
