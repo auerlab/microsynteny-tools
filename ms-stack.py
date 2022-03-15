@@ -38,9 +38,8 @@
 
 import sys, os
 from os import path
-#import matplotlib as mpl
 import matplotlib.pyplot as plt
-#import numpy as np
+import re
 
 #############################################################################
 #   Process command line args
@@ -85,10 +84,12 @@ for filename in sys.argv[first_file_arg:]:
     basename = path.basename(filename)
     
     # This depends on filename format used by ms-extract.c
-    c = basename.split("-")
+    c = re.split("[-.]", basename)
     species = c[0]
     goi = c[1]
     chrom = c[2]
+    adjacent_genes = c[4]
+    max_nt = c[5]
     
     if goi != last_goi:
         gois = gois + ' ' + goi
@@ -192,7 +193,8 @@ for filename in sys.argv[first_file_arg:]:
 
     arrow_y -= arrow_y_sep
 
-plt.title(gois + ' neighborhoods and intergenic distances')
+plt.title(gois + ' neighborhoods and intergenic distances, genes = ' +
+    adjacent_genes + ' max_nt = ' + max_nt)
 plt.box(False)
 plt.xticks([])
 plt.yticks([])

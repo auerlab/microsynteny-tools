@@ -27,19 +27,13 @@ int     main(int argc,char *argv[])
 {
     bl_gff_t    feature = BL_GFF_INIT;
     FILE        *gff_stream, *header_stream, *gene_stream;
-    char        *gene_file,
-		*gff_file,
+    char        *gene_file, *gff_file,
 		*end,
-		*output_dir = ".",
-		*gff_basename,
-		*ext,
+		*output_dir = ".", *gff_basename, *ext,
 		region_file[PATH_MAX];
-    int64_t     max_nt_distance = DEFAULT_NT_DISTANCE,
-		adjacent_genes = DEFAULT_ADJACENT_GENES;
-    int         arg,
-		c,
-		status,
-		gene_count;
+    int64_t     max_nt_distance = DEFAULT_NT_DISTANCE;
+    int         adjacent_genes = DEFAULT_ADJACENT_GENES,
+		arg, c, status, gene_count;
     bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
     alt_str_t   *gene_names;
 
@@ -146,10 +140,13 @@ int     main(int argc,char *argv[])
 		    printf("\n%s %s:\n", gff_basename, gene_names[c].strings[t]);
 		    
 		    // Path name format is important, parsed by other progs
+		    // '-' is a separator, so don't allow it in species name
+		    strtr(gff_basename, "-", "_", 0);
 		    snprintf(region_file, PATH_MAX,
-			     "%s/%s-%s-%s-%" PRId64 ".gff3",
+			     "%s/%s-%s-%s-%" PRId64 "-%d-%" PRIu64 ".gff3",
 			     output_dir, gff_basename, gene_names[c].strings[t],
-			     BL_GFF_SEQID(&feature), BL_GFF_START(&feature));
+			     BL_GFF_SEQID(&feature), BL_GFF_START(&feature),
+			     adjacent_genes, max_nt_distance);
 		    status = extract_neighborhood(&feature, &gi, gff_stream,
 						  header_stream, region_file,
 						  adjacent_genes,
