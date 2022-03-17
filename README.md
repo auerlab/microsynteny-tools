@@ -2,20 +2,23 @@
 
 ## Description
 
-Tools for exploring microsyntenic differences among species
-
 Microsynteny tools is a suite of fast, memory-efficient programs for
-exploring microsyntenic relationships between genes.
+exploring microsyntenic relationships between genes across many species.
 
-The tools are designed to allow real-time exploration of gene landscapes
-via the command line and shell scripts.
+It enables real-time exploration of gene landscapes via the command line
+and shell scripts, using a modular approach of simple, separate tools.
+Each tool provides a focused view of one
+aspect of the data, eliminating noise that might distract the viewer from
+the relevant information, unlike many web-based and other one-tool-fits-all
+approaches that try to cram as much information as possible into each
+screen.
 
-Output uses standard file formats wherever possible for interoprability
-with other tools.
+Output is stored in standard file formats wherever possible for
+interoperability with other tools.
 
 ## Design and Implementation
 
-The code is organized following basic object-oriented design principals, but
+Core code is organized following basic object-oriented design principals, but
 implemented in C to minimize overhead and keep the source code accessible to
 scientists who don't have time to master the complexities of C++.
 
@@ -57,7 +60,7 @@ For an overview of available package managers, see the
 FreeBSD is a highly underrated platform for scientific computing, with over
 1,900 scientific libraries and applications in the FreeBSD ports collection
 (of more than 30,000 total), modern clang compiler, fully-integrated ZFS
-filesystem, and renowned security, performance, and reliability.
+file system, and renowned security, performance, and reliability.
 FreeBSD has a somewhat well-earned reputation for being difficult to set up
 and manage compared to user-friendly systems like [Ubuntu](https://ubuntu.com/).
 However, if you're a little bit Unix-savvy, you can very quickly set up a
