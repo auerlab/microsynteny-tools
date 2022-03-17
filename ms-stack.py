@@ -53,18 +53,18 @@ import re
 #   2022-03-15  Jason Bacon Begin
 
 def usage():
-    print("Usage: %s %s" % (sys.argv[0], "[--show-gene-lens] [--batch] file.gff3 [file.gff3 ...]"))
+    print("Usage: %s %s" % (sys.argv[0], "[--no-gene-lens] [--batch] file.gff3 [file.gff3 ...]"))
     sys.exit(1)
 
 #############################################################################
 #   Process command line args
 
-show_gene_lens = batch_mode = False
+show_gene_lens = batch_mode = True
 if len(sys.argv) > 1:
     arg = 1
     while (arg < len(sys.argv)) and (sys.argv[arg][0] == '-'):
-        if sys.argv[arg] == '--show-gene-lens':
-            show_gene_lens = True
+        if sys.argv[arg] == '--no-gene-lens':
+            show_gene_lens = False
         elif sys.argv[arg] == '--batch':
             batch_mode = True
         arg += 1

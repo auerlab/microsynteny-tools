@@ -11,6 +11,7 @@
 usage()
 {
     printf "Usage: $0 [ms-stack.py flags] adjacent-genes max-nt gene-list.txt\n"
+    ./ms-stack.py --help
     exit 1
 }
 
@@ -32,6 +33,5 @@ max_nt=$2
 gene_file="$3"
 
 for gene in $(cat $gene_file); do
-    ./stack.sh $flags --show-gene-lens $adjacent_genes $max_nt \
-	$(echo $gene | tr '|' ' ')
+    ./stack.sh $flags $adjacent_genes $max_nt $(echo $gene | tr '|' ' ')
 done

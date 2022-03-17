@@ -10,7 +10,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-name [gene-name ...]\n"
+    printf "Usage: $0 adjacent-genes max-nt gene-name [gene-name ...]\n"
     exit 1
 }
 
@@ -19,14 +19,18 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# -lt 1 ]; then
+if [ $# -lt 3 ]; then
     usage
 fi
+adjacent_genes=$1
+max_nt=$2
+shift
+shift
 
 make > /dev/null
 for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
     for gene in $@; do
-	gene_files="Regions/$species-$gene-*.gff3"
+	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt.gff3"
 	for file in $gene_files; do
 	    if [ -e $file ]; then
 		regen="$regen $file"
@@ -36,7 +40,7 @@ for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
 done
 for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
     for gene in $@; do
-	gene_files="Regions/$species-$gene-*.gff3"
+	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt.gff3"
 	for file in $gene_files; do
 	    if [ -e $file ]; then
 		noregen="$noregen $file"

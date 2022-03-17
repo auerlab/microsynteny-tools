@@ -10,7 +10,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-list.txt\n"
+    printf "Usage: $0 adjacent-genes max-nt gene-list.txt\n"
     exit 1
 }
 
@@ -19,11 +19,13 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 3 ]; then
     usage
 fi
-gene_file="$1"
+adjacent_genes=$1
+max_nt=$2
+gene_file="$3"
 
 for gene in $(cat $gene_file); do
-    ./intersect.sh $(echo $gene | tr '|' ' ')
+    ./fish-mammal-intersect.sh $adjacent_genes $max_nt $(echo $gene | tr '|' ' ')
 done

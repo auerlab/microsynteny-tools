@@ -17,14 +17,15 @@ usage()
 {
     cat << EOM
 
-Usage: $0 [--show-gene-lens] adjacent-genes max-nt \\
+Usage: $0 [ms-stack.py flags] adjacent-genes max-nt \\
 	gene-name [gene-name ...]
 
 Example: $0 4 100000 jun
 
-	 will display a stack of Regions/*-jun-*-4-1000000.gff3
+will display a stack of Regions/*-jun-*-4-1000000.gff3
 
 EOM
+    ./ms-stack.py --help
     exit 1
 }
 
@@ -33,7 +34,7 @@ EOM
 #   Main
 ##########################################################################
 
-while [ $(echo $1 | cut -c 1,1) = '-' ]; do
+while [ 0$(echo $1 | cut -c 1,1) = 0'-' ]; do
     flags="$flags $1"
     shift
 done
@@ -58,4 +59,8 @@ for species in Danio_rerio Oryzias_latipes Takifugu_rubripes \
 	done
     done
 done
-./ms-stack.py $flags $files
+if [ -n "$files" ]; then
+    ./ms-stack.py $flags $files
+else
+    printf "No files for adjacent_genes=$adjacent_genes, max_nt=$max_nt, gene=$gene\n"
+fi

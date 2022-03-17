@@ -13,6 +13,7 @@
 usage()
 {
     printf "Usage: $0 [ms-extract-flags] gene-list.txt [file.gff3 ...]\n"
+    ./ms-extract --help
     exit 1
 }
 
