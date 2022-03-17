@@ -59,7 +59,8 @@ def usage():
 #############################################################################
 #   Process command line args
 
-show_gene_lens = batch_mode = True
+show_gene_lens = True
+batch_mode = False
 if len(sys.argv) > 1:
     arg = 1
     while (arg < len(sys.argv)) and (sys.argv[arg][0] == '-'):
