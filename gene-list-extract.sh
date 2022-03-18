@@ -47,7 +47,7 @@ fi
 printf "%s\n" "$flags"
 printf "$files\n"
 
-make clean all
+make clean install
 mkdir -p Regions
 for gff in $files; do
     printf "\n========================================================\n"

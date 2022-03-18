@@ -27,7 +27,7 @@ else
     files="$@"
 fi
 
-make clean all
+make clean install
 mkdir -p Regions
 for gff in $files; do
     printf "\n========================================================\n"

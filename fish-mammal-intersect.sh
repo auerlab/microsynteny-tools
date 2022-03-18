@@ -27,7 +27,7 @@ max_nt=$2
 shift
 shift
 
-make > /dev/null
+make clean install > /dev/null
 for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
     for gene in $@; do
 	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt.gff3"
