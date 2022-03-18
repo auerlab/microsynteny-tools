@@ -88,6 +88,7 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 	fprintf(stderr, "bl_gff_region_load(): Could not allocate strings.\n");
 	return 0;
     }
+    region->goi_len = strlen(region->goi);
     
     if ( (infile = xt_fopen(filename, "r")) == NULL )
 	return 0;
@@ -172,6 +173,7 @@ void    bl_gff_region_init(bl_gff_region_t *region)
     region->array_size = 0;
     region->count = 0;
     region->goi_index = 0;
+    region->goi_len = 0;
     region->features = NULL;
     region->species = NULL;
     region->goi = NULL;
@@ -321,10 +323,21 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	for (c2 = 0; c2 < r2->count; ++c2)
 	{
 	    n2 = BL_GFF_FEATURE_NAME(&r2->features[c2]);
-	    // fprintf(stderr, "%s %s\n", n1, n2);
-	    //     (strcasecmp(n1, intersect->goi) != 0) &&
-	    if ( (strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0) &&
-		 !bl_gff_region_duplicate_gene(intersect, n1) )
+	    
+	    /*
+	     *  Count intersects if:
+	     *  1. Gene names match and are not "unnamed"
+	     *  2. Genes are GOI for both regions.  This allows for alternates
+	     *     like ascl1a|ascl1.  It assumes that the GOIs in all
+	     *     filenames passed as arguments are valid alternates for
+	     *     each other, which should be the case.
+	     *  3. The same gene name has not been counted already.  This
+	     *     counts replicated genes (e.g. tandem repeats) only once.
+	     */
+	    if ( (((strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0))
+		 || ((strcasecmp(n1, r1->goi) == 0) && (strcasecmp(n2, r2->goi) == 0)))
+		 && !bl_gff_region_duplicate_gene(intersect, n1)
+		 && !bl_gff_region_duplicate_gene(intersect, n2) )
 	    {
 		if ( intersect->count == intersect->array_size )
 		{
@@ -354,10 +367,11 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 		bl_gff_set_attributes(&intersect->features[intersect->count],
 		    attr);
 		++intersect->count;
+		//fprintf(stderr, "Counting %s %s %lu\n", n1, n2, intersect->count);
 	    }
 	}
     }
-    //fprintf(stderr, "Returning %zu\n", n);
+    //fprintf(stderr, "Returning %zu\n", intersect->count);
     return intersect;
 }
 

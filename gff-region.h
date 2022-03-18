@@ -12,6 +12,7 @@ typedef struct
     size_t      array_size;
     size_t      count;
     size_t      goi_index;
+    size_t      goi_len;
     bl_gff_t    *features;  // Array of GFF features
     char        *species;   // FIXME: Maybe use fixed size strings
     char        *goi;

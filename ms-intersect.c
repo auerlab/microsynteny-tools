@@ -45,7 +45,7 @@ int     main(int argc,char *argv[])
 int     intersect(int argc, char *argv[])
 
 {
-    int             arg, count, c, old_count, new_count, max_count;
+    int             arg, count, c, old_intersect_count, new_intersect_count, max_count;
     bl_gff_region_t r1, rn, *intersect, *new_intersect, *div_intersect;
     char            intersect_file[PATH_MAX + 1];
     FILE            *intersect_stream;
@@ -58,17 +58,18 @@ int     intersect(int argc, char *argv[])
      */
 
     printf("%-20s %2s %2s %2s  %s\n", "Species", "Ne", "Co",
-	    "Ch", "Intersection with all previous genes");
+	    "Ch", "Intersection of all species so far");
     for (arg = 1; (arg < argc) &&
 		  (count = bl_gff_region_load(&r1, argv[arg])) == 0; ++arg)
 	printf("%-20s %2c %2c %2c\n", BL_GFF_REGION_SPECIES(&r1),
 		'-', '-', '-');
     if ( arg == argc )
 	return EX_OK;
-    printf("%-20s %2zu (%d) %2c %2s  ", BL_GFF_REGION_SPECIES(&r1),
-	   BL_GFF_REGION_COUNT(&r1), count, '*',
+    printf("%-20s %2zu %2c %2s ", BL_GFF_REGION_SPECIES(&r1),
+	   BL_GFF_REGION_COUNT(&r1), '*',
 	   BL_GFF_REGION_CHROM(&r1));
-    puts("(NA)");
+    print_region_feature_names(&r1);
+    putchar('\n');
     max_count = count;
 
     for (++arg; (arg < argc) && (strcmp(argv[arg], "--diverged") != 0) &&
@@ -82,8 +83,8 @@ int     intersect(int argc, char *argv[])
 	return EX_OK;
     
     intersect = bl_gff_region_intersect(&r1, &rn);
-    printf("%-20s %2zu (%d) %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
-	   BL_GFF_REGION_COUNT(&rn), count, BL_GFF_REGION_COUNT(intersect),
+    printf("%-20s %2zu %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
+	   BL_GFF_REGION_COUNT(&rn), BL_GFF_REGION_COUNT(intersect),
 	   BL_GFF_REGION_CHROM(&rn));
     print_region_feature_names(intersect);
     putchar('\n');
@@ -91,6 +92,7 @@ int     intersect(int argc, char *argv[])
     snprintf(intersect_file, PATH_MAX + 1, "Intersects/%s-%s-%s",
 	     BL_GFF_REGION_GOI(&r1), BL_GFF_REGION_SPECIES(&r1),
 	     BL_GFF_REGION_SPECIES(&rn));
+    new_intersect_count = BL_GFF_REGION_COUNT(intersect);
     
     for (++arg; (arg < argc) && (strcmp(argv[arg], "--diverged") != 0); ++arg)
     {
@@ -99,23 +101,24 @@ int     intersect(int argc, char *argv[])
 		    '-', '-', '-');
 	else
 	{
-	    old_count = BL_GFF_REGION_COUNT(intersect);
+	    old_intersect_count = new_intersect_count; //BL_GFF_REGION_COUNT(intersect);
 	    new_intersect = bl_gff_region_intersect(intersect, &rn);
-	    new_count = BL_GFF_REGION_COUNT(new_intersect);
+	    new_intersect_count = BL_GFF_REGION_COUNT(new_intersect);
+	    //fprintf(stderr, "new_intersect_count = %d\n", new_intersect_count);
 	    if ( count > max_count )
 		max_count = count;
 	    bl_gff_region_free(intersect);
 	    free(intersect);
 	    intersect = new_intersect;
 	    
-	    printf("%-20s %2zu (%d) %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
-		    BL_GFF_REGION_COUNT(&rn), count,
+	    printf("%-20s %2zu %2zu %2s ", BL_GFF_REGION_SPECIES(&rn),
+		    BL_GFF_REGION_COUNT(&rn),
 		    BL_GFF_REGION_COUNT(intersect),
 		    BL_GFF_REGION_CHROM(&rn));
 	    print_region_feature_names(intersect);
 	    putchar('\n');
 	    
-	    if ( new_count > old_count )
+	    if ( new_intersect_count > old_intersect_count )
 	    {
 		fprintf(stderr, "Ooops, new intersect count cannot exceed old!\n");
 		exit(EX_SOFTWARE);
@@ -127,8 +130,8 @@ int     intersect(int argc, char *argv[])
 	    strlcat(intersect_file, ".gff3", PATH_MAX + 1);
 	}
     }
-    printf("\nGenes: %d  Conserved: %d  Changed: %d\n",
-	    max_count, new_count, max_count - new_count);
+    printf("\nOriginal group:\nGenes: %d  Conserved: %d  Changed: %d\n",
+	    max_count, new_intersect_count, max_count - new_intersect_count);
     
     // Write GFF for intersect
     xt_rmkdir("Intersects", 0777);
@@ -149,6 +152,8 @@ int     intersect(int argc, char *argv[])
 
     if ( arg < argc )   // Implies --diverged
     {
+	max_count = 0;
+	new_intersect_count = 0;
 	++arg;
 	puts("\nGenes conserved in each species through divergence from the group above:\n");
 	for (; arg < argc; ++arg)
@@ -158,9 +163,9 @@ int     intersect(int argc, char *argv[])
 			'-', '-', '-');
 	    else
 	    {
-		old_count = BL_GFF_REGION_COUNT(intersect);
+		old_intersect_count = BL_GFF_REGION_COUNT(intersect);
 		div_intersect = bl_gff_region_intersect(intersect, &rn);
-		new_count = BL_GFF_REGION_COUNT(div_intersect);
+		new_intersect_count = BL_GFF_REGION_COUNT(div_intersect);
 		if ( count > max_count )
 		    max_count = count;
 		
@@ -171,15 +176,15 @@ int     intersect(int argc, char *argv[])
 		print_region_feature_names(div_intersect);
 		putchar('\n');
 		
-		if ( new_count > old_count )
+		if ( new_intersect_count > old_intersect_count )
 		{
 		    fprintf(stderr, "Ooops, new intersect count cannot exceed old!\n");
 		    exit(EX_SOFTWARE);
 		}
 	    }
 	}
-	printf("\nGenes: %d  Conserved: %d  Changed: %d\n",
-		max_count, new_count, max_count - new_count);
+	printf("\nDiverged group:\nGenes: %d  Conserved: %d  Changed: %d\n",
+		max_count, new_intersect_count, max_count - new_intersect_count);
     }
     
     return EX_OK;

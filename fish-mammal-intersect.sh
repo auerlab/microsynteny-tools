@@ -53,7 +53,7 @@ if [ $(echo $regen | wc -w) -ge 2 ]; then
     printf "\n====================\n"
     printf "$*\n"
     printf "====================\n\n"
-    printf "Neighboring genes conserved among the original group:\n\n"
+    printf "Genes conserved among the original group:\n\n"
     ./ms-intersect $regen --diverged $noregen
 
     if [ $(echo $noregen | wc -w) -ge 2 ]; then

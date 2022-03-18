@@ -50,7 +50,7 @@ bcl11ba
 bcl11ba
 vsx1
 esrrga
-sox11a
+sox11a|sox11
 insm1b
 bhlhe41
 alx1
@@ -76,7 +76,7 @@ six4b
 clocka
 clocka
 max
-sox11b
+sox11b|sox11
 foxo3b
 atf3
 hsf2
@@ -137,7 +137,7 @@ creb3l2
 tfec
 foxp2
 sox5
-ascl1a
+ascl1a|ascl1
 tp53
 rorb
 usf1l
@@ -164,7 +164,7 @@ pax6b
 e2f8
 homezb
 sox6
-isl2b
+isl2b|isl2
 spi1b
 spi1b
 smad3a
