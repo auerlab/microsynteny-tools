@@ -130,7 +130,7 @@ int     intersect(int argc, char *argv[])
 	    strlcat(intersect_file, ".gff3", PATH_MAX + 1);
 	}
     }
-    printf("\nOriginal group:\nGenes: %d  Conserved: %d  Changed: %d\n",
+    printf("\nGenes: %d  Conserved: %d  Changed: %d\n",
 	    max_count, new_intersect_count, max_count - new_intersect_count);
     
     // Write GFF for intersect
@@ -183,7 +183,7 @@ int     intersect(int argc, char *argv[])
 		}
 	    }
 	}
-	printf("\nDiverged group:\nGenes: %d  Conserved: %d  Changed: %d\n",
+	printf("\nGenes: %d  Conserved: %d  Changed: %d\n",
 		max_count, new_intersect_count, max_count - new_intersect_count);
     }
     
