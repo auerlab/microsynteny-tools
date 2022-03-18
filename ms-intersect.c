@@ -155,7 +155,7 @@ int     intersect(int argc, char *argv[])
 	max_count = 0;
 	new_intersect_count = 0;
 	++arg;
-	puts("\nGenes conserved in each species through divergence from the group above:\n");
+	puts("\nGenes conserved in each species since diverging from the group above:\n");
 	for (; arg < argc; ++arg)
 	{
 	    if ( (count = bl_gff_region_load(&rn, argv[arg])) == 0 )
