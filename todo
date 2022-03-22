@@ -1,1 +1,12 @@
+
+Get count of regions out of 196 with changes
+    intersect of fish with each mammal
+    no neighboring genes in common
+    at least 1 in common
+
+Compare 196 DETFs and non-DETFs
+    microsynteny changes -> changes in expression
+
+blast region genes to verify annotations in GFFs
+
 Make ms-intersect handle alternate gene names
