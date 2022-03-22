@@ -25,7 +25,7 @@
 int     main(int argc,char *argv[])
 
 {
-    bl_gff_t    feature = BL_GFF_INIT;
+    bl_gff_t    feature;
     FILE        *gff_stream, *header_stream, *gene_stream;
     char        *gene_file, *gff_file,
 		*end,
@@ -37,6 +37,7 @@ int     main(int argc,char *argv[])
     bl_gff_index_t    gi = BL_GFF_INDEX_INIT;
     alt_str_t   *gene_names;
 
+    bl_gff_init(&feature);
     for (arg = 1; (arg < argc) && (argv[arg][0] == '-'); ++arg)
     {
 	if ( strcmp(argv[arg], "--output-dir") == 0 )
@@ -186,7 +187,7 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 	    int64_t adjacent_genes, int64_t max_nt_distance)
 
 {
-    bl_gff_t    neighbor = BL_GFF_INIT;
+    bl_gff_t    neighbor;
     char        *neighbor_name;
     int64_t     g, len, distance;
     FILE        *region_stream;
@@ -217,6 +218,7 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 	    "Chr", "Start", "End", "Len", "Distance", "Name");
     
     // From leftmost neighbor read adjacent_genes before and after GOI
+    bl_gff_init(&neighbor);
     for (g = 0; (g < adjacent_genes * 2 + 1) &&
 		bl_gff_read(&neighbor, gff_stream,
 			BL_GFF_FIELD_ALL) == BL_READ_OK; )
