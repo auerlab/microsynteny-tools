@@ -215,6 +215,8 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
     // From leftmost neighbor read adjacent_genes before and after GOI
     bl_gff_init(&neighbor);
     g = 0;
+    // FIXME: Go adjacent_genes past the GOI in case the reverse seek
+    // found fewer than adjacent_genes features within range
     while ( (g < adjacent_genes * 2 + 1) &&
 	    (bl_gff_read(&neighbor, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK) &&
 	    ((strcmp(BL_GFF_TYPE(&neighbor), "###") == 0) ||
@@ -230,7 +232,6 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
 		    fprintf(stderr, "bl_gff_index_add_pos() failed.\n");
 		    return EX_SOFTWARE;
 		}
-		//printf("Added %s to index.\n", BL_GFF_FEATURE_NAME(&neighbor));
 	    }
 	    ++g;
 	    neighbor_name = BL_GFF_FEATURE_NAME(&neighbor);
