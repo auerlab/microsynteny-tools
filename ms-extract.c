@@ -105,13 +105,6 @@ int     main(int argc,char *argv[])
     // Note: Destroys gff_file == argv[1]
     if ( (ext = strchr(gff_basename, '.')) != NULL )
 	*ext = '\0';
-
-    // For consistent output and easy comparison by other programs
-    for (c = 0; c < gene_count; ++c)
-    {
-	//fprintf(stderr, "gene: %s\n", gene_names[c]);
-	//strlower(gene_names[c].strings[c]);
-    }
     
     while ( bl_gff_read(&feature, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK )
     {
@@ -128,13 +121,15 @@ int     main(int argc,char *argv[])
 		return EX_SOFTWARE;
 	    }
 	    //printf("Added %s to index.\n", BL_GFF_FEATURE_NAME(&feature));
-	    
+	
 	    for (c = 0; c < gene_count; ++c)
 	    {
 		int t;
 		
 		// Ensembl GFFs are not consistent with capitalization.
 		// All lower case for Danio, capitalized for others
+		//fprintf(stderr, "%d %zd %s\n", c, gene_names[c].count,
+		//        BL_GFF_FEATURE_NAME(&feature));
 		if ( (t = xt_alt_str_case_contains(&gene_names[c],
 			BL_GFF_FEATURE_NAME(&feature))) >= 0 )
 		{
@@ -219,9 +214,11 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
     
     // From leftmost neighbor read adjacent_genes before and after GOI
     bl_gff_init(&neighbor);
-    for (g = 0; (g < adjacent_genes * 2 + 1) &&
-		bl_gff_read(&neighbor, gff_stream,
-			BL_GFF_FIELD_ALL) == BL_READ_OK; )
+    g = 0;
+    while ( (g < adjacent_genes * 2 + 1) &&
+	    (bl_gff_read(&neighbor, gff_stream, BL_GFF_FIELD_ALL) == BL_READ_OK) &&
+	    ((strcmp(BL_GFF_TYPE(&neighbor), "###") == 0) ||
+	     (strcmp(BL_GFF_SEQID(&neighbor), BL_GFF_SEQID(goi)) == 0)) )
     {
 	if ( strcmp(BL_GFF_TYPE(&neighbor), "gene") == 0 )
 	{

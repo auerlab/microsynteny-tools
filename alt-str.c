@@ -39,14 +39,10 @@ int     xt_alt_str_read_line_malloc(alt_str_t *alt_str, FILE *stream)
     size_t  buff_size, len;
     int     status;
     
-    //fprintf(stderr, "Reading alt_str...\n");
     buff_size = len = 0;
     status = xt_read_line_malloc(stream, &buff, &buff_size, &len);
-    //fprintf(stderr, "%s\n", buff);
     if ( len > 0 )
 	alt_str->count = strsplit(buff, &alt_str->strings, "|");
-    //for (c = 0; c < alt_str->count; ++c)
-    //    fprintf(stderr, "%zu %s\n", c, alt_str->strings[c]);
     return status;
 }
 
@@ -102,7 +98,9 @@ ssize_t xt_alt_str_inhale_list(alt_str_t **list, FILE *stream)
     size_t      list_size = 1024, c;
     alt_str_t   temp;
     
-    if ( (*list = (alt_str_t *)xt_malloc(list_size, sizeof(*list))) == NULL )
+    //fprintf(stderr, "sizeof(*list) = %zu %zu\n", sizeof(**list), sizeof(temp));
+    // Allocate objects, not pointers
+    if ( (*list = (alt_str_t *)xt_malloc(list_size, sizeof(**list))) == NULL )
     {
 	fprintf(stderr, "load_strings(): Unable to allocate list.\n");
 	return EX_UNAVAILABLE;
@@ -110,10 +108,10 @@ ssize_t xt_alt_str_inhale_list(alt_str_t **list, FILE *stream)
     
     for (c = 0; xt_alt_str_read_line_malloc(&temp, stream) != EOF; ++c)
     {
-	if ( c == list_size - 1 )
+	if ( c == list_size )
 	{
 	    list_size *= 2;
-	    if ( (*list = (alt_str_t *)xt_realloc(*list, list_size, sizeof(*list))) == NULL )
+	    if ( (*list = (alt_str_t *)xt_realloc(*list, list_size, sizeof(**list))) == NULL )
 	    {
 		fprintf(stderr, "load_strings(): Unable to reallocate list.\n");
 		return EX_UNAVAILABLE;
@@ -155,7 +153,9 @@ int     xt_alt_str_case_contains(alt_str_t *alt_str, char *str)
 
 {
     size_t  c;
-    
+
+    // Linear search is best for first intended use of
+    // gene names, since there is usually only 1 alternate.
     for (c = 0; c < alt_str->count; ++c)
 	if ( strcasecmp(alt_str->strings[c], str) == 0 )
 	    return c;
