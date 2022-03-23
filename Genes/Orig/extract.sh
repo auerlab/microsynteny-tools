@@ -22,5 +22,5 @@ if [ ! -e ../all-non-de.txt ]; then
 fi
 
 if [ ! -e ../non-de-tf.txt ]; then
-    awk '$1 != "ext_gene" { print $1 }' zf_NDE_TFs_Jake.csv > ../non-de-tf.txt
+    awk -f zf-nde-tfs.awk zf_NDE_TFs_Jake.csv > ../non-de-tf.txt
 fi
