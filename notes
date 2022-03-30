@@ -1,3 +1,5 @@
 DETF.tsv and DETF-names.txt are generated from DETF.txt using
 blt ensemblid2gene.
 
+Interesting gene info: https://ftp.ncbi.nlm.nih.gov/gene/DATA/
+gene_info.gz, gene_neighbors.gz, gene_orthologs.gz, etc.
