@@ -1,7 +1,8 @@
 /***************************************************************************
  *  Description:
  *      Locate major divergence in gene regions along provided
- *      inputs.
+ *      inputs.  Each GFF3 file given should contain genes surrounding
+ *      the same GOI for another species.
  *
  *  History: 
  *  Date        Name        Modification

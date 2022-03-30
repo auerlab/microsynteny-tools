@@ -416,7 +416,7 @@ bool    bl_gff_region_duplicate_gene(bl_gff_region_t *r, const char *feature_nam
     for (c = 0; c < r->count; ++c)
 	if ( strcmp(BL_GFF_FEATURE_NAME(&r->features[c]), feature_name) == 0 )
 	{
-	    fprintf(stderr, "Duplicate gene: %s\n", feature_name);
+	    //fprintf(stderr, "Duplicate gene: %s\n", feature_name);
 	    return true;
 	}
     return false;

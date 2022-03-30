@@ -2,6 +2,22 @@
 
 ##########################################################################
 #   Description:
+#       Show genes near ONE gene-of-interest (GOI) conserved for all fish,
+#       conserved for all fish and each individual mammal, and conserved
+#       for all mammals.
+#
+#       Regional GFF files must have been previously generated with
+#       ms-extract [--adjecent-genes adjacent-genes] [--max-nt max-nt].
+#
+#       If gene names are not exactly the same between species, you can
+#       specify orthologous GOIs as extra arguments after the primary GOI
+#       in the 3rd argument.
+#
+#   Arguments:
+#       adjacent-genes  Number of adjacent genes on each side of GOI
+#       max-nt          Max distance in NT for adjacent genes
+#       gene-name       GOI
+#       alt-gene-name   Orthologous gene name
 #       
 #   History:
 #   Date        Name        Modification
@@ -10,7 +26,7 @@
 
 usage()
 {
-    printf "Usage: $0 adjacent-genes max-nt gene-name [gene-name ...]\n"
+    printf "Usage: $0 adjacent-genes max-nt gene-name [alt-gene-name ...]\n"
     exit 1
 }
 
@@ -29,6 +45,7 @@ shift
 
 make clean install > /dev/null
 for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
+    # $@ should contain alternate genes such as isl2b isl2
     for gene in $@; do
 	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt.gff3"
 	for file in $gene_files; do
@@ -38,7 +55,9 @@ for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
 	done
     done
 done
+
 for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
+    # $@ should contain alternate genes such as isl2b isl2
     for gene in $@; do
 	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt.gff3"
 	for file in $gene_files; do
