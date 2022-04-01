@@ -6,3 +6,25 @@ DETF:       196 known TF binding sites.  ChIP, selex.  Lambert suppl.
 Refined:    High value based on temporal expression patterns & known
 	    relationship to axon growth/regen
 
+===
+https://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/
+
+Files here look convenient, but the ortholog matchings are so strict as
+to be useless.  E.g. sox11a has no orthologs, isl2b has only isl2b as
+orthologs.  For our purposes, we want to consider sox11 and isl2 as
+equivalent.
+
+===
+https://www.biostars.org/p/450410/
+https://www.ensembl.org/biomart/martview/
+
+Choose database:    Ensembl Genes
+Choose dataset:     Zebrafish genes
+Clear all attributes under "Gene"
+Select desired attributes under Homologues
+    Site says up to 6 orthologs, but consistently fails for 5
+    Do a few at a time and paste together (non-trivial)
+    Choosing "Compressed web file (notify by email)" helped but the
+    link sent did not work 2 hours after receipt.  It did work the
+    following morning.
+
