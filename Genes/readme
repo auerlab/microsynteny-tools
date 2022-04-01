@@ -22,6 +22,7 @@ Choose database:    Ensembl Genes
 Choose dataset:     Zebrafish genes
 Clear all attributes under "Gene"
 Select desired attributes under Homologues
+    For add-ortho, need Homologs/GENE/Gene name, Homologs/Species/Gene name
     Site says up to 6 orthologs, but consistently fails for 5
     Do a few at a time and paste together (non-trivial)
     Choosing "Compressed web file (notify by email)" helped but the

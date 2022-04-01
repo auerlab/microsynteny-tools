@@ -20,7 +20,8 @@
 #include <xtend/file.h>
 #include <xtend/dsv.h>
 
-#define GENE_ARRAY_SIZE 128
+#define GENE_ARRAY_SIZE     128
+#define MAX_PRINTED_STRINGS 1024
 
 void    usage(char *argv[]);
 
@@ -28,10 +29,11 @@ int     main(int argc,char *argv[])
 
 {
     char    *gene_file, *ortho_file,
-	    gene[GENE_ARRAY_SIZE], *ortho_gene, *alt_gene;
+	    gene[GENE_ARRAY_SIZE], *ortho_gene, *alt_gene,
+	    *printed_strings[MAX_PRINTED_STRINGS];
     FILE    *gene_stream, *ortho_stream;
     dsv_line_t  ortho_line;
-    int     cmp_status, delim;
+    int     cmp_status, delim, pc, c2;
     
     switch(argc)
     {
@@ -82,8 +84,11 @@ int     main(int argc,char *argv[])
     ortho_gene = DSV_LINE_FIELDS_AE(&ortho_line, 0);
     while ( xt_fgetline(gene_stream, gene, GENE_ARRAY_SIZE) != EOF )
     {
+	pc = 0;
 	printf("%s", gene);
+	printed_strings[pc++] = strdup(gene);  // FIXME: Check malloc failure
 	cmp_status = strcasecmp(ortho_gene, gene);
+	// Skip genes in ortholog list lexically less than GOI
 	while ( (cmp_status < 0) && (delim != EOF ) )
 	{
 	    //printf("\nSkipping %s...", ortho_gene);
@@ -93,8 +98,10 @@ int     main(int argc,char *argv[])
 	    cmp_status = strcasecmp(ortho_gene, gene);
 	}
 	//printf("\nStopped at %s.\n", ortho_gene);
-	if ( cmp_status == 0 )
+	
+	while ( (cmp_status == 0) && (delim != EOF) )
 	{
+	    // Print all uniquely named orthologs
 	    for (int c = 1; c < DSV_LINE_NUM_FIELDS(&ortho_line); ++c)
 	    {
 		alt_gene = DSV_LINE_FIELDS_AE(&ortho_line, c);
@@ -102,15 +109,26 @@ int     main(int argc,char *argv[])
 		{
 		    bool dup = false;
 		    // Compare to all other alt genes so far
-		    for (int c2 = 0; (c2 < c) && ! dup; ++c2)
-			if ( strcasecmp(DSV_LINE_FIELDS_AE(&ortho_line, c2), alt_gene) == 0 )
+		    for (c2 = 0; (c2 < pc) && ! dup; ++c2)
+			if ( strcasecmp(printed_strings[c2], alt_gene) == 0 )
 			    dup = true;
 		    if ( ! dup )
+		    {
 			printf("|%s", alt_gene);
+			printed_strings[pc++] = strdup(alt_gene);
+		    }
 		}
 	    }
+	    
+	    // In case of duplicate GOI lines in the ortholog file
+	    dsv_line_free(&ortho_line);
+	    delim = dsv_line_read(&ortho_line, ortho_stream, "\t");
+	    ortho_gene = DSV_LINE_FIELDS_AE(&ortho_line, 0);
+	    cmp_status = strcasecmp(ortho_gene, gene);
 	}
 	putchar('\n');
+	for (c2 = 0; c2 < pc; ++c2)
+	    free(printed_strings[c2]);
     }
     
     fclose(ortho_stream);
