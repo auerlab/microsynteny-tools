@@ -9,7 +9,7 @@ gff-region.o: gff-region.c gff-region.h gff-region-rvs.h \
   gff-region-accessors.h gff-region-mutators.h
 	${CC} -c ${CFLAGS} gff-region.c
 
-ms-extract.o: ms-extract.c ms-extract.h
+ms-extract.o: ms-extract.c ms-extract.h alt-str.h
 	${CC} -c ${CFLAGS} ms-extract.c
 
 ms-intersect.o: ms-intersect.c gff-region.h gff-region-rvs.h \

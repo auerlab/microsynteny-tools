@@ -1,9 +1,0 @@
-ascl1a|ascl1
-stat3
-jun
-atf3
-sox11a|sox11
-srebf2
-stat2
-isl2b|isl2
-pou4f3

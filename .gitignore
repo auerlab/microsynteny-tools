@@ -2,6 +2,7 @@
 ms-extract
 ms-divergence
 ms-intersect
+add-ortho
 
 # Object files
 *.o
@@ -22,6 +23,7 @@ ms-intersect
 *.gff3
 *.fa
 *.png
+*-ortho.txt
 
 # Temp files
 README.html

@@ -1,26 +1,17 @@
 #!/bin/sh -e
 
-if [ ! -e ../de-tf-refined.txt ]; then
-    awk '{ print $2 }' detf-refined.tsv > ../de-tf-refined.txt
-fi
+awk '{ print $2 }' detf-refined.tsv | sort | uniq > ../de-tf-refined.txt
 
-if [ ! -e ../all-de.txt ]; then
-    awk -F , 'length($2) > 0 && $1 ~ "ENSDART" { print $2 }' all-de.csv \
-	| awk -f split-gene.awk > ../all-de.txt
-fi
+awk -F , 'length($2) > 0 && $1 ~ "ENSDART" { print $2 }' all-de.csv \
+    | awk -f split-gene.awk | sort | uniq > ../all-de.txt
 
-if [ ! -e ../de-tf.txt ]; then
-    blt ensemblid2gene \
-	../../GFF/Danio_rerio.GRCz11.105.chr.gff3 detf-ids.txt \
-	| awk '{ print $2 }' | sort | uniq > ../de-tf.txt
-fi
+blt ensemblid2gene \
+    ../../GFF/Danio_rerio.GRCz11.105.chr.gff3 detf-ids.txt \
+    | awk '{ print $2 }' | sort | uniq > ../de-tf.txt
 
-if [ ! -e ../all-non-de.txt ]; then
-    blt ensemblid2gene \
-	../../GFF/Danio_rerio.GRCz11.105.chr.gff3 expressed_NDE_transcripts.txt \
-	| awk '{ print $2 }' | sort | uniq > ../all-non-de.txt
-fi
+blt ensemblid2gene \
+    ../../GFF/Danio_rerio.GRCz11.105.chr.gff3 expressed_NDE_transcripts.txt \
+    | awk '{ print $2 }' | sort | uniq > ../all-non-de.txt
 
-if [ ! -e ../non-de-tf.txt ]; then
-    awk -f zf-nde-tfs.awk zf_NDE_TFs_Jake.csv > ../non-de-tf.txt
-fi
+awk -f zf-nde-tfs.awk zf_NDE_TFs_Jake.csv | sort | uniq > ../non-de-tf-jake.txt
+
