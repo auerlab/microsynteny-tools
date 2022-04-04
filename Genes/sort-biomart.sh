@@ -2,5 +2,11 @@
 
 raw=biomart-orthologs.tsv.xz
 sorted=biomart-orthologs-sorted.tsv
+
+# Copy header
 xzcat $raw | grep -m 1 '^Gene name' > $sorted
-xzcat $raw | grep -v '^Gene name' | sort --ignore-case | uniq > $sorted
+
+# Sort all except header
+xzcat $raw | grep -v '^Gene name' | sort --ignore-case | uniq | xz > $sorted
+
+xz $sorted

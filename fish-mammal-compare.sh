@@ -26,7 +26,7 @@
 
 usage()
 {
-    printf "Usage: $0\n"
+    printf "Usage: $0 adjacent-genes\n"
     exit 1
 }
 
@@ -35,9 +35,11 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 0 ]; then
+if [ $# != 1 ]; then
     usage
 fi
+adjacent_genes=$1
+
 if [ ! -e Genes/de-tf-ortho.txt ] || [ ! -e Genes/non-de-tf-ortho.txt ]; then
     cd Genes/Orig
     printf "Extracting gene lists...\n"
@@ -49,24 +51,26 @@ fi
 
 if [ ! -e Regions ]; then
     for list in de-tf-ortho.txt non-de-tf-ortho.txt; do
-	./gene-list-extract.sh --adjacent-genes 2 Genes/$list
+	./gene-list-extract.sh --adjacent-genes $adjacent_genes Genes/$list
     done
+    rm -rf Intersects   # Must be regenerated if regions have changed
 else
     printf "Regions already exists.  Remove it to rerun the extract stage.\n"
 fi
 
 if [ ! -e Intersects ]; then
     for list in de-tf-ortho.txt non-de-tf-ortho.txt; do
-	./gene-list-fish-mammal-intersect.sh 2 1000000 Genes/$list \
+	./gene-list-fish-mammal-intersect.sh $adjacent_genes 1000000 Genes/$list \
 	    2>&1 | tee fish-mammal-intersect.out
     done
+    rm -f fish-mammal-percent.out
 else
     printf "Intersects already exists.  Remove it to rerun the intersect stage.\n"
 fi
 
 if [ ! -e fish-mammal-percent.out ]; then
     for list in de-tf-ortho.txt non-de-tf-ortho.txt; do
-	./fish-mammal-percent-changed.sh 2 1000000 \
+	./fish-mammal-percent-changed.sh $adjacent_genes 1000000 \
 	    2>&1 | tee fish-mammal-percent.out
     done
 else
