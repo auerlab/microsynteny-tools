@@ -136,11 +136,14 @@ int     main(int argc,char *argv[])
 		    printf("\n%s %s:\n", gff_basename, gene_names[c].strings[t]);
 		    
 		    // Path name format is important, parsed by other progs
-		    // '-' is a separator, so don't allow it in species name
+		    // '-' is a separator, so don't allow it in species
+		    // or gene names
 		    strtr(gff_basename, "-", "_", 0);
+		    strtr(ALT_STR_STRINGS_AE(&gene_names[c], t), "-", "_", 0);
 		    snprintf(region_file, PATH_MAX,
 			     "%s/%s-%s-%s-%" PRId64 "-%d-%" PRIu64 ".gff3",
-			     output_dir, gff_basename, gene_names[c].strings[t],
+			     output_dir, gff_basename,
+			     ALT_STR_STRINGS_AE(&gene_names[c], t),
 			     BL_GFF_SEQID(&feature), BL_GFF_START(&feature),
 			     adjacent_genes, max_nt_distance);
 		    status = extract_neighborhood(&feature, &gi, gff_stream,

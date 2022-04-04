@@ -11,6 +11,10 @@ typedef struct
     char    **strings;
 }   alt_str_t;
 
+#include "alt-str-rvs.h"
+#include "alt-str-accessors.h"
+#include "alt-str-mutators.h"
+
 /* alt-str.c */                                                                 
 int xt_alt_str_read_line_malloc(alt_str_t *alt_str, FILE *stream);
 ssize_t xt_alt_str_inhale_list(alt_str_t **list, FILE *stream);

@@ -46,8 +46,11 @@ shift
 make clean install > /dev/null
 for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
     # $@ should contain alternate genes such as isl2b isl2
-    for gene in $@; do
-	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt.gff3"
+    for goi in $@; do
+	# '-' is a separator, so don't allow it in gene names
+	# ms-extract substitutes '_'
+	goi=$(echo $goi | tr '-' '_')
+	gene_files="Regions/$species-$goi-*-$adjacent_genes-$max_nt.gff3"
 	for file in $gene_files; do
 	    if [ -e $file ]; then
 		regen="$regen $file"
@@ -58,8 +61,11 @@ done
 
 for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
     # $@ should contain alternate genes such as isl2b isl2
-    for gene in $@; do
-	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt.gff3"
+    for goi in $@; do
+	# '-' is a separator, so don't allow it in gene names
+	# ms-extract substitutes '_'
+	goi=$(echo $goi | tr '-' '_')
+	gene_files="Regions/$species-$goi-*-$adjacent_genes-$max_nt.gff3"
 	for file in $gene_files; do
 	    if [ -e $file ]; then
 		noregen="$noregen $file"
@@ -73,10 +79,13 @@ if [ $(echo $regen | wc -w) -ge 2 ]; then
     printf "$*\n"
     printf "====================\n\n"
     printf "Genes conserved among fish and mammals:\n\n"
+    # echo $regen
+    # echo $noregen
     ./ms-intersect $regen --diverged $noregen
 
     if [ $(echo $noregen | wc -w) -ge 2 ]; then
 	printf "\nGenes conserved among mammals only:\n\n"
+	# echo $noregen
 	./ms-intersect $noregen
     fi
 fi

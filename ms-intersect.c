@@ -21,6 +21,8 @@
 #include <biolibc/gff.h>
 #include "gff-region.h"
 
+#define SPECIES_MAX_CHARS   256
+
 int     intersect(int argc, char *argv[]);
 void    print_region_feature_names(bl_gff_region_t *region);
 void    usage(char *argv[]);
@@ -48,7 +50,8 @@ int     intersect(int argc, char *argv[])
 {
     int             arg, count, c, old_intersect_count, new_intersect_count, max_count;
     bl_gff_region_t r1, rn, *intersect, *new_intersect, *div_intersect;
-    char            intersect_file[PATH_MAX + 1];
+    char            intersect_file[PATH_MAX + 1],
+		    previous_species[SPECIES_MAX_CHARS + 1] = "";
     FILE            *intersect_stream;
     
     bl_gff_region_init(&r1);
@@ -90,6 +93,9 @@ int     intersect(int argc, char *argv[])
     print_region_feature_names(intersect);
     putchar('\n');
     
+    /*fprintf(stderr, "r1 = %s %s %s\n", 
+	     BL_GFF_REGION_GOI(&r1), BL_GFF_REGION_SPECIES(&r1),
+	     BL_GFF_REGION_SPECIES(&rn));*/
     snprintf(intersect_file, PATH_MAX + 1, "Intersects/%s-%s-%s",
 	     BL_GFF_REGION_GOI(&r1), BL_GFF_REGION_SPECIES(&r1),
 	     BL_GFF_REGION_SPECIES(&rn));
@@ -126,11 +132,17 @@ int     intersect(int argc, char *argv[])
 	    }
 
 	    // Update GFF filename
-	    strlcat(intersect_file, "-", PATH_MAX + 1);
-	    strlcat(intersect_file, BL_GFF_REGION_SPECIES(&rn), PATH_MAX + 1);
-	    strlcat(intersect_file, ".gff3", PATH_MAX + 1);
+	    if ( strcmp(BL_GFF_REGION_SPECIES(&rn), previous_species) != 0 )
+	    {
+		strlcat(intersect_file, "-", PATH_MAX + 1);
+		strlcat(intersect_file, BL_GFF_REGION_SPECIES(&rn), PATH_MAX + 1);
+		strlcpy(previous_species, BL_GFF_REGION_SPECIES(&rn), SPECIES_MAX_CHARS + 1);
+	    }
 	}
     }
+    strlcat(intersect_file, ".gff3", PATH_MAX + 1);
+    //fprintf(stderr, "intersect_file = %s\n", intersect_file);
+    
     printf("\nGenes: %d  Conserved: %d  Changed: %d\n",
 	    max_count, new_intersect_count, max_count - new_intersect_count);
     
@@ -138,7 +150,7 @@ int     intersect(int argc, char *argv[])
     xt_rmkdir("Intersects", 0777);
     if ( (intersect_stream = fopen(intersect_file, "w")) == NULL )
     {
-	fprintf(stderr, "ms-common-to: Could not open %s for write: %s.\n",
+	fprintf(stderr, "ms-intersect: Could not open %s for write: %s.\n",
 		intersect_file, strerror(errno));
 	exit(EX_CANTCREAT);
     }
