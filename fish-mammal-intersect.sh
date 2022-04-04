@@ -81,11 +81,11 @@ if [ $(echo $regen | wc -w) -ge 2 ]; then
     printf "Genes conserved among fish and mammals:\n\n"
     # echo $regen
     # echo $noregen
-    ./ms-intersect $regen --diverged $noregen
+    ./ms-intersect Intersects-diverged $regen --diverged $noregen
 
     if [ $(echo $noregen | wc -w) -ge 2 ]; then
 	printf "\nGenes conserved among mammals only:\n\n"
 	# echo $noregen
-	./ms-intersect $noregen
+	./ms-intersect Intersects-diverged $noregen
     fi
 fi

@@ -30,7 +30,7 @@ void    usage(char *argv[]);
 int     main(int argc,char *argv[])
 
 {
-    if ( argc < 3 )
+    if ( argc < 4 )
 	usage(argv);
 
     return intersect(argc, argv);
@@ -51,7 +51,8 @@ int     intersect(int argc, char *argv[])
     int             arg, count, c, old_intersect_count, new_intersect_count, max_count;
     bl_gff_region_t r1, rn, *intersect, *new_intersect, *div_intersect;
     char            intersect_file[PATH_MAX + 1],
-		    previous_species[SPECIES_MAX_CHARS + 1] = "";
+		    previous_species[SPECIES_MAX_CHARS + 1] = "",
+		    *output_dir;
     FILE            *intersect_stream;
     
     bl_gff_region_init(&r1);
@@ -63,7 +64,8 @@ int     intersect(int argc, char *argv[])
 
     printf("%-20s %2s %2s %2s  %s\n", "Species", "Ne", "Co",
 	    "Ch", "Intersection of all species so far");
-    for (arg = 1; (arg < argc) &&
+    output_dir = argv[1];
+    for (arg = 2; (arg < argc) &&
 		  (count = bl_gff_region_load(&r1, argv[arg])) == 0; ++arg)
 	printf("%-20s %2c %2c %2c\n", BL_GFF_REGION_SPECIES(&r1),
 		'-', '-', '-');
@@ -96,7 +98,7 @@ int     intersect(int argc, char *argv[])
     /*fprintf(stderr, "r1 = %s %s %s\n", 
 	     BL_GFF_REGION_GOI(&r1), BL_GFF_REGION_SPECIES(&r1),
 	     BL_GFF_REGION_SPECIES(&rn));*/
-    snprintf(intersect_file, PATH_MAX + 1, "Intersects/%s-%s-%s",
+    snprintf(intersect_file, PATH_MAX + 1, "%s/%s-%s-%s", output_dir,
 	     BL_GFF_REGION_GOI(&r1), BL_GFF_REGION_SPECIES(&r1),
 	     BL_GFF_REGION_SPECIES(&rn));
     new_intersect_count = BL_GFF_REGION_COUNT(intersect);
@@ -147,7 +149,7 @@ int     intersect(int argc, char *argv[])
 	    max_count, new_intersect_count, max_count - new_intersect_count);
     
     // Write GFF for intersect
-    xt_rmkdir("Intersects", 0777);
+    xt_rmkdir(output_dir, 0777);
     if ( (intersect_stream = fopen(intersect_file, "w")) == NULL )
     {
 	fprintf(stderr, "ms-intersect: Could not open %s for write: %s.\n",
@@ -196,8 +198,8 @@ int     intersect(int argc, char *argv[])
 		}
 	    }
 	}
-	printf("\nGenes: %d  Conserved: %d  Changed: %d\n",
-		max_count, new_intersect_count, max_count - new_intersect_count);
+	//printf("\nGenes: %d  Conserved: %d  Changed: %d\n",
+	//        max_count, new_intersect_count, max_count - new_intersect_count);
     }
     
     return EX_OK;

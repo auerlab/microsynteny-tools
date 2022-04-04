@@ -19,7 +19,7 @@ BEGIN {
     changed += $3;
 }
 END {
-    printf("Genes: %d  Conserved: %d %0.1f%%  Changed: %d %0.1f%%\n",
+    printf("Genes: %d  Conserved: %d (%0.1f%%)  Changed: %d (%0.1f%%)\n",
 	    genes, conserved, conserved / genes * 100,
 	    changed, changed / genes * 100);
 }
