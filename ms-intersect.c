@@ -48,7 +48,8 @@ int     main(int argc,char *argv[])
 int     intersect(int argc, char *argv[])
 
 {
-    int             arg, count, c, old_intersect_count, new_intersect_count, max_count;
+    int             arg, count, c, old_intersect_count, new_intersect_count,
+		    max_count;
     bl_gff_region_t r1, rn, *intersect, *new_intersect, *div_intersect;
     char            intersect_file[PATH_MAX + 1],
 		    previous_species[SPECIES_MAX_CHARS + 1] = "",
@@ -65,7 +66,7 @@ int     intersect(int argc, char *argv[])
     printf("%-20s %2s %2s %2s  %s\n", "Species", "Ne", "Co",
 	    "Ch", "Intersection of all species so far");
     output_dir = argv[1];
-    for (arg = 2; (arg < argc) &&
+    for (arg = 2, count = 0; (arg < argc) &&
 		  (count = bl_gff_region_load(&r1, argv[arg])) == 0; ++arg)
 	printf("%-20s %2c %2c %2c\n", BL_GFF_REGION_SPECIES(&r1),
 		'-', '-', '-');
