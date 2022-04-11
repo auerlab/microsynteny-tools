@@ -1,4 +1,12 @@
 
+Verify orthology with blast
+    Focus on coding sequences
+
+Diff in conservatiom between DE and non-DE
+
+Long distance reg?
+    > 300k uncommon?
+
 Get count of regions out of 196 with changes
     intersect of fish with each mammal
     no neighboring genes in common
