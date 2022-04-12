@@ -39,7 +39,12 @@ gene_list=$1
 shift
 
 if [ $# = 0 ]; then
-    files=$(ls GFF/*.gff3)
+    files="GFF/Danio_rerio.GRCz11.105.chr.gff3"
+    files="$files GFF/Oryzias_latipes.ASM223467v1.105.chr.gff3"
+    files="$files GFF/Takifugu_rubripes.fTakRub1.2.105.chr.gff3"
+    files="$files GFF/Mus_musculus.GRCm39.105.chr.gff3"
+    files="$files GFF/Rattus_norvegicus.mRatBN7.2.105.chr.gff3"
+    files="$files GFF/Homo_sapiens.GRCh38.105.chr.gff3"
 else
     files="$@"
 fi

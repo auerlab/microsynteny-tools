@@ -25,11 +25,9 @@ site="http://ftp.ensembl.org/pub/release-105/fasta"
 # Remove non-chromosomal sequences from toplevel to get primary_assembly.
 ref_type="toplevel"
 for ref in \
-    takifugu_rubripes/dna/Takifugu_rubripes.fTakRub1.2.dna.$ref_type.fa.gz \
-    oryzias_latipes/dna/Oryzias_latipes.ASM223467v1.dna.$ref_type.fa.gz \
     danio_rerio/dna/Danio_rerio.GRCz11.dna.$ref_type.fa.gz \
-    xenopus_tropicalis/dna/Xenopus_tropicalis.Xenopus_tropicalis_v9.1.dna.$ref_type.fa.gz \
-    gallus_gallus/dna/Gallus_gallus.GRCg6a.dna.$ref_type.fa.gz \
+    oryzias_latipes/dna/Oryzias_latipes.ASM223467v1.dna.$ref_type.fa.gz \
+    takifugu_rubripes/dna/Takifugu_rubripes.fTakRub1.2.dna.$ref_type.fa.gz \
     mus_musculus/dna/Mus_musculus.GRCm39.dna.$ref_type.fa.gz \
     rattus_norvegicus/dna/Rattus_norvegicus.mRatBN7.2.dna.$ref_type.fa.gz \
     homo_sapiens/dna/Homo_sapiens.GRCh38.dna.$ref_type.fa.gz
