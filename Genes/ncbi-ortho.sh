@@ -15,6 +15,15 @@
 # gene_info:        TaxID, GeneID, synonyms, etc.
 # gene_orthologs:   TaxID, Gene_ID -> TaxID, GeneID
 
+cat << EOM
+
+The NCBI ortholog files do not appear to be very useful.  
+
+See readme file.
+
+EOM
+exit 1
+
 for file in gene_info.gz gene_orthologs.gz README_ensembl; do
     if [ ! -e $file ]; then
 	curl -O https://ftp.ncbi.nlm.nih.gov/gene/DATA/$file
