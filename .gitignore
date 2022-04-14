@@ -22,8 +22,11 @@ add-ortho
 # Data files
 *.gff3
 *.fa
+*.fa.gz
+*.fa.xz
 *.png
 *-ortho.txt
+*.tsv.xz
 
 # Temp files
 README.html
@@ -31,3 +34,4 @@ README.html
 # Data dirs
 Hoods
 Intersects
+BLAST-DB

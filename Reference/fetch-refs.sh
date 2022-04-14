@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 if [ $0 != ./fetch-refs.sh ]; then
-    printf "Must be run as ./fetch-ref.sh\n"
+    printf "Must be run as ./fetch-refs.sh\n"
     exit 1
 fi
 
@@ -38,7 +38,6 @@ do
 	printf "Downloading ${base%.gz}\n"
 	url=$site/$ref
 	$fetch $flags $url
-	gunzip $base
     else
 	printf "$(basename ${ref%.gz}) already exists.\n"
     fi

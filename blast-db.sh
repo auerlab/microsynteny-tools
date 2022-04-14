@@ -7,4 +7,12 @@
 # nt.*tar.gz      | Partially non-redundant nucleotide sequences from 
 #                   all traditional divisions of GenBank, EMBL, and DDBJ 
 #                   excluding GSS,STS, PAT, EST, HTG, and WGS.
-update_blastdb.pl --decompress nt landmark
+# landmark
+# update_blastdb.pl --decompress est
+
+# makeblastdb -help|more
+
+mkdir -p BLAST-DB
+zcat Transcriptome/Homo_sapiens.GRCh38.cdna.all.fa.gz | \
+    makeblastdb -title "Human Transcriptome" \
+    -dbtype nucl -out BLAST-DB/Homo-sapiens
