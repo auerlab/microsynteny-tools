@@ -28,11 +28,11 @@ for cdna in Homo_sapiens.GRCh38.cdna.all.fa
 do
     base=$(basename $cdna)
     printf "===\n"
-    if [ ! -e ${base%.gz} ]; then
-	printf "Downloading ${base%.gz}\n"
-	url=$site/$cdna
+    if [ ! -e $base.gz ]; then
+	printf "Downloading $base.gz\n"
+	url=$site/$cdna.gz
 	$fetch $flags $url
     else
-	printf "$(basename ${cdna%.gz}) already exists.\n"
+	printf "$(basename $cdna.gz) already exists.\n"
     fi
 done

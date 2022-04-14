@@ -8,11 +8,17 @@
 #                   all traditional divisions of GenBank, EMBL, and DDBJ 
 #                   excluding GSS,STS, PAT, EST, HTG, and WGS.
 # landmark
-# update_blastdb.pl --decompress est
+
+# update_blastdb.pl --decompress nt
 
 # makeblastdb -help|more
 
 mkdir -p BLAST-DB
+set -x
 zcat Transcriptome/Homo_sapiens.GRCh38.cdna.all.fa.gz | \
     makeblastdb -title "Human Transcriptome" \
-    -dbtype nucl -out BLAST-DB/Homo-sapiens
+    -dbtype nucl -out BLAST-DB/Homo-sapiens-transcriptome
+
+zcat Reference/Homo_sapiens.GRCh38.dna.toplevel.fa.xz | \
+    makeblastdb -title "Human Genome" \
+    -dbtype nucl -out BLAST-DB/Homo-sapiens-genome
