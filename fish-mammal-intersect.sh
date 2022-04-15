@@ -75,9 +75,9 @@ for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
 done
 
 if [ $(echo $regen | wc -w) -ge 2 ]; then
-    printf "\n====================\n"
+    printf "\n========================================================\n"
     printf "$*\n"
-    printf "====================\n\n"
+    printf "========================================================\n\n"
     printf "Genes conserved among fish and mammals:\n\n"
     # echo $regen
     # echo $noregen

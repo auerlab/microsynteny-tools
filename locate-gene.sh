@@ -26,7 +26,7 @@ gene=$1
 shift
 
 for file in "$@"; do
-    printf "\n$file\n"
+    printf "\n$gene $file\n"
     awk -v gene=$gene '$3 == "gene" {
 	split($9, a, ";");
 	for (f in a) {
