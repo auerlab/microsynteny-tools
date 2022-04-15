@@ -49,7 +49,8 @@ while [ 0"$selection" != 0q ]; do
 5.. Visualize regions in scale
 6.. Show percent changed stats for fish and mammals
     (Extract regions for de-tf-ortho.txt and non-de-tf-ortho.txt first)
-7.. BLAST a Danio gene against Human transcriptome/genome
+7.. Locate genes in one or more GFF files
+8.. BLAST a Danio gene against Human transcriptome/genome
 Q.. Quit
 
 EOM
@@ -150,6 +151,21 @@ EOM
 	;;
 
     7)
+	printf "Gene name(s) or initial part (separated by space)? "
+	read genes
+	ls GFF
+	printf "GFF filename(s) (separated by space)? \n"
+	read gffs
+	gff_list=''
+	for gff in $gffs; do
+	    gff_list="$gff_list GFF/$gff"
+	done
+	for gene in $genes; do
+	    ./locate-gene.sh $gene $gff_list
+	done
+	;;
+    
+    8)
 	printf "Gene name? "
 	read gene
 	./blast.sh $gene
