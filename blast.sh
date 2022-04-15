@@ -37,6 +37,7 @@ test -e $gene.fa || blt extract-seq GFF/Danio_rerio.GRCz11.105.chr.gff3 \
 # -task blastn = somewhat similar
 # evalue < 0.01 considered good enough for homology
 # https://www.metagenomics.wiki/tools/blast/evalue
+# https://www.metagenomics.wiki/tools/blast/blastn-output-format-6
 blastn -task blastn -db BLAST-DB/Homo-sapiens-transcriptome \
     -query $gene.fa -evalue 0.01 \
     -outfmt "6 qseqid pident evalue stitle" \
