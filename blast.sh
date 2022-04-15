@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-name\n"
+    printf "Usage: $0 gene-name transcriptome|genome\n"
     exit 1
 }
 
@@ -20,10 +20,11 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 1 ]; then
+if [ $# != 2 ]; then
     usage
 fi
 gene=$1
+db=$2
 
 # Debug
 # export PATH=~/Prog/Src/local/bin:$PATH
@@ -38,15 +39,41 @@ test -e $gene.fa || blt extract-seq GFF/Danio_rerio.GRCz11.105.chr.gff3 \
 # evalue < 0.01 considered good enough for homology
 # https://www.metagenomics.wiki/tools/blast/evalue
 # https://www.metagenomics.wiki/tools/blast/blastn-output-format-6
-blastn -task blastn -db BLAST-DB/Homo-sapiens-transcriptome \
-    -query $gene.fa -evalue 0.01 \
-    -outfmt "6 qseqid pident evalue stitle" \
-    > $gene-transcriptome.out 2> $gene-transcriptome.err
-printf "%-15s %10s %10s %-25s %s\n" \
-    "Query" "Identity" "E-value" "Location" "Gene"
-awk -f blast-filter.awk $gene-transcriptome.out
-exit
+case $db in
+transcriptome)
+    blastn -task blastn -db BLAST-DB/Homo-sapiens-transcriptome \
+	-query $gene.fa -evalue 0.01 \
+	-outfmt "6 qseqid pident evalue stitle" \
+	> $gene-transcriptome.out 2> $gene-transcriptome.err
+    printf "%-15s %10s %10s %-25s %s\n" \
+	"Query" "Identity" "E-value" "Location" "Gene"
+    awk -f blast-filter.awk $gene-transcriptome.out
+    ;;
 
-blastn -task dc-megablast -db BLAST-DB/Homo-sapiens-genome \
-    -query $gene.fa > $gene-genome.out
-more $gene-genome.out
+genome)
+    if [ -e $gene-genome.out ]; then
+	printf "$gene-genome.out already exists.  Rerun BLAST search? y/[n] "
+	read run
+	if [ 0$run != y ]; then
+	    run=n
+	fi
+    else
+	run=y
+    fi
+    if [ $run = y ]; then
+	blastn -task dc-megablast -db BLAST-DB/Homo-sapiens-genome \
+	    -query $gene.fa -outfmt "6 qseqid pident evalue stitle" \
+	    > $gene-genome.out 2> $gene-genome.err
+    fi
+    # blast-filter.awk will attempt to print gene name from $10 as
+    # well, but it will just be blank
+    printf "%-15s %10s %10s %-25s %s\n" \
+	"Query" "Identity" "E-value" "Location"
+    awk -f blast-filter.awk $gene-genome.out
+    ;;
+
+*)
+    usage
+    ;;
+
+esac

@@ -1,9 +1,9 @@
 #############################################################################
 #   Description:
-#  
-#   Arguments:
-#
-#   Returns:
+#       Filter output of blastn -outfmt "6 qseqid pident evalue stitle"
+#       to print "Query" "Identity" "E-value" "Location" "Gene".
+#       For genome searches, there is no gene field, but it's OK
+#       since $10 will just be blank.
 #
 #   History: 
 #   Date        Name        Modification

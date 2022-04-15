@@ -27,6 +27,8 @@ add-ortho
 *.png
 *-ortho.txt
 *.tsv.xz
+*.out
+*.err
 
 # Temp files
 README.html
