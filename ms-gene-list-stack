@@ -11,7 +11,7 @@
 usage()
 {
     printf "Usage: $0 [ms-stack.py flags] adjacent-genes max-nt gene-list.txt\n"
-    ./ms-stack.py --help
+    ms-stack.py --help
     exit 1
 }
 
@@ -23,6 +23,7 @@ usage()
 if [ $# -lt 3 ]; then
     usage
 fi
+
 while [ $(echo $1 | cut -c 1,1) = '-' ]; do
     flags="$flags $1"
     shift
@@ -34,5 +35,5 @@ gene_file="$3"
 
 for gene in $(cat $gene_file); do
     # Each line in gene_file may contain alternates such as isl2b|isl2
-    ./stack.sh $flags $adjacent_genes $max_nt $(echo $gene | tr '|' ' ')
+    ms-stack $flags $adjacent_genes $max_nt $(echo $gene | tr '|' ' ')
 done

@@ -43,7 +43,6 @@ max_nt=$2
 shift
 shift
 
-make clean install > /dev/null
 for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
     # $@ should contain alternate genes such as isl2b isl2
     for goi in $@; do
@@ -81,11 +80,11 @@ if [ $(echo $regen | wc -w) -ge 2 ]; then
     printf "Genes conserved among fish and mammals:\n\n"
     # echo $regen
     # echo $noregen
-    ./ms-intersect Intersects-diverged $regen --diverged $noregen
+    ms-intersect Intersects-diverged $regen --diverged $noregen
 
     if [ $(echo $noregen | wc -w) -ge 2 ]; then
 	printf "\nGenes conserved among mammals only:\n\n"
 	# echo $noregen
-	./ms-intersect Intersects-diverged $noregen
+	ms-intersect Intersects-diverged $noregen
     fi
 fi

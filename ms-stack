@@ -25,7 +25,7 @@ Example: $0 4 100000 jun
 will display a stack of Regions/*-jun-*-4-1000000.gff3
 
 EOM
-    ./ms-stack.py --help
+    ms-stack.py --help
     exit 1
 }
 
@@ -60,7 +60,7 @@ for species in Danio_rerio Oryzias_latipes Takifugu_rubripes \
     done
 done
 if [ -n "$files" ]; then
-    ./ms-stack.py $flags $files
+    ms-stack.py $flags $files
 else
     printf "No files for adjacent_genes=$adjacent_genes, max_nt=$max_nt, gene=$gene\n"
 fi

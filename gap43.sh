@@ -27,11 +27,10 @@ else
     files="$@"
 fi
 
-make clean install
 mkdir -p Regions
 for gff in $files; do
     printf "\n========================================================\n"
     printf "$gff\n"
     printf "========================================================\n"
-    time ./ms-extract --max-nt-distance 10000000 --output-dir Regions $gff gap43
+    time ms-extract --max-nt-distance 10000000 --output-dir Regions $gff gap43
 done

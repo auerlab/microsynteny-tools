@@ -13,7 +13,7 @@
 usage()
 {
     printf "Usage: $0 [ms-extract-flags] gene-list.txt [file.gff3 ...]\n"
-    ./ms-extract --help
+    ms-extract --help
     exit 1
 }
 
@@ -52,11 +52,10 @@ fi
 printf "%s\n" "$flags"
 printf "$files\n"
 
-make clean install
 mkdir -p Regions
 for gff in $files; do
     printf "\n========================================================\n"
     printf "$gff\n"
     printf "========================================================\n"
-    time ./ms-extract --output-dir Regions $flags $gff $gene_list
+    time ms-extract --output-dir Regions $flags $gff $gene_list
 done

@@ -51,8 +51,6 @@ fi
 adjacent_genes=$1
 max_nt=$2
 
-make clean install > /dev/null
-
 regen_species="Danio_rerio Oryzias_latipes Takifugu_rubripes"
 noregen_species="Mus_musculus Rattus_norvegicus Homo_sapiens"
 
@@ -78,7 +76,7 @@ for gene_list in Genes/de-tf-ortho.txt Genes/non-de-tf-ortho.txt; do
 	done
 	
 	if [ $(echo $regen | wc -w) -ge 2 ]; then
-	    ./ms-intersect Intersects-no-diverged $regen > temp.out
+	    ms-intersect Intersects-no-diverged $regen > temp.out
 	    awk '$1 == "Genes:" { print $2, $4, $6 }' temp.out >> counts.txt
 	fi
     done
@@ -107,7 +105,7 @@ for gene_list in Genes/de-tf-ortho.txt Genes/non-de-tf-ortho.txt; do
 	done
     
 	if [ $(echo $noregen | wc -w) -ge 2 ]; then
-	    ./ms-intersect Intersects-no-diverged $noregen > temp.out
+	    ms-intersect Intersects-no-diverged $noregen > temp.out
 	    awk '$1 == "Genes:" { print $2, $4, $6 }' temp.out >> counts.txt
 	fi
     done

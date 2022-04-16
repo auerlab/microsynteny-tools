@@ -4,6 +4,10 @@
 #   Description:
 #       Simple menu system for running microsynteny tools
 #
+#   Conventions:
+#       Global variables capitalized, local all lower-case
+#       Constants all caps
+#
 #   History:
 #   Date        Name        Modification
 #   2022-04-12  Jason Bacon Begin
@@ -31,11 +35,70 @@ pause()
 
 
 ##########################################################################
+#   Function description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2022-04-16  Jason Bacon Begin
+##########################################################################
+
+get_genes_max_nt()
+{
+    printf "Adjacent genes? [3] "
+    read Genes
+    if [ 0"$Adjacent_genes" = 0 ]; then
+	Adjacent_genes=3
+    fi
+    printf "Max distance in NT? [1,000,000] "
+    read Max_nt
+    if [ 0"$Max_nt" = 0 ]; then
+	Max_nt=1000000
+    fi
+}
+
+
+##########################################################################
+#   Function description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2022-04-16  Jason Bacon Begin
+##########################################################################
+
+get_gene_list_filename()
+{
+    cd Genes
+    ls *-ortho.txt
+    cd ..
+    local default=de-tf-refined-ortho.txt
+    printf "Gene list? [$default] "
+    read Gene_list_filename
+    if [ 0"$Gene_list_filename" = 0 ]; then
+	Gene_list_filename=$default
+    fi
+    Gene_list_filename="Genes/$Gene_list_filename"
+}
+
+
+##########################################################################
 #   Main
 ##########################################################################
 
 if [ $# != 0 ]; then
     usage
+fi
+
+if [ $0 = ./ms-menu ]; then
+    export PATH=.:$PATH
+    make
 fi
 
 selection=''
@@ -73,95 +136,51 @@ EOM
     case "$selection" in
     1)
 	cd Genes
-	./add-ortho.sh
+	add-ortho.sh
 	cd ..
 	;;
     
     2)
-	printf "Adjacent genes? [3] "
-	read genes
-	if [ 0"$genes" = 0 ]; then
-	    genes=3
-	fi
-	printf "Max distance in NT? [1,000,000] "
-	read max_nt
-	if [ 0"$max_nt" = 0 ]; then
-	    max_nt=1000000
-	fi
-	ls Genes/*.txt
-	printf "Gene list? [Genes/de-tf-refined-ortho.txt] "
-	read gene_list
-	if [ 0"$gene_list" = 0 ]; then
-	    gene_list="Genes/de-tf-refined-ortho.txt"
-	fi
-	./gene-list-extract.sh \
-	    --adjacent-genes $genes --max-nt-distance $max_nt $gene_list
+	get_genes_max_nt
+	get_gene_list_filename
+	ms-gene-list-extract \
+	    --adjacent-genes $Adjacent_genes --max-nt-distance $Max_nt \
+	    $Gene_list_filename 2>&1 | tee gene-list-extract.out
 	;;
     
     3)
-	printf "Adjacent genes? [3] "
-	read genes
-	if [ 0"$genes" = 0 ]; then
-	    genes=3
-	fi
-	printf "Max distance in NT? [1,000,000] "
-	read max_nt
-	if [ 0"$max_nt" = 0 ]; then
-	    max_nt=1000000
-	fi
-	ls Genes/*.txt
-	printf "Gene list? [Genes/de-tf-refined-ortho.txt] "
-	read gene_list
-	if [ 0"$gene_list" = 0 ]; then
-	    gene_list="Genes/de-tf-refined-ortho.txt"
-	fi
-	./gene-list-fish-mammal-intersect.sh $genes $max_nt $gene_list \
-	    2>&1 | more
+	get_genes_max_nt
+	get_gene_list_filename
+	ms-gene-list-fish-mammal-intersect $Adjacent_genes $Max_nt $Gene_list_filename \
+	    2>&1 | tee gene-list-fish-mammal-intersect.out
+	more gene-list-fish-mammal-intersect.out
 	;;
     
     4)
-	printf "Adjacent genes? [3] "
-	read genes
-	if [ 0"$genes" = 0 ]; then
-	    genes=3
-	fi
-	printf "Max distance in NT? [1,000,000] "
-	read max_nt
-	if [ 0"$max_nt" = 0 ]; then
-	    max_nt=1000000
-	fi
-	ls Genes/*.txt
-	printf "Gene list? [Genes/de-tf-refined-ortho.txt] "
-	read gene_list
-	if [ 0"$gene_list" = 0 ]; then
-	    gene_list="Genes/de-tf-refined-ortho.txt"
-	fi
-	./gene-list-stack.sh $genes $max_nt $gene_list
+	get_genes_max_nt
+	get_gene_list_filename
+	ms-gene-list-stack $Adjacent_genes $Max_nt $Gene_list_filename
 	;;
     
     5)
 	printf "Gene name? "
 	read gene
+	cat << EOM
+
+The last two numbers in each filename indicate the number of adjacent genes
+and maximum distance in NT for that region.  Choose from among these to
+answer the next two questions.  You can also generate additional region
+files by going back to option 2.
+
+EOM
 	ls Regions/*-$gene-*.gff3
-	printf "Adjacent genes? "
-	read adjacent
-	printf "Max NT distance? "
-	read max_nt
-	./plot.sh $gene $adjacent $max_nt
+	get_genes_max_nt
+	ms-plot $gene $Adjacent_genes $Max_nt
 	;;
 
     6)
-	printf "Adjacent genes? [3] "
-	read genes
-	if [ 0"$genes" = 0 ]; then
-	    genes=3
-	fi
-	printf "Max distance in NT? [1,000,000] "
-	read max_nt
-	if [ 0"$max_nt" = 0 ]; then
-	    max_nt=1000000
-	fi
-	./fish-mammal-percent-changed.sh $genes $max_nt
+	get_genes_max_nt
+	ms-fish-mammal-percent-changed $Adjacent_genes $Max_nt
 	;;
 
     7)
@@ -175,20 +194,20 @@ EOM
 	    gff_list="$gff_list GFF/$gff"
 	done
 	for gene in $genes; do
-	    ./locate-gene.sh $gene $gff_list
+	    ms-locate-gene $gene $gff_list
 	done
 	;;
     
     8)
 	printf "Gene name? "
 	read gene
-	./blast.sh $gene transcriptome
+	ms-blast $gene transcriptome
 	;;
     
     9)
 	printf "Gene name? "
 	read gene
-	./blast.sh $gene genome
+	ms-blast $gene genome
 	;;
     
     Q|q)
