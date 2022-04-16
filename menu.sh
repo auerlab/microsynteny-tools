@@ -2,7 +2,8 @@
 
 ##########################################################################
 #   Description:
-#       
+#       Simple menu system for running microsynteny tools
+#
 #   History:
 #   Date        Name        Modification
 #   2022-04-12  Jason Bacon Begin
@@ -40,7 +41,19 @@ fi
 selection=''
 while [ 0"$selection" != 0q ]; do
     clear
+    # Benner generated at https://www.ascii-art-generator.org
     cat << EOM
+	   __  ____                                  __                   
+	  /  |/  (_)_____________  _______  ______  / /____  ____  __  __
+	 / /|_/ / / ___/ ___/ __ \/ ___/ / / / __ \/ __/ _ \/ __ \/ / / /
+	/ /  / / / /__/ /  / /_/ (__  ) /_/ / / / / /_/  __/ / / / /_/ /
+       /_/  /_/_/\___/_/   \____/____/\__, /_/ /_/\__/\___/_/ /_/\__, /
+				     /____/                     /____/
+			     ______            __
+			    /_  __/___  ____  / /____
+			     / / / __ \/ __ \/ / ___/
+			    / / / /_/ / /_/ / (__  )
+			   /_/  \____/\____/_/____/
 
 1.. Add latest Biomart orthologs (Genes/biomart-orthologs.tsv.xz) to lists
 2.. Extract regions
