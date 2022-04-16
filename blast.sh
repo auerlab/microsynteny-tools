@@ -54,16 +54,15 @@ genome)
     if [ -e $gene-genome.out ]; then
 	printf "$gene-genome.out already exists.  Rerun BLAST search? y/[n] "
 	read run
-	if [ 0$run != y ]; then
-	    run=n
-	fi
     else
 	run=y
     fi
-    if [ $run = y ]; then
-	blastn -task dc-megablast -db BLAST-DB/Homo-sapiens-genome \
+    if [ 0$run = 0y ]; then
+	# More than 2 threads backfires due to I/O
+	time blastn -task dc-megablast -db BLAST-DB/Homo-sapiens-genome \
 	    -query $gene.fa -outfmt "6 qseqid pident evalue stitle" \
-	    > $gene-genome.out 2> $gene-genome.err
+	    -num_threads 2 \
+	    > $gene-genome.out
     fi
     # blast-filter.awk will attempt to print gene name from $10 as
     # well, but it will just be blank
