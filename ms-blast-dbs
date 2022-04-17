@@ -39,6 +39,7 @@ for file in Reference/*.dna.toplevel.fa.xz; do
     fi
 done
 
+printf "\nNote: NT database is over 100 GB.\n\n"
 cd BLAST-DB
 for db in nt; do
     printf "Download $db? y/[n] "
