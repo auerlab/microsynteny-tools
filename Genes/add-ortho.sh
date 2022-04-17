@@ -1,8 +1,8 @@
 #!/bin/sh -e
 
 if [ ! -e biomart-orthologs.tsv.xz ]; then
-
     cat << EOM
+
 Missing biomart-orthologs.tsv.xz. Go to:
 
 https://www.ensembl.org/biomart/martview/
@@ -31,7 +31,7 @@ if [ ! -e biomart-orthologs-sorted.tsv.xz ]; then
 fi
 
 cd ..
-make clean all
+./cave-man-install.sh
 cd Genes
 cut -d '|' -f 1 non-de-tf-jake.txt > non-de-tf.txt
 for file in all-de.txt de-tf-refined.txt non-de-tf.txt \
