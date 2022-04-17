@@ -17,6 +17,20 @@ usage()
 
 
 ##########################################################################
+#   Function description:
+#       Pause until user presses return
+##########################################################################
+
+pause()
+{
+    local junk
+    
+    printf "Press return to continue..."
+    read junk
+}
+
+
+##########################################################################
 #   Main
 ##########################################################################
 
@@ -31,10 +45,16 @@ else
     printf "Gene name? "
     read gene
     cd BLAST-DB
+    printf "\nLocal databases:\n\n"
     ls *.ndb | cut -d . -f -1
     cd ..
-    printf "Database? "
-    read db
+    default_db="Homo_sapiens-transcriptome"
+    printf "\nCopy and paste one or more databases separated by space.\n"
+    printf "\nDatabase(s)? [$default_db] "
+    read dbs
+    if [ 0"$dbs" = 0 ]; then
+	dbs=$default_db
+    fi
 fi
 
 # Debug
@@ -53,7 +73,16 @@ fi
 if [ ! -e $cds ]; then
     fgrep -w -A 1 CDS $gene_fa > $cds
 fi
-printf "Coding sequences in $cds.\n"
+cat << EOM
+
+Coding sequences in $cds.
+
+Go to https://blast.ncbi.nlm.nih.gov/Blast.cgi for web-based queries.
+Using the web BLAST on NT/NR databases may be preferable to downloading
+them, since they are many gigabytes.
+
+EOM
+pause
 
 # -task megablast (default) = hightly similar
 # -task dc-megablast = discontinguous megablast (pretty similar_
@@ -62,41 +91,44 @@ printf "Coding sequences in $cds.\n"
 # https://www.metagenomics.wiki/tools/blast/evalue
 # https://www.metagenomics.wiki/tools/blast/blastn-output-format-6
 mkdir -p BLAST-output
-case ${db##*-} in
-transcriptome)
-    blastn -task blastn -db BLAST-DB/$db \
-	-query $cds -evalue 0.01 \
-	-outfmt "6 qseqid pident length evalue stitle" \
-	> BLAST-output/$gene-transcriptome.out 2> BLAST-output/$gene-transcriptome.err
-    printf "%-15s %10s %10s %10s %-25s %s\n" \
-	"Query" "Identity" "Length" "E-value" "Location" "Gene"
-    awk -f blast-filter.awk BLAST-output/$gene-transcriptome.out
-    ;;
-
-genome)
-    if [ -e BLAST-output/$gene-genome.out ]; then
-	printf "$gene-genome.out already exists.  Rerun BLAST search? y/[n] "
-	read run
-    else
-	run=y
-    fi
-    if [ 0$run = 0y ]; then
-	# More than 2 threads backfires due to I/O
-	time blastn -task dc-megablast -db BLAST-DB/$db \
+for db in $dbs; do
+    printf "\nBLASTing $db...\n\n"
+    case ${db##*-} in
+    transcriptome)
+	blastn -task blastn -db BLAST-DB/$db \
 	    -query $cds -evalue 0.01 \
-	    -outfmt "6 qseqid pident length evalue stitle" \
-	    -num_threads 2 \
-	    > BLAST-output/$gene-genome.out
-    fi
-    # blast-filter.awk will attempt to print gene name from $10 as
-    # well, but it will just be blank
-    printf "%-15s %10s %10s %10s %-25s\n" \
-	"Query" "Identity" "Length" "E-value" "Location"
-    awk -f blast-filter.awk BLAST-output/$gene-genome.out
-    ;;
-
-*)
-    usage
-    ;;
-
-esac
+	    -outfmt "6 qseqid pident slen length evalue stitle" \
+	    > BLAST-output/$gene-transcriptome.out 2> BLAST-output/$gene-transcriptome.err
+	printf "%-15s %8s %5s %4s %10s %-24s %s\n" \
+	    "Query" "Identity" "Slen" "Alen" "E-value" "Location" "Gene"
+	awk -f blast-filter.awk BLAST-output/$gene-transcriptome.out
+	;;
+    
+    genome)
+	if [ -e BLAST-output/$gene-genome.out ]; then
+	    printf "$gene-genome.out already exists.  Rerun BLAST search? y/[n] "
+	    read run
+	else
+	    run=y
+	fi
+	if [ 0$run = 0y ]; then
+	    # More than 2 threads backfires due to I/O
+	    time blastn -task dc-megablast -db BLAST-DB/$db \
+		-query $cds -evalue 0.01 \
+		-outfmt "6 qseqid pident length evalue stitle" \
+		-num_threads 2 \
+		> BLAST-output/$gene-genome.out
+	fi
+	# blast-filter.awk will attempt to print gene name from $10 as
+	# well, but it will just be blank
+	printf "%-15s %8s %5s %4s %10s %-24s\n" \
+	    "Query" "Identity" "Slen" "Alen" "E-value" "Location"
+	awk -f blast-filter.awk BLAST-output/$gene-genome.out
+	;;
+    
+    *)
+	usage
+	;;
+    
+    esac
+done
