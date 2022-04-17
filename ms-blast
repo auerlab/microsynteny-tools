@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-name BLAST-database-name\n"
+    printf "Usage: $0 [gene-name BLAST-database-name]\n"
     exit 1
 }
 
@@ -41,7 +41,7 @@ fi
 if [ $# = 2 ]; then
     gene=$1
     db=$2
-else
+elif [ $# = 0 ]; then
     printf "Gene name? "
     read gene
     cd BLAST-DB
@@ -55,6 +55,8 @@ else
     if [ 0"$dbs" = 0 ]; then
 	dbs=$default_db
     fi
+else
+    usage
 fi
 
 # Debug
