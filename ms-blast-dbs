@@ -9,8 +9,6 @@
 #                   excluding GSS,STS, PAT, EST, HTG, and WGS.
 # landmark
 
-# update_blastdb.pl --decompress nt
-
 # makeblastdb -help|more
 
 mkdir -p BLAST-DB
@@ -40,3 +38,13 @@ for file in Reference/*.dna.toplevel.fa.xz; do
 	printf "$db already exists.\n"
     fi
 done
+
+cd BLAST-DB
+for db in nt; do
+    printf "Download $db? y/[n] "
+    read download
+    if [ 0$download = 0y ]; then
+	update_blastdb.pl $db
+    fi
+done
+cd ..
