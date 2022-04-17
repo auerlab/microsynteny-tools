@@ -119,7 +119,7 @@ while [ 0"$selection" != 0q ]; do
 			   /_/  \____/\____/_/____/
 
 1.. Add latest Biomart orthologs (Genes/biomart-orthologs.tsv.xz) to lists
-2.. Download Ensembl transcriptomes and genomes (may take a while)
+2.. Download Ensembl GFFs, transcriptomes and genomes (may take a while)
 3.. Extract regions
 4.. Find intersections between regions across fish and mammals
 5.. View stacked regions across species (scale discarded)
@@ -142,7 +142,9 @@ EOM
 	;;
     
     2)
-	cd Transcriptome
+	cd GFF
+	./fetch-gffs.sh
+	cd ../Transcriptome
 	./fetch-cdnas.sh
 	cd ../Reference
 	./fetch-refs.sh
