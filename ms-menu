@@ -170,9 +170,21 @@ EOM
 	;;
     
     5)
-	get_adjacent_genes_max_nt
-	get_gene_list_filename
-	ms-gene-list-stack $Adjacent_genes $Max_nt $Gene_list_filename
+	printf "Gene name? "
+	read gene
+	if [ 0"$gene" != 0 ]; then
+	    cat << EOM
+
+The last two numbers in each filename indicate the number of adjacent genes
+and maximum distance in NT for that region.  Choose from among these to
+answer the next two questions.  You can also generate additional region
+files by going back to option 2.
+
+EOM
+	    ls Regions/*-$gene-*.gff3
+	    get_adjacent_genes_max_nt
+	    ms-stack $Adjacent_genes $Max_nt $gene
+	fi
 	;;
     
     6)
@@ -189,7 +201,13 @@ files by going back to option 2.
 EOM
 	    ls Regions/*-$gene-*.gff3
 	    get_adjacent_genes_max_nt
-	    ms-plot $gene $Adjacent_genes $Max_nt
+	    cd Regions
+	    printf "\nCut and paste species names separated by space.\n\n"
+	    ls | cut -d - -f 1 | sort | uniq
+	    cd ..
+	    printf "\nSpecies? [all] "
+	    read species
+	    ms-plot $Adjacent_genes $Max_nt $gene $species
 	fi
 	;;
 
@@ -199,7 +217,7 @@ EOM
 	;;
 
     8)
-	printf "Gene name(s) or initial part (separated by space)? "
+	printf "Gene names (separated by space)? "
 	read genes
 	if [ 0"$genes" != 0 ]; then
 	    printf "\nAvailable species:\n\n"

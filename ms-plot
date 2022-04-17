@@ -10,7 +10,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-name adjacent-genes max-nt\n"
+    printf "Usage: $0 adjacent-genes max-nt gene-name species [species ...]\n"
     exit 1
 }
 
@@ -19,13 +19,24 @@ usage()
 #   Main
 ##########################################################################
 
-if [ $# != 3 ]; then
+if [ $# -lt 3 ]; then
     usage
 fi
-gene=$1
-adjacent=$2
-max_nt=$3
+adjacent=$1
+max_nt=$2
+gene=$3
+shift
+shift
+shift
 
-for file in Regions/*-$gene-*-$adjacent-$max_nt.gff3; do
-    ms-plot.py $file
-done
+if [ $# = 0 ]; then
+    for file in Regions/*-$gene-*-$adjacent-$max_nt.gff3; do
+	ms-plot.py $file
+    done
+else
+    for species in "$@"; do
+	for file in Regions/$species-$gene-*-$adjacent-$max_nt.gff3; do
+	    ms-plot.py $file
+	done
+    done
+fi
