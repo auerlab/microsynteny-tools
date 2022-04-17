@@ -11,7 +11,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-name transcriptome|genome\n"
+    printf "Usage: $0 gene-name BLAST-database-name\n"
     exit 1
 }
 
@@ -39,14 +39,14 @@ test -e $gene.fa || blt extract-seq GFF/Danio_rerio.GRCz11.105.chr.gff3 \
 # evalue < 0.01 considered good enough for homology
 # https://www.metagenomics.wiki/tools/blast/evalue
 # https://www.metagenomics.wiki/tools/blast/blastn-output-format-6
-case $db in
+case ${db##*-} in
 transcriptome)
-    blastn -task blastn -db BLAST-DB/Homo-sapiens-transcriptome \
+    blastn -task blastn -db BLAST-DB/$db \
 	-query $gene.fa -evalue 0.01 \
-	-outfmt "6 qseqid pident evalue stitle" \
+	-outfmt "6 qseqid pident length evalue stitle" \
 	> $gene-transcriptome.out 2> $gene-transcriptome.err
-    printf "%-15s %10s %10s %-25s %s\n" \
-	"Query" "Identity" "E-value" "Location" "Gene"
+    printf "%-15s %10s %10s %10s %-25s %s\n" \
+	"Query" "Identity" "Length" "E-value" "Location" "Gene"
     awk -f blast-filter.awk $gene-transcriptome.out
     ;;
 
@@ -59,15 +59,15 @@ genome)
     fi
     if [ 0$run = 0y ]; then
 	# More than 2 threads backfires due to I/O
-	time blastn -task dc-megablast -db BLAST-DB/Homo-sapiens-genome \
-	    -query $gene.fa -outfmt "6 qseqid pident evalue stitle" \
+	time blastn -task dc-megablast -db BLAST-DB/$db \
+	    -query $gene.fa -outfmt "6 qseqid pident length evalue stitle" \
 	    -num_threads 2 \
 	    > $gene-genome.out
     fi
     # blast-filter.awk will attempt to print gene name from $10 as
     # well, but it will just be blank
-    printf "%-15s %10s %10s %-25s %s\n" \
-	"Query" "Identity" "E-value" "Location"
+    printf "%-15s %10s %10s %10s %-25s %s\n" \
+	"Query" "Identity" "Length" "E-value" "Location"
     awk -f blast-filter.awk $gene-genome.out
     ;;
 

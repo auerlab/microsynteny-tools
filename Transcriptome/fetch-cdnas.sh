@@ -19,12 +19,19 @@ wget)
     ;;
 esac
 
-site="http://ftp.ensembl.org/pub/release-106/fasta/homo_sapiens/cdna"
+site="http://ftp.ensembl.org/pub/release-$(../Utils/ensembl-release.sh)/fasta"
+
 
 # No combined primary_assembly files for many species, so we would
 # have to download all chromosomes individually and concatenate.
 # Remove non-chromosomal sequences from toplevel to get primary_assembly.
-for cdna in Homo_sapiens.GRCh38.cdna.all.fa
+for cdna in \
+    homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa \
+    mus_musculus/cdna/Mus_musculus.GRCm39.cdna.all.fa \
+    rattus_norvegicus/cdna/Rattus_norvegicus.mRatBN7.2.cdna.all.fa \
+    danio_rerio/cdna/Danio_rerio.GRCz11.cdna.all.fa \
+    takifugu_rubripes/cdna/Takifugu_rubripes.fTakRub1.2.cdna.all.fa \
+    oryzias_latipes/cdna/Oryzias_latipes.ASM223467v1.cdna.all.fa
 do
     base=$(basename $cdna)
     printf "===\n"

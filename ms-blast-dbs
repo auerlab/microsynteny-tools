@@ -1,0 +1,42 @@
+#!/bin/sh -e
+
+# https://www.ncbi.nlm.nih.gov/books/NBK569850/?report=reader#!po=16.6667
+# Database descriptions
+# https://ftp.ncbi.nlm.nih.gov/blast/documents/blastdb.html
+# landmark.tar.gz | Proteome of 27 model organisms
+# nt.*tar.gz      | Partially non-redundant nucleotide sequences from 
+#                   all traditional divisions of GenBank, EMBL, and DDBJ 
+#                   excluding GSS,STS, PAT, EST, HTG, and WGS.
+# landmark
+
+# update_blastdb.pl --decompress nt
+
+# makeblastdb -help|more
+
+mkdir -p BLAST-DB
+
+for file in Transcriptome/*.cdna.all.fa.gz; do
+    base=$(basename $file)
+    species=$(echo $base | cut -d . -f 1)
+    db=BLAST-DB/$species-transcriptome.ndb
+    if [ ! -e $db ]; then
+	printf "Making db for $file...\n"
+	zcat $file | makeblastdb -title "$species" \
+	    -dbtype nucl -out BLAST-DB/$species-transcriptome
+    else
+	printf "$db already exists.\n"
+    fi
+done
+
+for file in Reference/*.dna.toplevel.fa.xz; do
+    base=$(basename $file)
+    species=$(echo $base | cut -d . -f 1)
+    db=BLAST-DB/$species-genome.ndb
+    if [ ! -e $db ]; then
+	printf "Making db for $file...\n"
+	zcat $file | makeblastdb -title "$species" \
+	    -dbtype nucl -out BLAST-DB/$species-genome
+    else
+	printf "$db already exists.\n"
+    fi
+done
