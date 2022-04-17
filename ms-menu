@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 ##########################################################################
 #   Description:
@@ -197,12 +197,19 @@ EOM
     8)
 	printf "Gene name(s) or initial part (separated by space)? "
 	read genes
-	ls GFF
-	printf "GFF filename(s) (separated by space)? \n"
-	read gffs
+	printf "\nAvailable species:\n\n"
+	cd GFF
+	ls *.gff3 | cut -d . -f 1
+	cd ..
+	default="Homo_sapiens Mus_musculus Rattus_norvegicus"
+	printf "\nSpecies? [$default] "
+	read species_list
+	if [ 0"$species" = 0 ]; then
+	    species_list="$default"
+	fi
 	gff_list=''
-	for gff in $gffs; do
-	    gff_list="$gff_list GFF/$gff"
+	for species in $species_list; do
+	    gff_list="$gff_list GFF/$species.*.gff3"
 	done
 	for gene in $genes; do
 	    ms-locate-gene $gene $gff_list
