@@ -46,9 +46,9 @@ pause()
 #   2022-04-16  Jason Bacon Begin
 ##########################################################################
 
-get_genes_max_nt()
+get_adjacent_genes_max_nt()
 {
-    printf "Adjacent genes? [3] "
+    printf "\nAdjacent genes? [3] "
     read Genes
     if [ 0"$Adjacent_genes" = 0 ]; then
 	Adjacent_genes=3
@@ -152,23 +152,25 @@ EOM
 	;;
     
     3)
-	get_genes_max_nt
+	get_adjacent_genes_max_nt
 	get_gene_list_filename
+	mkdir -p Output
 	ms-gene-list-extract \
 	    --adjacent-genes $Adjacent_genes --max-nt-distance $Max_nt \
-	    $Gene_list_filename 2>&1 | tee gene-list-extract.out
+	    $Gene_list_filename 2>&1 | tee Output/gene-list-extract.out
 	;;
     
     4)
-	get_genes_max_nt
+	get_adjacent_genes_max_nt
 	get_gene_list_filename
+	mkdir -p Output
 	ms-gene-list-fish-mammal-intersect $Adjacent_genes $Max_nt $Gene_list_filename \
-	    2>&1 | tee gene-list-fish-mammal-intersect.out
-	more gene-list-fish-mammal-intersect.out
+	    2>&1 | tee Output/gene-list-fish-mammal-intersect.out
+	more Output/gene-list-fish-mammal-intersect.out
 	;;
     
     5)
-	get_genes_max_nt
+	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	ms-gene-list-stack $Adjacent_genes $Max_nt $Gene_list_filename
 	;;
@@ -176,7 +178,8 @@ EOM
     6)
 	printf "Gene name? "
 	read gene
-	cat << EOM
+	if [ 0"$gene" != 0 ]; then
+	    cat << EOM
 
 The last two numbers in each filename indicate the number of adjacent genes
 and maximum distance in NT for that region.  Choose from among these to
@@ -184,36 +187,39 @@ answer the next two questions.  You can also generate additional region
 files by going back to option 2.
 
 EOM
-	ls Regions/*-$gene-*.gff3
-	get_genes_max_nt
-	ms-plot $gene $Adjacent_genes $Max_nt
+	    ls Regions/*-$gene-*.gff3
+	    get_adjacent_genes_max_nt
+	    ms-plot $gene $Adjacent_genes $Max_nt
+	fi
 	;;
 
     7)
-	get_genes_max_nt
+	get_adjacent_genes_max_nt
 	ms-fish-mammal-percent-changed $Adjacent_genes $Max_nt
 	;;
 
     8)
 	printf "Gene name(s) or initial part (separated by space)? "
 	read genes
-	printf "\nAvailable species:\n\n"
-	cd GFF
-	ls *.gff3 | cut -d . -f 1
-	cd ..
-	default="Homo_sapiens Mus_musculus Rattus_norvegicus"
-	printf "\nSpecies? [$default] "
-	read species_list
-	if [ 0"$species" = 0 ]; then
-	    species_list="$default"
+	if [ 0"$genes" != 0 ]; then
+	    printf "\nAvailable species:\n\n"
+	    cd GFF
+	    ls *.gff3 | cut -d . -f 1
+	    cd ..
+	    default="Homo_sapiens Mus_musculus Rattus_norvegicus"
+	    printf "\nSpecies? [$default] "
+	    read species_list
+	    if [ 0"$species" = 0 ]; then
+		species_list="$default"
+	    fi
+	    gff_list=''
+	    for species in $species_list; do
+		gff_list="$gff_list GFF/$species.*.gff3"
+	    done
+	    for gene in $genes; do
+		ms-locate-gene $gene $gff_list
+	    done
 	fi
-	gff_list=''
-	for species in $species_list; do
-	    gff_list="$gff_list GFF/$species.*.gff3"
-	done
-	for gene in $genes; do
-	    ms-locate-gene $gene $gff_list
-	done
 	;;
     
     9)
@@ -223,12 +229,14 @@ EOM
     10)
 	printf "Gene name? "
 	read gene
-	cd BLAST-DB
-	ls *.ndb | cut -d . -f -1
-	cd ..
-	printf "Database? "
-	read db
-	ms-blast $gene $db
+	if [ 0"$gene" != 0 ]; then
+	    cd BLAST-DB
+	    ls *.ndb | cut -d . -f -1
+	    cd ..
+	    printf "Database? "
+	    read db
+	    ms-blast $gene $db
+	fi
 	;;
     
     Q|q)
