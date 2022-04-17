@@ -5,21 +5,9 @@ if [ $0 != ./fetch-refs.sh ]; then
     exit 1
 fi
 
-for fetch in curl wget fetch; do
-    which $fetch > /dev/null 2>&1 && break
-done
-case $fetch in
-curl)
-    flags='--continue-at - --remote-name'
-    ;;
-wget)
-    flags='--continue'
-    ;;
-*)
-    ;;
-esac
+curl_flags='--continue-at - --remote-name'
+site="http://ftp.ensembl.org/pub/release-$(../Utils/ensembl-release.sh)/fasta"
 
-site="http://ftp.ensembl.org/pub/release-105/fasta"
 # No combined primary_assembly files for many species, so we would
 # have to download all chromosomes individually and concatenate.
 # Remove non-chromosomal sequences from toplevel to get primary_assembly.
@@ -34,11 +22,7 @@ for ref in \
 do
     base=$(basename $ref)
     printf "===\n"
-    if [ ! -e ${base%.gz} ]; then
-	printf "Downloading ${base%.gz}\n"
-	url=$site/$ref
-	$fetch $flags $url
-    else
-	printf "$(basename ${ref%.gz}) already exists.\n"
-    fi
+    printf "Downloading $base.gz...\n"
+    url=$site/$ref
+    curl $curl_flags $url
 done

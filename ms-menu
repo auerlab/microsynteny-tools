@@ -119,14 +119,16 @@ while [ 0"$selection" != 0q ]; do
 			   /_/  \____/\____/_/____/
 
 1.. Add latest Biomart orthologs (Genes/biomart-orthologs.tsv.xz) to lists
-2.. Extract regions
-3.. Find intersections between regions across fish and mammals
-4.. View stacked regions across species (scale discarded)
-5.. Visualize regions in scale
-6.. Show percent changed stats for fish and mammals
+2.. Download Ensembl transcriptomes and genomes (may take a while)
+3.. Extract regions
+4.. Find intersections between regions across fish and mammals
+5.. View stacked regions across species (scale discarded)
+6.. Visualize regions in scale
+7.. Show percent changed stats for fish and mammals
     (Extract regions for de-tf-ortho.txt and non-de-tf-ortho.txt first)
-7.. Locate genes in one or more GFF files
-8.. BLAST a Danio gene against another species
+8.. Locate genes in one or more GFF files
+9.. Build/download BLAST databases
+10. BLAST a Danio gene against another species
 Q.. Quit
 
 EOM
@@ -140,6 +142,14 @@ EOM
 	;;
     
     2)
+	cd Transcriptome
+	./fetch-cdnas.sh
+	cd ../Reference
+	./fetch-refs.sh
+	cd ..
+	;;
+    
+    3)
 	get_genes_max_nt
 	get_gene_list_filename
 	ms-gene-list-extract \
@@ -147,7 +157,7 @@ EOM
 	    $Gene_list_filename 2>&1 | tee gene-list-extract.out
 	;;
     
-    3)
+    4)
 	get_genes_max_nt
 	get_gene_list_filename
 	ms-gene-list-fish-mammal-intersect $Adjacent_genes $Max_nt $Gene_list_filename \
@@ -155,13 +165,13 @@ EOM
 	more gene-list-fish-mammal-intersect.out
 	;;
     
-    4)
+    5)
 	get_genes_max_nt
 	get_gene_list_filename
 	ms-gene-list-stack $Adjacent_genes $Max_nt $Gene_list_filename
 	;;
     
-    5)
+    6)
 	printf "Gene name? "
 	read gene
 	cat << EOM
@@ -177,12 +187,12 @@ EOM
 	ms-plot $gene $Adjacent_genes $Max_nt
 	;;
 
-    6)
+    7)
 	get_genes_max_nt
 	ms-fish-mammal-percent-changed $Adjacent_genes $Max_nt
 	;;
 
-    7)
+    8)
 	printf "Gene name(s) or initial part (separated by space)? "
 	read genes
 	ls GFF
@@ -197,7 +207,11 @@ EOM
 	done
 	;;
     
-    8)
+    9)
+	ms-blast-dbs
+	;;
+    
+    10)
 	printf "Gene name? "
 	read gene
 	cd BLAST-DB
