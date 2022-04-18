@@ -48,10 +48,10 @@ pause()
 
 get_adjacent_genes_max_nt()
 {
-    printf "\nAdjacent genes? [3] "
+    printf "\nAdjacent genes? [4] "
     read Genes
     if [ 0"$Adjacent_genes" = 0 ]; then
-	Adjacent_genes=3
+	Adjacent_genes=4
     fi
     printf "Max distance in NT? [1,000,000] "
     read Max_nt
@@ -191,7 +191,7 @@ files by going back to option 2.
 EOM
 	    ls Regions/*-$gene-*.gff3
 	    get_adjacent_genes_max_nt
-	    ms-stack $Adjacent_genes $Max_nt $Gene_list_filename $gene
+	    ms-stack $Adjacent_genes $Max_nt $Gene_list_filename $gene &
 	fi
 	;;
     
@@ -215,7 +215,7 @@ EOM
 	    cd ..
 	    printf "\nSpecies? [all] "
 	    read species
-	    ms-plot $Adjacent_genes $Max_nt $gene $species
+	    ms-plot $Adjacent_genes $Max_nt $gene $species &
 	fi
 	;;
 
