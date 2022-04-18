@@ -41,11 +41,11 @@ done
 
 printf "\nNote: NT database is over 100 GB.\n\n"
 cd BLAST-DB
-for db in nt; do
+for db in nt human_genome; do
     printf "Download $db? y/[n] "
     read download
     if [ 0$download = 0y ]; then
-	update_blastdb.pl $db
+	update_blastdb.pl --decompress $db
     fi
 done
 cd ..
