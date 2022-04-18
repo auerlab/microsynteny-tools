@@ -51,6 +51,24 @@ fi
 adjacent_genes=$1
 max_nt=$2
 
+if [ -z "$AWK_PATH" ]; then
+    if [ $0 = Scripts/ms-fish-mammal-percent-changed ]; then
+	# Development: Running from repo dir
+	export PATH=$(pwd):$(pwd)/Scripts:$PATH
+	export AWK_PATH=$(pwd)/Libexec
+	make
+    elif [ $0 = ./ms-fish-mammal-percent-changed ]; then
+	# Development: Running from repo dir
+	cd ..
+	export PATH=$(pwd):$(pwd)/Scripts:$PATH
+	export AWK_PATH=$(pwd)/Libexec
+	make
+    else
+	# Installed
+	export AWK_PATH=%%PREFIX%%/libexec
+    fi
+fi
+
 regen_species="Danio_rerio Oryzias_latipes Takifugu_rubripes"
 noregen_species="Mus_musculus Rattus_norvegicus Homo_sapiens"
 
@@ -84,7 +102,7 @@ for gene_list in Genes/de-tf-ortho.txt Genes/non-de-tf-ortho.txt; do
     printf "\nOverall conservation rate for $gene_list\n"
     printf "Adjacent genes = $adjacent_genes, max NT distance = $max_nt\n"
     printf "Species: $regen_species\n"
-    awk -f conserved-stats.awk counts.txt
+    awk -f $AWK_PATH/conserved-stats.awk counts.txt
     
     rm -f counts.txt
     for goi in $(cat $gene_list); do
@@ -113,6 +131,6 @@ for gene_list in Genes/de-tf-ortho.txt Genes/non-de-tf-ortho.txt; do
     printf "\nOverall conservation rate for $gene_list\n"
     printf "Adjacent genes = $adjacent_genes, max NT distance = $max_nt\n"
     printf "Species: $noregen_species\n"
-    awk -f conserved-stats.awk counts.txt
+    awk -f $AWK_PATH/conserved-stats.awk counts.txt
 done
 rm -f temp.out counts.txt

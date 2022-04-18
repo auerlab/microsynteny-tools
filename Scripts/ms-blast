@@ -38,20 +38,22 @@ if [ 0$1 = 0--help ]; then
     usage
 fi
 
-if [ $0 = Scripts/ms-blast ]; then
-    # Development: Running from repo dir
-    export PATH=Scripts:$PATH
-    export AWK_PATH=$(pwd)/Libexec
-    make
-elif [ $0 = ./ms-blast ]; then
-    # Development: Running from repo dir
-    cd ..
-    export PATH=Scripts:$PATH
-    export AWK_PATH=$(pwd)/Libexec
-    make
-else
-    # Installed
-    export AWK_PATH=%%PREFIX%%/libexec
+if [ -z "$AWK_PATH" ]; then
+    if [ $0 = Scripts/ms-blast ]; then
+	# Development: Running from repo dir
+	export PATH=Scripts:$PATH
+	export AWK_PATH=$(pwd)/Libexec
+	make
+    elif [ $0 = ./ms-blast ]; then
+	# Development: Running from repo dir
+	cd ..
+	export PATH=Scripts:$PATH
+	export AWK_PATH=$(pwd)/Libexec
+	make
+    else
+	# Installed
+	export AWK_PATH=%%PREFIX%%/libexec
+    fi
 fi
 
 if [ $# = 2 ]; then

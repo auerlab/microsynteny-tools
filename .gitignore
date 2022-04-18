@@ -2,7 +2,7 @@
 ms-extract
 ms-divergence
 ms-intersect
-add-ortho
+ms-add-ortho
 
 # Object files
 *.o

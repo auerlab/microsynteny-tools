@@ -1,9 +1,29 @@
 #!/bin/sh -e
 
-if [ $0 != ./fetch-gffs.sh ]; then
-    printf "Must be run as ./fetch-gffs.sh\n"
-    exit 1
+##########################################################################
+#   Function description:
+#       Pause until user presses return
+##########################################################################
+
+pause()
+{
+    local junk
+    
+    printf "Press return to continue..."
+    read junk
+}
+
+release_file=$HOME/.ms-genome-release
+if [ ! -e $release_file ]; then
+    while [ -z "$release" ]; do
+	printf "Genome release? (e.g. 106) "
+	read release
+    done
+    echo $release > $release_file
+    printf "Edit $release_file to change.\n"
+    pause
 fi
+release=$(cat $release_file)
 
 #    gadus_morhua/Gadus_morhua.gadMor3.0.105.chr.gff3.gz \
 #    salmo_salar/Salmo_salar.ICSASG_v2.105.chr.gff3.gz \

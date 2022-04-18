@@ -96,20 +96,22 @@ if [ $# != 0 ]; then
     usage
 fi
 
-if [ $0 = Scripts/ms-menu ]; then
-    # Development: Running from repo dir
-    export PATH=Scripts:$PATH
-    export AWK_PATH=$(pwd)/Libexec
-    make
-elif [ $0 = ./ms-menu ]; then
-    # Development: Running from repo dir
-    cd ..
-    export PATH=Scripts:$PATH
-    export AWK_PATH=$(pwd)/Libexec
-    make
-else
-    # Installed
-    export AWK_PATH=%%PREFIX%%/libexec
+if [ -z "$AWK_PATH" ]; then
+    if [ $0 = Scripts/ms-menu ]; then
+	# Development: Running from repo dir
+	export PATH=$(pwd):$(pwd)/Scripts:$PATH
+	export AWK_PATH=$(pwd)/Libexec
+	make
+    elif [ $0 = ./ms-menu ]; then
+	# Development: Running from repo dir
+	cd ..
+	export PATH=$(pwd):$(pwd)/Scripts:$PATH
+	export AWK_PATH=$(pwd)/Libexec
+	make
+    else
+	# Installed
+	export AWK_PATH=%%PREFIX%%/libexec
+    fi
 fi
 
 selection=''
@@ -129,17 +131,16 @@ while [ 0"$selection" != 0q ]; do
 			    / / / /_/ / /_/ / (__  )
 			   /_/  \____/\____/_/____/
 
-1.. Add latest Biomart orthologs (Genes/biomart-orthologs.tsv.xz) to lists
-2.. Download Ensembl GFFs, transcriptomes and genomes (may take a while)
-3.. Extract regions
-4.. Find intersections between regions across fish and mammals
-5.. View stacked regions across species (scale discarded)
-6.. Visualize regions in scale
-7.. Show percent changed stats for fish and mammals
+1.. Download Ensembl GFFs, transcriptomes and genomes (may take a while)
+2.. Extract regions
+3.. Find intersections between regions across fish and mammals
+4.. View stacked regions across species (scale discarded)
+5.. Visualize regions in scale
+6.. Show percent changed stats for fish and mammals
     (Extract regions for de-tf-ortho.txt and non-de-tf-ortho.txt first)
-8.. Locate genes in one or more GFF files
-9.. Build/download BLAST databases
-10. BLAST a Danio gene against another species
+7.. Locate genes in one or more GFF files
+8.. Build/download BLAST databases
+9.. BLAST a Danio gene against another species
 Q.. Quit
 
 EOM
@@ -147,22 +148,16 @@ EOM
     read selection
     case "$selection" in
     1)
-	cd Genes
-	add-ortho.sh
+	cd GFF
+	ms-fetch-gffs
+	cd ../Transcriptome
+	ms-fetch-cdnas
+	cd ../Reference
+	ms-fetch-refs
 	cd ..
 	;;
     
     2)
-	cd GFF
-	./fetch-gffs.sh
-	cd ../Transcriptome
-	./fetch-cdnas.sh
-	cd ../Reference
-	./fetch-refs.sh
-	cd ..
-	;;
-    
-    3)
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	mkdir -p Output
@@ -171,7 +166,7 @@ EOM
 	    $Gene_list_filename 2>&1 | tee Output/gene-list-extract.out
 	;;
     
-    4)
+    3)
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	mkdir -p Output
@@ -180,7 +175,7 @@ EOM
 	more Output/gene-list-fish-mammal-intersect.out
 	;;
     
-    5)
+    4)
 	printf "Gene name? "
 	read gene
 	if [ 0"$gene" != 0 ]; then
@@ -198,7 +193,7 @@ EOM
 	fi
 	;;
     
-    6)
+    5)
 	printf "Gene name? "
 	read gene
 	if [ 0"$gene" != 0 ]; then
@@ -222,24 +217,24 @@ EOM
 	fi
 	;;
 
-    7)
+    6)
 	get_adjacent_genes_max_nt
 	ms-fish-mammal-percent-changed $Adjacent_genes $Max_nt
 	;;
 
-    8)
+    7)
 	printf "Gene names (separated by space)? "
 	read genes
-	if [ 0"$genes" != 0 ]; then
+	if [ -n "$genes" ]; then
 	    printf "\nAvailable species:\n\n"
 	    cd GFF
 	    ls *.gff3 | cut -d . -f 1
 	    cd ..
-	    default="Homo_sapiens Mus_musculus Rattus_norvegicus"
-	    printf "\nSpecies? [$default] "
+	    default_species="Homo_sapiens Mus_musculus Rattus_norvegicus"
+	    printf "\nSpecies? [$default_species] "
 	    read species_list
-	    if [ 0"$species" = 0 ]; then
-		species_list="$default"
+	    if [ 0"$species_list" = 0 ]; then
+		species_list="$default_species"
 	    fi
 	    gff_list=''
 	    for species in $species_list; do
@@ -251,11 +246,11 @@ EOM
 	fi
 	;;
     
-    9)
+    8)
 	ms-blast-dbs
 	;;
     
-    10)
+    9)
 	ms-blast
 	;;
     

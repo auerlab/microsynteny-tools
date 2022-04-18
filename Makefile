@@ -50,7 +50,7 @@
 
 BIN1    = ms-extract
 BIN2    = ms-intersect
-BIN3    = add-ortho
+BIN3    = ms-add-ortho
 BINS    = ${BIN1} ${BIN2} ${BIN3}
 
 ############################################################################
@@ -58,7 +58,7 @@ BINS    = ${BIN1} ${BIN2} ${BIN3}
 
 OBJS1   = ms-extract.o alt-str.o
 OBJS2   = ms-intersect.o gff-region.o gff-region-mutators.o
-OBJS3   = add-ortho.o
+OBJS3   = ms-add-ortho.o
 OBJS    = ${OBJS1} ${OBJS2}
 
 ############################################################################
