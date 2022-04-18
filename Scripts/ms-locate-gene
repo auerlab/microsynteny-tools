@@ -10,7 +10,7 @@
 
 usage()
 {
-    printf "Usage: $0 gene-name GFF-file [GFF-file ...]\n"
+    printf "Usage: $0 GFF-file gene-name [gene-name ...]\n"
     exit 1
 }
 
@@ -22,18 +22,19 @@ usage()
 if [ $# -lt 2 ]; then
     usage
 fi
-gene=$1
+file=$1
 shift
 
-for file in "$@"; do
-    printf "\n$gene $file\n"
+printf "\n$file:\n"
+for gene in "$@"; do
+    printf "  $gene:\n"
     awk -v gene=$gene '$3 == "gene" {
 	split($9, a, ";");
 	for (f in a) {
 	    str = "Name=" gene;
 	    #print a[f];
 	    if ( tolower(a[f]) ~ tolower(str) ) {
-		print $1, $4, a[f];
+		printf("    %2s %6.1fM %s\n", $1, $4 / 1000000, a[f]);
 		break;
 	    }
 	}

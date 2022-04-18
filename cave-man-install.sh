@@ -15,6 +15,8 @@
 : ${PREFIX:=../local}
 : ${LOCALBASE:=/usr/local}
 
+PREFIX=$(realpath $PREFIX)
+
 # OS-dependent tricks
 # Set rpath to avoid picking up libs installed by package managers in
 # /usr/local/lib, etc.
@@ -24,17 +26,18 @@ case $(uname) in
 	export CFLAGS="-Wall -g -O"
     fi
     LIBDIR=$(realpath $PREFIX/lib)
-    export LDFLAGS="-L. -L$LIBDIR -Wl,-rpath,$LIBDIR:/usr/lib:/lib"
     for pkgsrc in /usr/pkg /opt/pkg ~/Pkgsrc/pkg; do
 	if [ -e $pkgsrc ]; then
 	    echo "Using $pkgsrc..."
-	    export LOCALBASE=$pkgsrc
+	    LOCALBASE=$pkgsrc
 	fi
     done
     ;;
 
 esac
 
-export PREFIX LOCALBASE
+LDFLAGS="-L. -L$LIBDIR -Wl,-rpath,$LIBDIR:/usr/lib:/lib"
+LIBEXECDIR=$(realpath $PREFIX/libexec)
+export PREFIX LOCALBASE LDFLAGS LIBEXECDIR
 make clean
 make install

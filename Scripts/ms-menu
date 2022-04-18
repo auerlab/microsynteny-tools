@@ -224,8 +224,8 @@ EOM
 
     7)
 	printf "Gene names (separated by space)? "
-	read genes
-	if [ -n "$genes" ]; then
+	read gene_list
+	if [ -n "$gene_list" ]; then
 	    printf "\nAvailable species:\n\n"
 	    cd GFF
 	    ls *.gff3 | cut -d . -f 1
@@ -236,12 +236,9 @@ EOM
 	    if [ 0"$species_list" = 0 ]; then
 		species_list="$default_species"
 	    fi
-	    gff_list=''
 	    for species in $species_list; do
-		gff_list="$gff_list GFF/$species.*.gff3"
-	    done
-	    for gene in $genes; do
-		ms-locate-gene $gene $gff_list
+		gff="GFF/$species.*.gff3"
+		ms-locate-gene $gff $gene_list
 	    done
 	fi
 	;;

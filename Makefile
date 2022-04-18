@@ -74,6 +74,8 @@ PREFIX      ?= ../local
 # independently.
 LOCALBASE   ?= ${PREFIX}
 
+LIBEXECDIR  ?= ${PREFIX}/libexec
+
 # Allow caller to override either MANPREFIX or MANDIR
 MANPREFIX   ?= ${PREFIX}
 MANDIR      ?= ${MANPREFIX}/man
@@ -181,14 +183,14 @@ realclean: clean
 
 install: all
 	${MKDIR} -p ${DESTDIR}${PREFIX}/bin ${DESTDIR}${MANDIR}/man1 \
-		    ${DESTDIR}${PREFIX}/libexec
+		    ${DESTDIR}${LIBEXECDIR}
 	${INSTALL} -s -m 0755 ${BINS} ${DESTDIR}${PREFIX}/bin
 	for f in Scripts/*; do \
 	    ${SED} 's|%%PREFIX%%|${PREFIX}|g' $${f} \
 		> ${DESTDIR}${PREFIX}/bin/`basename $${f}`; \
 	    ${CHMOD} 755 ${DESTDIR}${PREFIX}/bin/`basename $${f}`; \
 	done
-	${INSTALL} -m 0644 Libexec/*.awk ${DESTDIR}${PREFIX}/libexec
+	${INSTALL} -m 0644 Libexec/*.awk ${DESTDIR}${LIBEXECDIR}
 	${INSTALL} -m 0444 Man/*.1 ${DESTDIR}${MANDIR}/man1
 
 install-strip: install
