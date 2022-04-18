@@ -33,7 +33,7 @@ adjacent_genes=$1
 max_nt=$2
 gene_file="$3"
 
-for gene in $(cat $gene_file); do
+for gene in $(cat $gene_file | cut -d '|' -f 1); do
     # Each line in gene_file may contain alternates such as isl2b|isl2
-    ms-stack $flags $adjacent_genes $max_nt $(echo $gene | tr '|' ' ')
+    ms-stack $flags $adjacent_genes $max_nt $gene_file $gene
 done

@@ -17,10 +17,10 @@ usage()
 {
     cat << EOM
 
-Usage: $0 [ms-stack.py flags] adjacent-genes max-nt \\
+Usage: $0 [ms-stack.py flags] adjacent-genes max-nt orthologs-file \\
 	gene-name [gene-name ...]
 
-Example: $0 4 100000 jun
+Example: $0 4 100000 de-tf-ortho.txt jun
 
 will display a stack of Regions/*-jun-*-4-1000000.gff3
 
@@ -39,11 +39,13 @@ while [ 0$(echo $1 | cut -c 1,1) = 0'-' ]; do
     shift
 done
 
-if [ $# -lt 3 ]; then
+if [ $# -lt 4 ]; then
     usage
 fi
 adjacent_genes=$1
 max_nt=$2
+ortho_file=$3
+shift
 shift
 shift
 printf "\n$*\n\n"
@@ -51,11 +53,14 @@ printf "\n$*\n\n"
 for species in Danio_rerio Oryzias_latipes Takifugu_rubripes \
     Mus_musculus Rattus_norvegicus Homo_sapiens; do
     for gene in $@; do
-	gene_files="Regions/$species-$gene-*-$adjacent_genes-$max_nt*.gff3"
-	for file in $gene_files; do
-	    if [ -e $file ]; then
-		files="$files $file"
-	    fi
+	ortho_list=$(awk -F '|' -v gene=$gene '$1 == gene' $ortho_file | tr '|' ' ')
+	for ortho in $ortho_list; do
+	    gene_files="Regions/$species-$ortho-*-$adjacent_genes-$max_nt*.gff3"
+	    for file in $gene_files; do
+		if [ -e $file ]; then
+		    files="$files $file"
+		fi
+	    done
 	done
     done
 done

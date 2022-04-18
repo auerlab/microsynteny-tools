@@ -170,7 +170,8 @@ EOM
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	mkdir -p Output
-	ms-gene-list-fish-mammal-intersect $Adjacent_genes $Max_nt $Gene_list_filename \
+	ms-gene-list-fish-mammal-intersect \
+	    $Adjacent_genes $Max_nt $Gene_list_filename \
 	    2>&1 | tee Output/gene-list-fish-mammal-intersect.out
 	more Output/gene-list-fish-mammal-intersect.out
 	;;
@@ -178,6 +179,7 @@ EOM
     4)
 	printf "Gene name? "
 	read gene
+	get_gene_list_filename
 	if [ 0"$gene" != 0 ]; then
 	    cat << EOM
 
@@ -189,7 +191,7 @@ files by going back to option 2.
 EOM
 	    ls Regions/*-$gene-*.gff3
 	    get_adjacent_genes_max_nt
-	    ms-stack $Adjacent_genes $Max_nt $gene
+	    ms-stack $Adjacent_genes $Max_nt $Gene_list_filename $gene
 	fi
 	;;
     

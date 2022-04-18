@@ -133,12 +133,18 @@ int     main(int argc,char *argv[])
 		if ( (t = xt_alt_str_case_contains(&gene_names[c],
 			BL_GFF_FEATURE_NAME(&feature))) >= 0 )
 		{
+		    // FIXME: Use accessor
 		    printf("\n%s %s:\n", gff_basename, gene_names[c].strings[t]);
 		    
 		    // Path name format is important, parsed by other progs
 		    // '-' is a separator, so don't allow it in species
 		    // or gene names
 		    strtr(gff_basename, "-", "_", 0);
+		    
+		    // Make gene name lower case in all files
+		    // Don't enable until verifying that case in gene
+		    // names has no meaning
+		    // strlower(ALT_STR_STRINGS_AE(&gene_names[c], t));
 		    strtr(ALT_STR_STRINGS_AE(&gene_names[c], t), "-", "_", 0);
 		    snprintf(region_file, PATH_MAX,
 			     "%s/%s-%s-%s-%" PRId64 "-%d-%" PRIu64 ".gff3",
