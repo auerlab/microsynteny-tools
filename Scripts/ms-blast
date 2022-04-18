@@ -38,6 +38,22 @@ if [ 0$1 = 0--help ]; then
     usage
 fi
 
+if [ $0 = Scripts/ms-blast ]; then
+    # Development: Running from repo dir
+    export PATH=Scripts:$PATH
+    export AWK_PATH=$(pwd)/Libexec
+    make
+elif [ $0 = ./ms-blast ]; then
+    # Development: Running from repo dir
+    cd ..
+    export PATH=Scripts:$PATH
+    export AWK_PATH=$(pwd)/Libexec
+    make
+else
+    # Installed
+    export AWK_PATH=%%PREFIX%%/libexec
+fi
+
 if [ $# = 2 ]; then
     gene=$1
     db=$2
@@ -103,7 +119,7 @@ for db in $dbs; do
 	    > BLAST-output/$gene-transcriptome.out 2> BLAST-output/$gene-transcriptome.err
 	printf "%-15s %8s %5s %4s %10s %-24s %s\n" \
 	    "Query" "Identity" "Slen" "Alen" "E-value" "Location" "Gene"
-	awk -f blast-filter.awk BLAST-output/$gene-transcriptome.out
+	awk -f $AWK_PATH/blast-filter.awk BLAST-output/$gene-transcriptome.out
 	;;
     
     genome)
@@ -125,7 +141,7 @@ for db in $dbs; do
 	# well, but it will just be blank
 	printf "%-15s %8s %5s %4s %10s %-24s\n" \
 	    "Query" "Identity" "Slen" "Alen" "E-value" "Location"
-	awk -f blast-filter.awk BLAST-output/$gene-genome.out
+	awk -f $AWK_PATH/blast-filter.awk BLAST-output/$gene-genome.out
 	;;
     
     *)

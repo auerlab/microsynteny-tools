@@ -120,6 +120,8 @@ MV      ?= mv
 MKDIR   ?= mkdir
 LN      ?= ln
 RM      ?= rm
+SED     ?= sed
+CHMOD   ?= chmod
 
 # No full pathnames for these.  Allow PATH to dtermine which one is used
 # in case a locally installed version is preferred.
@@ -168,7 +170,7 @@ depend:
 # Remove generated files (objs and nroff output from man pages)
 
 clean:
-	rm -f *.o ${BINS} *.nr
+	rm -f *.o ${BINS} *.nr README.html
 
 # Keep backup files during normal clean, but provide an option to remove them
 realclean: clean
@@ -178,10 +180,15 @@ realclean: clean
 # Install all target files (binaries, libraries, docs, etc.)
 
 install: all
-	${MKDIR} -p ${DESTDIR}${PREFIX}/bin ${DESTDIR}${MANDIR}/man1
+	${MKDIR} -p ${DESTDIR}${PREFIX}/bin ${DESTDIR}${MANDIR}/man1 \
+		    ${DESTDIR}${PREFIX}/libexec
 	${INSTALL} -s -m 0755 ${BINS} ${DESTDIR}${PREFIX}/bin
-	${INSTALL} -m 0755 ms-plot.py ${DESTDIR}${PREFIX}/bin/ms-plot
-	${INSTALL} -m 0755 ms-stack.py ${DESTDIR}${PREFIX}/bin/ms-stack
+	for f in Scripts/*; do \
+	    ${SED} 's|%%PREFIX%%|${PREFIX}|g' $${f} \
+		> ${DESTDIR}${PREFIX}/bin/`basename $${f}`; \
+	    ${CHMOD} 755 ${DESTDIR}${PREFIX}/bin/`basename $${f}`; \
+	done
+	${INSTALL} -m 0644 Libexec/*.awk ${DESTDIR}${PREFIX}/libexec
 	${INSTALL} -m 0444 Man/*.1 ${DESTDIR}${MANDIR}/man1
 
 install-strip: install

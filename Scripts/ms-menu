@@ -96,9 +96,20 @@ if [ $# != 0 ]; then
     usage
 fi
 
-if [ $0 = ./ms-menu ]; then
-    export PATH=.:$PATH
+if [ $0 = Scripts/ms-menu ]; then
+    # Development: Running from repo dir
+    export PATH=Scripts:$PATH
+    export AWK_PATH=$(pwd)/Libexec
     make
+elif [ $0 = ./ms-menu ]; then
+    # Development: Running from repo dir
+    cd ..
+    export PATH=Scripts:$PATH
+    export AWK_PATH=$(pwd)/Libexec
+    make
+else
+    # Installed
+    export AWK_PATH=%%PREFIX%%/libexec
 fi
 
 selection=''
@@ -245,16 +256,7 @@ EOM
 	;;
     
     10)
-	printf "Gene name? "
-	read gene
-	if [ 0"$gene" != 0 ]; then
-	    cd BLAST-DB
-	    ls *.ndb | cut -d . -f -1
-	    cd ..
-	    printf "Database? "
-	    read db
-	    ms-blast $gene $db
-	fi
+	ms-blast
 	;;
     
     Q|q)
