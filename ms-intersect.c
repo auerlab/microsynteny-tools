@@ -30,10 +30,20 @@ void    usage(char *argv[]);
 int     main(int argc,char *argv[])
 
 {
+    int     status;
+    
     if ( argc < 4 )
 	usage(argv);
 
-    return intersect(argc, argv);
+    status = intersect(argc, argv);
+    
+    puts("\n===================================================================");
+    puts("Note: Orthologs are currently only considered for the anchor gene.");
+    puts("Use ms-stack to see a full list of neighbors that might be excluded");
+    puts("From the output above.");
+    puts("===================================================================");
+    
+    return status;
 }
 
 
