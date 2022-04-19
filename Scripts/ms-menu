@@ -283,6 +283,7 @@ EOM
 	;;
 
     7)
+	printf "\nHint: Use a portion of a gene name to allow orthologs, e.g. sox11 vs sox11a\n\n"
 	printf "Gene names (separated by space)? "
 	read gene_list
 	if [ -n "$gene_list" ]; then
