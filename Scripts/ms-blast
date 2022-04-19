@@ -95,9 +95,16 @@ if [ ! -e $cds ]; then
 fi
 cat << EOM
 
-Coding sequences in $cds.
+Coding sequences saved to $cds:
 
-Go to https://blast.ncbi.nlm.nih.gov/Blast.cgi for web-based queries.
+EOM
+
+grep '^>' $cds | awk '{ print $1, $2, $3, $4 }'
+
+cat << EOM
+
+Go to https://blast.ncbi.nlm.nih.gov/Blast.cgi for web-based queries and
+upload $cds.
 Using the web BLAST on NT/NR databases may be preferable to downloading
 them, since they are many gigabytes.
 
