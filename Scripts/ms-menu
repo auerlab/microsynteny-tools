@@ -246,7 +246,7 @@ files by going back to option 2.
 
 EOM
 	    get_adjacent_genes_max_nt
-	    ms-stack $Adjacent_genes $Max_nt $Gene_list_filename $gene &
+	    ms-stack $Adjacent_genes $Max_nt $Gene_list_filename $gene
 	fi
 	;;
     
@@ -273,7 +273,7 @@ EOM
 	    cd ..
 	    printf "\nSpecies? [default = all] "
 	    read species
-	    ms-plot $Adjacent_genes $Max_nt $gene $species &
+	    ms-plot $Adjacent_genes $Max_nt $gene $species
 	fi
 	;;
 
