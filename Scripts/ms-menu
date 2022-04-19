@@ -43,17 +43,60 @@ pause()
 #       
 #   History:
 #   Date        Name        Modification
+#   2022-04-19  Jason Bacon Begin
+##########################################################################
+
+extracted_genes()
+{
+    local genes=$(ls Regions | cut -d - -f 2 | sort -u | tr '\n' ' ')
+    printf "Extracted genes:\n\n$genes\n\n"
+    return 0
+}
+
+
+##########################################################################
+#   Function description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
+#   2022-04-19  Jason Bacon Begin
+##########################################################################
+
+available_genes()
+{
+    if [ $# != 1 ]; then
+	printf "Usage: available_genes gene-list-filename\n"
+	exit 1
+    fi
+    printf "Available genes:\n\n$(cut -d '|' -f 1 $1 | tr '\n' ' ')\n\n"
+    return 0
+}
+
+
+##########################################################################
+#   Function description:
+#       
+#   Arguments:
+#       
+#   Returns:
+#       
+#   History:
+#   Date        Name        Modification
 #   2022-04-16  Jason Bacon Begin
 ##########################################################################
 
 get_adjacent_genes_max_nt()
 {
-    printf "\nAdjacent genes? [4] "
+    printf "Adjacent genes? [default = 4] "
     read Genes
     if [ 0"$Adjacent_genes" = 0 ]; then
 	Adjacent_genes=4
     fi
-    printf "Max distance in NT? [1,000,000] "
+    printf "Max distance in NT? [default = 1,000,000] "
     read Max_nt
     if [ 0"$Max_nt" = 0 ]; then
 	Max_nt=1000000
@@ -75,11 +118,12 @@ get_adjacent_genes_max_nt()
 
 get_gene_list_filename()
 {
+    printf '\nAvailable gene lists (copy and paste one filename):\n\n'
     cd Genes
     ls *-ortho.txt
     cd ..
     local default=de-tf-refined-ortho.txt
-    printf "Gene list? [$default] "
+    printf "\nGene list? [default = $default] "
     read Gene_list_filename
     if [ 0"$Gene_list_filename" = 0 ]; then
 	Gene_list_filename=$default
@@ -161,59 +205,73 @@ EOM
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	mkdir -p Output
+	outfile=Output/$(basename ${Gene_list_filename%.txt}-extract.out)
 	ms-gene-list-extract \
 	    --adjacent-genes $Adjacent_genes --max-nt-distance $Max_nt \
-	    $Gene_list_filename 2>&1 | tee Output/gene-list-extract.out
+	    $Gene_list_filename > $outfile
+	printf "\nSummary output saved in $outfile.\n"
+	printf "Region GFFs stored in Regions directory.\n"
+	pause
+	more $outfile
 	;;
     
     3)
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	mkdir -p Output
+	outfile=Output/$(basename ${Gene_list_filename%.txt}-intersect.out)
 	ms-gene-list-fish-mammal-intersect \
 	    $Adjacent_genes $Max_nt $Gene_list_filename \
-	    2>&1 | tee Output/gene-list-fish-mammal-intersect.out
-	more Output/gene-list-fish-mammal-intersect.out
+	    > $outfile
+	printf "\nSummary output saved in $outfile.\n"
+	printf "Intersection files stored in Intersects-* directories.\n"
+	pause
+	more $outfile
 	;;
     
     4)
-	printf "Gene name? "
-	read gene
 	get_gene_list_filename
+	available_genes $Gene_list_filename
+	printf "Gene name (case-sensitive)? "
+	read gene
 	if [ 0"$gene" != 0 ]; then
+	    printf '\nAvailable gene regions:\n\n'
+	    ls Regions/*-$gene-*.gff3
 	    cat << EOM
 
-The last two numbers in each filename indicate the number of adjacent genes
-and maximum distance in NT for that region.  Choose from among these to
+The last two numbers in each filename above indicate the number of adjacent
+genes and maximum distance in NT for that region.  Choose from among these to
 answer the next two questions.  You can also generate additional region
 files by going back to option 2.
 
 EOM
-	    ls Regions/*-$gene-*.gff3
 	    get_adjacent_genes_max_nt
 	    ms-stack $Adjacent_genes $Max_nt $Gene_list_filename $gene &
 	fi
 	;;
     
     5)
-	printf "Gene name? "
+	get_gene_list_filename
+	available_genes $Gene_list_filename
+	printf "Gene name (case-sensitive)? "
 	read gene
 	if [ 0"$gene" != 0 ]; then
+	    printf '\nAvailable gene regions:\n\n'
+	    ls Regions/*-$gene-*.gff3
 	    cat << EOM
 
-The last two numbers in each filename indicate the number of adjacent genes
-and maximum distance in NT for that region.  Choose from among these to
+The last two numbers in each filename above indicate the number of adjacent
+genes and maximum distance in NT for that region.  Choose from among these to
 answer the next two questions.  You can also generate additional region
 files by going back to option 2.
 
 EOM
-	    ls Regions/*-$gene-*.gff3
 	    get_adjacent_genes_max_nt
 	    cd Regions
-	    printf "\nCut and paste species names separated by space.\n\n"
+	    printf "\nCopy and paste species names separated by space.\n\n"
 	    ls | cut -d - -f 1 | sort | uniq
 	    cd ..
-	    printf "\nSpecies? [all] "
+	    printf "\nSpecies? [default = all] "
 	    read species
 	    ms-plot $Adjacent_genes $Max_nt $gene $species &
 	fi
@@ -232,8 +290,8 @@ EOM
 	    cd GFF
 	    ls *.gff3 | cut -d . -f 1
 	    cd ..
-	    default_species="Homo_sapiens Mus_musculus Rattus_norvegicus"
-	    printf "\nSpecies? [$default_species] "
+	    default_species="Danio_rerio Homo_sapiens Mus_musculus Rattus_norvegicus"
+	    printf "\nSpecies? [default = $default_species] "
 	    read species_list
 	    if [ 0"$species_list" = 0 ]; then
 		species_list="$default_species"

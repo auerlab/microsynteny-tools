@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <unistd.h>         // isatty()
 #include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
 #include <biolibc/gff-index.h>
@@ -133,6 +134,11 @@ int     main(int argc,char *argv[])
 		if ( (t = xt_alt_str_case_contains(&gene_names[c],
 			BL_GFF_FEATURE_NAME(&feature))) >= 0 )
 		{
+		    // Show progress on-screen if stdout is redirected
+		    if ( ! isatty(fileno(stdout)) )
+			fprintf(stderr, "%s %s\n", gff_basename,
+				gene_names[c].strings[t]);
+		    
 		    // FIXME: Use accessor
 		    printf("\n%s %s:\n", gff_basename, gene_names[c].strings[t]);
 		    
