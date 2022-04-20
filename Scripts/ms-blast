@@ -128,7 +128,8 @@ for db in $dbs; do
 	    > BLAST-output/$gene-transcriptome.out 2> BLAST-output/$gene-transcriptome.err
 	printf "%-15s %8s %5s %4s %10s %-24s %s\n" \
 	    "Query" "Identity" "Slen" "Alen" "E-value" "Location" "Gene"
-	awk -f $AWK_PATH/blast-filter.awk BLAST-output/$gene-transcriptome.out
+	awk -f $AWK_PATH/blast-filter.awk BLAST-output/$gene-transcriptome.out \
+	    | more
 	;;
     
     genome)
@@ -150,7 +151,7 @@ for db in $dbs; do
 	# well, but it will just be blank
 	printf "%-15s %8s %5s %4s %10s %-24s\n" \
 	    "Query" "Identity" "Slen" "Alen" "E-value" "Location"
-	awk -f $AWK_PATH/blast-filter.awk BLAST-output/$gene-genome.out
+	awk -f $AWK_PATH/blast-filter.awk BLAST-output/$gene-genome.out | more
 	;;
     
     *)

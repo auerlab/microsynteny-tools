@@ -92,7 +92,7 @@ available_genes()
 get_adjacent_genes_max_nt()
 {
     printf "Adjacent genes? [default = 4] "
-    read Genes
+    read Adjacent_genes
     if [ 0"$Adjacent_genes" = 0 ]; then
 	Adjacent_genes=4
     fi
@@ -210,7 +210,7 @@ EOM
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	mkdir -p Output
-	outfile=Output/$(basename ${Gene_list_filename%.txt}-extract.out)
+	outfile=Output/$(basename ${Gene_list_filename%.txt}-$Adjacent_genes-$Max_nt-extract.out)
 	ms-gene-list-extract \
 	    --adjacent-genes $Adjacent_genes --max-nt-distance $Max_nt \
 	    $Gene_list_filename > $outfile

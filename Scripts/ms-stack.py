@@ -210,6 +210,7 @@ for filename in sys.argv[arg:]:
 
     arrow_y -= arrow_y_sep
 
+plt.tight_layout()  # Reduce margins
 plt.title(gois + ' neighborhoods and intergenic distances, genes = ' +
     adjacent_genes + ' max_nt = ' + max_nt)
 plt.box(False)

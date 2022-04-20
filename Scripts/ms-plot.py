@@ -63,6 +63,7 @@ for i in range(1, argc):
                 x_lim = [x_min - 1000, x_max + 1000],
                 strand_in_label_threshold = 7)
     ax.set_title(filename)
+    plt.tight_layout()  # Reduce margins
     plt.show()
 
     stem = os.path.splitext(filename)[0]
