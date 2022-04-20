@@ -151,7 +151,7 @@ if [ -z "$AWK_PATH" ]; then
 	export PATH=$(pwd):$(pwd)/Scripts:$PATH
 	export AWK_PATH=$(pwd)/Libexec
 	make
-    elif [ $0 = ./ms-menu ]; then
+    elif [ $0 = ./ms-menu ] && [ $(pwd | cut -d / -f -1) = microsynteny-tools ]; then
 	# Development: Running from repo dir
 	cd ..
 	export PATH=$(pwd):$(pwd)/Scripts:$PATH
@@ -197,6 +197,7 @@ EOM
     read selection
     case "$selection" in
     1)
+	mkdir -p GFF Transcriptome Reference
 	cd GFF
 	ms-fetch-gffs
 	cd ../Transcriptome

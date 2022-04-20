@@ -26,7 +26,7 @@ fi
 release=$(cat $release_file)
 
 curl_flags='--continue-at - --remote-name'
-site="http://ftp.ensembl.org/pub/release-$(../Utils/ensembl-release.sh)/fasta"
+site="http://ftp.ensembl.org/pub/release-$release/fasta"
 
 # No combined primary_assembly files for many species, so we would
 # have to download all chromosomes individually and concatenate.
