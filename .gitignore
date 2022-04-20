@@ -25,7 +25,6 @@ ms-add-ortho
 *.fa.gz
 *.fa.xz
 *.png
-*-ortho.txt
 *.tsv.xz
 *.out
 *.err

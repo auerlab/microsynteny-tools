@@ -33,10 +33,8 @@ fi
 cd ..
 ./cave-man-install.sh
 cd Genes
-cut -d '|' -f 1 non-de-tf-jake.txt > non-de-tf.txt
-for file in all-de.txt de-tf-refined.txt non-de-tf.txt \
-	    all-non-de.txt de-tf.txt; do
+for file in Raw/*.txt; do
     echo $file
     ms-add-ortho $file biomart-orthologs-sorted.tsv.xz \
-	> ${file%.txt}-ortho.txt
+	> $(basename ${file%.txt}-ortho.txt)
 done

@@ -75,6 +75,7 @@ PREFIX      ?= ../local
 LOCALBASE   ?= ${PREFIX}
 
 LIBEXECDIR  ?= ${PREFIX}/libexec
+DATADIR     ?= ${PREFIX}/share/microsynteny-tools
 
 # Allow caller to override either MANPREFIX or MANDIR
 MANPREFIX   ?= ${PREFIX}
@@ -183,7 +184,7 @@ realclean: clean
 
 install: all
 	${MKDIR} -p ${DESTDIR}${PREFIX}/bin ${DESTDIR}${MANDIR}/man1 \
-		    ${DESTDIR}${LIBEXECDIR}
+		    ${DESTDIR}${LIBEXECDIR} ${DESTDIR}${DATADIR}/Genes
 	${INSTALL} -s -m 0755 ${BINS} ${DESTDIR}${PREFIX}/bin
 	for f in Scripts/*; do \
 	    ${SED} 's|%%PREFIX%%|${PREFIX}|g' $${f} \
@@ -191,7 +192,8 @@ install: all
 	    ${CHMOD} 755 ${DESTDIR}${PREFIX}/bin/`basename $${f}`; \
 	done
 	${INSTALL} -m 0644 Libexec/*.awk ${DESTDIR}${LIBEXECDIR}
-	${INSTALL} -m 0444 Man/*.1 ${DESTDIR}${MANDIR}/man1
+	${INSTALL} -m 0644 Man/*.1 ${DESTDIR}${MANDIR}/man1
+	${INSTALL} -m 0644 Genes/*-ortho.txt ${DESTDIR}${DATADIR}/Genes
 
 install-strip: install
 	for f in ${BINS}; do \

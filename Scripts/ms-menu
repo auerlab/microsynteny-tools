@@ -140,6 +140,11 @@ if [ $# != 0 ]; then
     usage
 fi
 
+if [ ! -d Genes ]; then
+    mkdir Genes
+    cp %%PREFIX%%/share/microsynteny-tools/Genes/*-ortho.txt Genes
+fi
+
 if [ -z "$AWK_PATH" ]; then
     if [ $0 = Scripts/ms-menu ]; then
 	# Development: Running from repo dir

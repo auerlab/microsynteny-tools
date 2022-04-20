@@ -1,0 +1,9 @@
+ascl1a|ASCL1|Ascl2|Ascl3
+atf3
+isl2b|ISL2
+jun
+pou4f3
+sox11a|Sox11
+srebf2
+stat2
+stat3
