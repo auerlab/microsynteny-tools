@@ -80,7 +80,7 @@ else:
 # Plotting parameters for all files
 arrow_len   = 100
 arrow_x_sep = 20
-text_height = 0.7
+text_height = 0.7   # Same units as coordinates?
 
 # Starting point for first file
 files = 0
@@ -146,6 +146,7 @@ for filename in sys.argv[arg:]:
                 # pyplot doesn't respect text, so the species name will be
                 # off the screen unless we plot an element that pyplot
                 # cares about with low enough coordinates
+                # +10 makes room for title in tight margins
                 plt.plot([50, 50], [arrow_y, arrow_y])
                 
                 plt.text(0, arrow_y - text_height, species + goi_strand)
@@ -210,12 +211,14 @@ for filename in sys.argv[arg:]:
 
     arrow_y -= arrow_y_sep
 
-plt.tight_layout()  # Reduce margins
+# plt.tight_layout()  # Pushes title off top of screen
+plt.margins(x=0.0, y=0.05, tight=True)  # Not as tight, but title is visible
 plt.title(gois + ' neighborhoods and intergenic distances, genes = ' +
     adjacent_genes + ' max_nt = ' + max_nt)
 plt.box(False)
 plt.xticks([])
 plt.yticks([])
+
 os.makedirs("Stacks", exist_ok=True)
 plt.savefig("Stacks/" + goi + '-' + adjacent_genes + '-' + max_nt + "-stack.png")
 # Creates a new blank figure, so do after savefig()
