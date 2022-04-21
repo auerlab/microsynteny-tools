@@ -185,11 +185,11 @@ while [ 0"$selection" != 0q ]; do
 3.. Find intersections between regions across fish and mammals
 4.. View stacked regions across species (scale discarded)
 5.. Visualize regions in scale
-6.. Show percent changed stats for fish and mammals
+6.. Locate genes in one or more GFF files
+7.. Build/download BLAST databases
+8.. BLAST a Danio gene against another species
+9.. Show percent changed stats for fish and mammals
     (Extract regions for de-tf-ortho.txt and non-de-tf-ortho.txt first)
-7.. Locate genes in one or more GFF files
-8.. Build/download BLAST databases
-9.. BLAST a Danio gene against another species
 Q.. Quit
 
 EOM
@@ -284,21 +284,6 @@ EOM
 	;;
 
     6)
-	printf '\nAvailable gene regions:\n\n'
-	ls Regions/*-jun-*.gff3
-	cat << EOM
-
-The last two numbers in each filename above indicate the number of adjacent
-genes and maximum distance in NT for that region.  Choose from among these to
-answer the next two questions.  You can also generate additional region
-files by going back to option 2.
-
-EOM
-	get_adjacent_genes_max_nt
-	ms-fish-mammal-percent-changed $Adjacent_genes $Max_nt
-	;;
-
-    7)
 	printf "\nHint: Use a portion of a gene name to allow orthologs, e.g. sox11 vs sox11a\n\n"
 	printf "Gene names (separated by space)? "
 	read gene_list
@@ -320,14 +305,29 @@ EOM
 	fi
 	;;
     
-    8)
+    7)
 	ms-blast-dbs
 	;;
     
-    9)
+    8)
 	ms-blast
 	;;
     
+    9)
+	printf '\nAvailable gene regions:\n\n'
+	ls Regions/*-jun-*.gff3
+	cat << EOM
+
+The last two numbers in each filename above indicate the number of adjacent
+genes and maximum distance in NT for that region.  Choose from among these to
+answer the next two questions.  You can also generate additional region
+files by going back to option 2.
+
+EOM
+	get_adjacent_genes_max_nt
+	ms-fish-mammal-percent-changed $Adjacent_genes $Max_nt
+	;;
+
     Q|q)
 	exit 0
 	;;
