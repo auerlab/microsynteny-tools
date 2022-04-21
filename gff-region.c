@@ -335,7 +335,8 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	     *     counts replicated genes (e.g. tandem repeats) only once.
 	     */
 	    if ( (((strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0))
-		 || ((strcasecmp(n1, r1->goi) == 0) && (strcasecmp(n2, r2->goi) == 0)))
+		 || ((strcasecmp(n1, r1->goi) == 0)
+		     && (strcasecmp(n2, r2->goi) == 0)))
 		 && !bl_gff_region_duplicate_gene(intersect, n1)
 		 && !bl_gff_region_duplicate_gene(intersect, n2) )
 	    {
@@ -367,7 +368,10 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 		bl_gff_set_attributes(&intersect->features[intersect->count],
 		    attr);
 		++intersect->count;
-		//fprintf(stderr, "Counting %s %s %lu\n", n1, n2, intersect->count);
+		/*
+		fprintf(stderr, "Counting %s %s %lu %s %s\n",
+			n1, n2, intersect->count,
+			r1->goi, r2->goi);*/
 	    }
 	}
     }

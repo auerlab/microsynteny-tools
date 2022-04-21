@@ -284,6 +284,16 @@ EOM
 	;;
 
     6)
+	printf '\nAvailable gene regions:\n\n'
+	ls Regions/*-jun-*.gff3
+	cat << EOM
+
+The last two numbers in each filename above indicate the number of adjacent
+genes and maximum distance in NT for that region.  Choose from among these to
+answer the next two questions.  You can also generate additional region
+files by going back to option 2.
+
+EOM
 	get_adjacent_genes_max_nt
 	ms-fish-mammal-percent-changed $Adjacent_genes $Max_nt
 	;;

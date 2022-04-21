@@ -94,7 +94,10 @@ for gene_list in Genes/de-tf-ortho.txt Genes/non-de-tf-ortho.txt; do
 	done
 	
 	if [ $(echo $regen | wc -w) -ge 2 ]; then
-	    ms-intersect Intersects-no-diverged $regen > temp.out
+	    if ! ms-intersect Intersects-no-diverged $regen > temp.out; then
+		more temp.out
+		exit 1
+	    fi
 	    awk '$1 == "Genes:" { print $2, $4, $6 }' temp.out >> counts.txt
 	fi
     done
@@ -123,7 +126,10 @@ for gene_list in Genes/de-tf-ortho.txt Genes/non-de-tf-ortho.txt; do
 	done
     
 	if [ $(echo $noregen | wc -w) -ge 2 ]; then
-	    ms-intersect Intersects-no-diverged $noregen > temp.out
+	    if ! ms-intersect Intersects-no-diverged $noregen > temp.out; then
+		more temp.out
+		exit 1
+	    fi
 	    awk '$1 == "Genes:" { print $2, $4, $6 }' temp.out >> counts.txt
 	fi
     done

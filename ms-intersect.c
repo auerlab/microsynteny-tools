@@ -139,11 +139,13 @@ int     intersect(int argc, char *argv[])
 	    print_region_feature_names(intersect);
 	    putchar('\n');
 	    
+	    /* Actually count CAN increase due to GOI orthologs
 	    if ( new_intersect_count > old_intersect_count )
 	    {
-		fprintf(stderr, "Ooops, new intersect count cannot exceed old!\n");
+		fprintf(stderr, "Ooops1, new intersect count cannot exceed old!\n");
 		exit(EX_SOFTWARE);
 	    }
+	    */
 
 	    // Update GFF filename
 	    if ( strcmp(BL_GFF_REGION_SPECIES(&rn), previous_species) != 0 )
@@ -203,11 +205,13 @@ int     intersect(int argc, char *argv[])
 		print_region_feature_names(div_intersect);
 		putchar('\n');
 		
+		/* Actually count CAN increase due to GOI orthologs
 		if ( new_intersect_count > old_intersect_count )
 		{
-		    fprintf(stderr, "Ooops, new intersect count cannot exceed old!\n");
+		    fprintf(stderr, "Ooops2, new intersect count cannot exceed old!\n");
 		    exit(EX_SOFTWARE);
 		}
+		*/
 	    }
 	}
 	//printf("\nGenes: %d  Conserved: %d  Changed: %d\n",
