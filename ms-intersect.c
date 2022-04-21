@@ -38,7 +38,8 @@ int     main(int argc,char *argv[])
     status = intersect(argc, argv);
     
     puts("\n===================================================================");
-    puts("Note: Orthologs are currently only considered for the anchor gene.");
+    puts("Note: This is a conservative estimate of conserved genes.");
+    puts("There may be unnamed or analogous genes that are not shown here.");
     puts("Use ms-stack to see a full list of neighbors that might be excluded");
     puts("From the output above.");
     puts("===================================================================");
