@@ -59,7 +59,7 @@ int     main(int argc,char *argv[])
 int     intersect(int argc, char *argv[])
 
 {
-    int             arg, count, c, old_intersect_count, new_intersect_count,
+    int             arg, count, c, new_intersect_count,
 		    max_count;
     bl_gff_region_t r1, rn, *intersect, *new_intersect, *div_intersect;
     char            intersect_file[PATH_MAX + 1],
@@ -122,7 +122,7 @@ int     intersect(int argc, char *argv[])
 		    '-', '-', '-');
 	else
 	{
-	    old_intersect_count = new_intersect_count; //BL_GFF_REGION_COUNT(intersect);
+	    //old_intersect_count = new_intersect_count; //BL_GFF_REGION_COUNT(intersect);
 	    new_intersect = bl_gff_region_intersect(intersect, &rn);
 	    new_intersect_count = BL_GFF_REGION_COUNT(new_intersect);
 	    //fprintf(stderr, "new_intersect_count = %d\n", new_intersect_count);
@@ -192,7 +192,7 @@ int     intersect(int argc, char *argv[])
 			'-', '-', '-');
 	    else
 	    {
-		old_intersect_count = BL_GFF_REGION_COUNT(intersect);
+		//old_intersect_count = BL_GFF_REGION_COUNT(intersect);
 		div_intersect = bl_gff_region_intersect(intersect, &rn);
 		new_intersect_count = BL_GFF_REGION_COUNT(div_intersect);
 		if ( count > max_count )
