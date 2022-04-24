@@ -36,6 +36,7 @@ case $(uname) in
 
 esac
 
+mkdir -p $PREFIX/libexec
 LDFLAGS="-L. -L$LIBDIR -Wl,-rpath,$LIBDIR:/usr/lib:/lib"
 LIBEXECDIR=$(realpath $PREFIX/libexec)
 export PREFIX LOCALBASE LDFLAGS LIBEXECDIR
