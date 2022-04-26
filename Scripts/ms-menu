@@ -186,7 +186,7 @@ EOM
     printf "Selection? "
     read selection
     case "$selection" in
-    1)
+    1)  # Download genomics files
 	mkdir -p GFF Transcriptome Reference
 	cd GFF
 	ms-fetch-gffs
@@ -197,7 +197,7 @@ EOM
 	cd ..
 	;;
     
-    2)
+    2)  # Extract
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	mkdir -p Output
@@ -211,9 +211,15 @@ EOM
 	more $outfile
 	;;
     
-    3)
+    3)  # Intersect
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
+	cd Regions
+	printf "\nCopy and paste species names separated by space.\n\n"
+	ls | cut -d - -f 1 | sort | uniq
+	cd ..
+	export FISH=$(auto-ask fish-species "\nFish species?" 'Danio_rerio Oryzias_latipes Takifugu_rubripes')
+	export MAMMALS=$(auto-ask mammal-species "Mammal species?" 'Mus_musculus Rattus_norvegicus Homo_sapiens')
 	mkdir -p Output
 	outfile=Output/$(basename ${Gene_list_filename%.txt}-intersect.out)
 	ms-gene-list-fish-mammal-intersect \
@@ -225,7 +231,7 @@ EOM
 	more $outfile
 	;;
     
-    4)
+    4)  # View stacked
 	get_gene_list_filename
 	available_genes $Gene_list_filename
 	gene=$(auto-ask gene-name "Gene name (case-sensitive)?" jun)
@@ -245,7 +251,7 @@ EOM
 	fi
 	;;
     
-    5)
+    5)  # View in scale
 	get_gene_list_filename
 	available_genes $Gene_list_filename
 	gene=$(auto-ask gene-name-case "Gene name (case-sensitive)?" jun)
@@ -270,7 +276,7 @@ EOM
 	fi
 	;;
 
-    6)
+    6)  # Locate in GFFs
 	printf "\nHint: Use a portion of a gene name to allow orthologs, e.g. sox11 vs sox11a\n\n"
 	gene_list=$(auto-ask gene-list "Gene names (separated by space)?" '')
 	if [ -n "$gene_list" ]; then
@@ -290,15 +296,15 @@ EOM
 	fi
 	;;
     
-    7)
+    7)  # Create/download BLAST dbs
 	ms-blast-dbs
 	;;
     
-    8)
+    8)  # BLAST search
 	ms-blast
 	;;
     
-    9)
+    9)  # DE vs non-DE stats
 	printf '\nAvailable gene regions:\n\n'
 	ls Regions/*-jun-*.gff3
 	cat << EOM

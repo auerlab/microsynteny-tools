@@ -43,7 +43,11 @@ max_nt=$2
 shift
 shift
 
-for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
+# Default to well-annotated species or accept alternate lists from env
+: ${FISH:=Danio_rerio Oryzias_latipes Takifugu_rubripes}
+: ${MAMMALS:=Mus_musculus Rattus_norvegicus Homo_sapiens}
+
+for species in $FISH; do
     # $@ should contain alternate genes such as isl2b isl2
     for goi in $@; do
 	# '-' is a separator, so don't allow it in gene names
@@ -58,7 +62,7 @@ for species in Danio_rerio Oryzias_latipes Takifugu_rubripes; do
     done
 done
 
-for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
+for species in $MAMMALS; do
     # $@ should contain alternate genes such as isl2b isl2
     for goi in $@; do
 	# '-' is a separator, so don't allow it in gene names
@@ -73,7 +77,7 @@ for species in Mus_musculus Rattus_norvegicus Homo_sapiens; do
     done
 done
 
-if [ $(echo $regen | wc -w) -ge 2 ]; then
+if [ $(echo $regen | wc -w) -ge 1 ]; then
     printf "\n========================================================\n"
     printf "$*\n"
     printf "========================================================\n\n"

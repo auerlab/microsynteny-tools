@@ -38,6 +38,8 @@ if [ 0$1 = 0--help ]; then
     usage
 fi
 
+export AUTO_ASK_TAG_PREFIX=microsynteny-tools-
+
 if [ -z "$AWK_PATH" ]; then
     if [ $0 = Scripts/ms-blast ]; then
 	# Development: Running from repo dir
