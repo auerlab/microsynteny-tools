@@ -284,8 +284,8 @@ EOM
 	    cd GFF
 	    ls *.gff3 | cut -d . -f 1
 	    cd ..
-	    default_species="Danio_rerio Homo_sapiens Mus_musculus Rattus_norvegicus"
-	    species_list=$(auto-ask "\nSpecies? [default = $default_species]" "$default_species")
+	    default_species="Danio_rerio Oryzias_latipes Takifugu_rubripes Homo_sapiens Mus_musculus Rattus_norvegicus"
+	    species_list=$(auto-ask locate-species "\nSpecies?" "$default_species]" "$default_species")
 	    if [ 0"$species_list" = 0 ]; then
 		species_list="$default_species"
 	    fi
