@@ -91,16 +91,8 @@ available_genes()
 
 get_adjacent_genes_max_nt()
 {
-    printf "Adjacent genes? [default = 5] "
-    read Adjacent_genes
-    if [ 0"$Adjacent_genes" = 0 ]; then
-	Adjacent_genes=5
-    fi
-    printf "Max distance in NT? [default = 300,000] "
-    read Max_nt
-    if [ 0"$Max_nt" = 0 ]; then
-	Max_nt=300000
-    fi
+    Adjacent_genes=$(auto-ask adjacent-genes "Adjacent genes?" 5)
+    Max_nt=$(auto-ask max-nt "Max distance in NT?" 300000)
 }
 
 
@@ -123,11 +115,7 @@ get_gene_list_filename()
     ls *-ortho.txt
     cd ..
     local default=de-tf-refined-ortho.txt
-    printf "\nGene list? [default = $default] "
-    read Gene_list_filename
-    if [ 0"$Gene_list_filename" = 0 ]; then
-	Gene_list_filename=$default
-    fi
+    Gene_list_filename=$(auto-ask gene-list-filename "\nGene list?" $default)
     Gene_list_filename="Genes/$Gene_list_filename"
 }
 
@@ -139,6 +127,8 @@ get_gene_list_filename()
 if [ $# != 0 ]; then
     usage
 fi
+
+export AUTO_ASK_TAG_PREFIX=microsynteny-tools-
 
 if [ ! -d Genes ]; then
     mkdir Genes
@@ -238,8 +228,7 @@ EOM
     4)
 	get_gene_list_filename
 	available_genes $Gene_list_filename
-	printf "Gene name (case-sensitive)? "
-	read gene
+	gene=$(auto-ask gene-name "Gene name (case-sensitive)?" jun)
 	if [ 0"$gene" != 0 ]; then
 	    printf '\nAvailable gene regions:\n\n'
 	    ls Regions/*-$gene-*.gff3
@@ -259,8 +248,7 @@ EOM
     5)
 	get_gene_list_filename
 	available_genes $Gene_list_filename
-	printf "Gene name (case-sensitive)? "
-	read gene
+	gene=$(auto-ask gene-name-case "Gene name (case-sensitive)?" jun)
 	if [ 0"$gene" != 0 ]; then
 	    printf '\nAvailable gene regions:\n\n'
 	    ls Regions/*-$gene-*.gff3
@@ -277,24 +265,21 @@ EOM
 	    printf "\nCopy and paste species names separated by space.\n\n"
 	    ls | cut -d - -f 1 | sort | uniq
 	    cd ..
-	    printf "\nSpecies? [default = all] "
-	    read species
+	    species=$(auto-ask species-list "\nSpecies? [Leave blank for all]" '')
 	    ms-plot $Adjacent_genes $Max_nt $gene $species
 	fi
 	;;
 
     6)
 	printf "\nHint: Use a portion of a gene name to allow orthologs, e.g. sox11 vs sox11a\n\n"
-	printf "Gene names (separated by space)? "
-	read gene_list
+	gene_list=$(auto-ask gene-list "Gene names (separated by space)?" '')
 	if [ -n "$gene_list" ]; then
 	    printf "\nAvailable species:\n\n"
 	    cd GFF
 	    ls *.gff3 | cut -d . -f 1
 	    cd ..
 	    default_species="Danio_rerio Homo_sapiens Mus_musculus Rattus_norvegicus"
-	    printf "\nSpecies? [default = $default_species] "
-	    read species_list
+	    species_list=$(auto-ask "\nSpecies? [default = $default_species]" "$default_species")
 	    if [ 0"$species_list" = 0 ]; then
 		species_list="$default_species"
 	    fi

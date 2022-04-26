@@ -187,7 +187,7 @@ install: all
 		    ${DESTDIR}${LIBEXECDIR} ${DESTDIR}${DATADIR}/Genes
 	${INSTALL} -s -m 0755 ${BINS} ${DESTDIR}${PREFIX}/bin
 	for f in Scripts/*; do \
-	    ${SED} 's|%%PREFIX%%|${PREFIX}|g' $${f} \
+	    ${SED} "s|%%PREFIX%%|`realpath ${PREFIX}`|g" $${f} \
 		> ${DESTDIR}${PREFIX}/bin/`basename $${f}`; \
 	    ${CHMOD} 755 ${DESTDIR}${PREFIX}/bin/`basename $${f}`; \
 	done

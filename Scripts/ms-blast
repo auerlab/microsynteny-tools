@@ -60,19 +60,14 @@ if [ $# = 2 ]; then
     gene=$1
     db=$2
 elif [ $# = 0 ]; then
-    printf "Gene name? "
-    read gene
+    gene=$(auto-ask gene-name "Gene name?" '')
     cd BLAST-DB
     printf "\nLocal databases:\n\n"
     ls *.ndb | cut -d . -f -1
     cd ..
     default_db="Mus_musculus-transcriptome Rattus_norvegicus-transcriptome Homo_sapiens-transcriptome"
     printf "\nCopy and paste one or more databases separated by space.\n"
-    printf "\nDatabase(s)? [$default_db] "
-    read dbs
-    if [ 0"$dbs" = 0 ]; then
-	dbs=$default_db
-    fi
+    dbs=$(auto-ask blast-dbs "\nDatabase(s)?" "$default_db")
 else
     usage
 fi
