@@ -62,7 +62,7 @@ if [ $# = 2 ]; then
     gene=$1
     db=$2
 elif [ $# = 0 ]; then
-    gene=$(auto-ask gene-name "Gene name?" '')
+    gene=$(auto-ask blast-gene-name "Gene name?" '')
     cd BLAST-DB
     printf "\nLocal databases:\n\n"
     ls *.ndb | cut -d . -f -1
