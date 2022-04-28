@@ -274,7 +274,12 @@ void    print_region_feature_names(bl_gff_region_t *region)
     for (c = 0; c < BL_GFF_REGION_COUNT(region); ++c)
     {
 	gff = &(BL_GFF_REGION_FEATURES_AE(region, c));
-	printf(" %s", BL_GFF_FEATURE_NAME(gff));
+	if ( BL_GFF_STRAND(gff) == '+' )
+	    printf(" %s+", BL_GFF_FEATURE_NAME(gff));
+	else if ( BL_GFF_STRAND(gff) == '-' )
+	    printf(" -%s", BL_GFF_FEATURE_NAME(gff));
+	else
+	    printf(" %s", BL_GFF_FEATURE_NAME(gff));
     }
 }
 
