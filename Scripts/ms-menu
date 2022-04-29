@@ -198,6 +198,17 @@ EOM
 	;;
     
     2)  # Extract
+	cat << EOM
+
+For computing intersects, a large gene count (e.g. 10) and moderate max
+distance (e.g. 500,000) is suggested.  Some regions are densely packed with
+many neighboring genes within range to contain regulatory elements.
+
+For visualizing stacked regions, a small gene count (e.g. 5 or less) and
+large max distance (e.g. 1,000,000) may be preferable to avoid overpacking
+the plot or missing distant neighbors.
+
+EOM
 	get_adjacent_genes_max_nt
 	get_gene_list_filename
 	mkdir -p Output

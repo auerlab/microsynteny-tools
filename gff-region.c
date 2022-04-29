@@ -324,6 +324,8 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	{
 	    n2 = BL_GFF_FEATURE_NAME(&r2->features[c2]);
 	    
+	    //printf("Comparing %s %s\n", n1, n2);
+	    
 	    /*
 	     *  Count intersects if:
 	     *  1. Gene names match and are not "unnamed"
