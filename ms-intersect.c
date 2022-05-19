@@ -63,8 +63,7 @@ int     intersect(int argc, char *argv[])
 		    max_count;
     bl_gff_region_t r1, rn, *intersect, *new_intersect, *div_intersect;
     char            // intersect_file[PATH_MAX + 1],
-		    previous_species[SPECIES_MAX_CHARS + 1] = "",
-		    *output_dir;
+		    previous_species[SPECIES_MAX_CHARS + 1] = "";
     //FILE            *intersect_stream;
     
     if ( argc < 3 )
@@ -72,7 +71,7 @@ int     intersect(int argc, char *argv[])
     
     bl_gff_region_init(&r1);
     bl_gff_region_init(&rn);
-    output_dir = argv[1];
+    // output_dir = argv[1];
 
     // Output header
     printf("%-20s %2s %2s %2s  %s\n", "Species", "Ne", "Co",
