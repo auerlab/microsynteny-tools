@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>         // PATH_MAX OpenIndiana
 #include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
 #include <xtend/string.h>   // Linux strlcpy()

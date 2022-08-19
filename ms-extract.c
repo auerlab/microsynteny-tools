@@ -14,6 +14,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>         // isatty()
+#include <limits.h>         // PATH_MAX SunOS
 #include <sys/param.h>      // PATH_MAX
 #include <biolibc/gff.h>
 #include <biolibc/gff-index.h>
