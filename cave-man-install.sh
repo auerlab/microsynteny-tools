@@ -36,9 +36,10 @@ case $(uname) in
 
 esac
 
-mkdir -p $PREFIX/libexec
 LDFLAGS="-L. -L$LIBDIR -Wl,-rpath,$LIBDIR:/usr/lib:/lib"
-LIBEXECDIR=$(realpath $PREFIX/libexec)
+# Assuming PREFIX is realpathed above
+LIBEXECDIR=$PREFIX/libexec/microsynteny-tools
+mkdir -p $LIBEXECDIR
 export PREFIX LOCALBASE LDFLAGS LIBEXECDIR
 make clean
 make install

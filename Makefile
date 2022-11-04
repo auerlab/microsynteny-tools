@@ -74,7 +74,7 @@ PREFIX      ?= ../local
 # independently.
 LOCALBASE   ?= ${PREFIX}
 
-LIBEXECDIR  ?= ${PREFIX}/libexec
+LIBEXECDIR  ?= ${PREFIX}/libexec/microsynteny-tools
 DATADIR     ?= ${PREFIX}/share/microsynteny-tools
 
 # Allow caller to override either MANPREFIX or MANDIR
