@@ -156,7 +156,7 @@ fi
 selection=''
 while [ 0"$selection" != 0q ]; do
     clear
-    # Benner generated at https://www.ascii-art-generator.org
+    # Banner generated at https://www.ascii-art-generator.org
     cat << EOM
 	   __  ____                                  __                   
 	  /  |/  (_)_____________  _______  ______  / /____  ____  __  __
