@@ -220,7 +220,7 @@ int     extract_neighborhood(bl_gff_t *goi, bl_gff_index_t *gi,
     if ( bl_gff_index_seek_reverse(gi, gff_stream, goi,
 	    adjacent_genes, max_nt_distance) != 0 )
     {
-	fprintf(stderr, "ms-extract: Seek %zu failed.\n",
+	fprintf(stderr, "ms-extract: Seek %ld failed.\n",
 		BL_GFF_FILE_POS(goi));
 	return EX_SOFTWARE;
     }
