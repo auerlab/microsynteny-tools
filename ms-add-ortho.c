@@ -38,7 +38,7 @@ int     main(int argc,char *argv[])
 	    gene[GENE_ARRAY_SIZE], *ortho_gene, *alt_gene,
 	    *printed_strings[MAX_PRINTED_STRINGS];
     FILE    *gene_stream, *ortho_stream;
-    dsv_line_t  ortho_line;
+    dsv_line_t  *ortho_line = dsv_line_new();
     int     cmp_status, delim, pc, c, c2;
     
     switch(argc)
@@ -73,21 +73,21 @@ int     main(int argc,char *argv[])
      */
     
     // Skip header in ortho file if present and read first data line
-    dsv_line_init(&ortho_line);
-    if ( (delim = dsv_line_read(&ortho_line, ortho_stream, "\t")) == EOF )
+    dsv_line_init(ortho_line);
+    if ( (delim = dsv_line_read(ortho_line, ortho_stream, "\t")) == EOF )
     {
 	fprintf(stderr, "add-ortho: Unexpected EOF reading first line of orthologs.\n");
 	return EX_DATAERR;
     }
-    if ( strcmp(DSV_LINE_FIELDS_AE(&ortho_line, 0), "Gene name") == 0 )
+    if ( strcmp(dsv_line_get_fields_ae(ortho_line, 0), "Gene name") == 0 )
     {
-	if ( (delim = dsv_line_read(&ortho_line, ortho_stream, "\t")) == EOF )
+	if ( (delim = dsv_line_read(ortho_line, ortho_stream, "\t")) == EOF )
 	{
 	    fprintf(stderr, "add-ortho: Unexpected EOF reading second line of orthologs.\n");
 	    return EX_DATAERR;
 	}
     }
-    ortho_gene = DSV_LINE_FIELDS_AE(&ortho_line, 0);
+    ortho_gene = dsv_line_get_fields_ae(ortho_line, 0);
 
     while ( xt_fgetline(gene_stream, gene, GENE_ARRAY_SIZE) != EOF )
     {
@@ -103,18 +103,18 @@ int     main(int argc,char *argv[])
 	cmp_status = strcasecmp(ortho_gene, gene);
 	while ( (cmp_status < 0) && (delim != EOF ) )
 	{
-	    dsv_line_free(&ortho_line);
-	    delim = dsv_line_read(&ortho_line, ortho_stream, "\t");
-	    ortho_gene = DSV_LINE_FIELDS_AE(&ortho_line, 0);
+	    dsv_line_free(ortho_line);
+	    delim = dsv_line_read(ortho_line, ortho_stream, "\t");
+	    ortho_gene = dsv_line_get_fields_ae(ortho_line, 0);
 	    cmp_status = strcasecmp(ortho_gene, gene);
 	}
 	
 	while ( (cmp_status == 0) && (delim != EOF) )
 	{
 	    // Print all uniquely named orthologs
-	    for (c = 1; c < DSV_LINE_NUM_FIELDS(&ortho_line); ++c)
+	    for (c = 1; c < dsv_line_get_num_fields(ortho_line); ++c)
 	    {
-		alt_gene = DSV_LINE_FIELDS_AE(&ortho_line, c);
+		alt_gene = dsv_line_get_fields_ae(ortho_line, c);
 		if ( !strblank(alt_gene) )
 		{
 		    bool dup = false;
@@ -131,9 +131,9 @@ int     main(int argc,char *argv[])
 	    }
 	    
 	    // In case of duplicate GOI lines in the ortholog file
-	    dsv_line_free(&ortho_line);
-	    delim = dsv_line_read(&ortho_line, ortho_stream, "\t");
-	    ortho_gene = DSV_LINE_FIELDS_AE(&ortho_line, 0);
+	    dsv_line_free(ortho_line);
+	    delim = dsv_line_read(ortho_line, ortho_stream, "\t");
+	    ortho_gene = dsv_line_get_fields_ae(ortho_line, 0);
 	    cmp_status = strcasecmp(ortho_gene, gene);
 	}
 	putchar('\n');
