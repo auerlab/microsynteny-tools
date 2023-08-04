@@ -20,8 +20,8 @@
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for count member in a bl_gff_region_t structure.
- *      Use this function to set count in a bl_gff_region_t object
+ *      Mutator for count member in a bl_gff3_region_t structure.
+ *      Use this function to set count in a bl_gff3_region_t object
  *      from non-member functions.  This function performs a direct
  *      assignment for scalar or pointer structure members.  If
  *      count is a pointer, data previously pointed to should
@@ -29,19 +29,19 @@
  *      leaks.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      new_count       The new value for count
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      size_t          new_count;
  *
- *      if ( bl_gff_region_set_count(&bl_gff_region, new_count)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_count(&bl_gff3_region, new_count)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
@@ -53,15 +53,15 @@
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_count(bl_gff_region_t *bl_gff_region_ptr, size_t new_count)
+int     bl_gff3_region_set_count(bl_gff3_region_t *bl_gff3_region_ptr, size_t new_count)
 
 {
     if ( false )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
-	bl_gff_region_ptr->count = new_count;
-	return BL_GFF_REGION_DATA_OK;
+	bl_gff3_region_ptr->count = new_count;
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -72,8 +72,8 @@ int     bl_gff_region_set_count(bl_gff_region_t *bl_gff_region_ptr, size_t new_c
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for goi_index member in a bl_gff_region_t structure.
- *      Use this function to set goi_index in a bl_gff_region_t object
+ *      Mutator for goi_index member in a bl_gff3_region_t structure.
+ *      Use this function to set goi_index in a bl_gff3_region_t object
  *      from non-member functions.  This function performs a direct
  *      assignment for scalar or pointer structure members.  If
  *      goi_index is a pointer, data previously pointed to should
@@ -81,19 +81,19 @@ int     bl_gff_region_set_count(bl_gff_region_t *bl_gff_region_ptr, size_t new_c
  *      leaks.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      new_goi_index   The new value for goi_index
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      size_t          new_goi_index;
  *
- *      if ( bl_gff_region_set_goi_index(&bl_gff_region, new_goi_index)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_goi_index(&bl_gff3_region, new_goi_index)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
@@ -105,15 +105,15 @@ int     bl_gff_region_set_count(bl_gff_region_t *bl_gff_region_ptr, size_t new_c
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_goi_index(bl_gff_region_t *bl_gff_region_ptr, size_t new_goi_index)
+int     bl_gff3_region_set_goi_index(bl_gff3_region_t *bl_gff3_region_ptr, size_t new_goi_index)
 
 {
     if ( false )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
-	bl_gff_region_ptr->goi_index = new_goi_index;
-	return BL_GFF_REGION_DATA_OK;
+	bl_gff3_region_ptr->goi_index = new_goi_index;
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -124,8 +124,8 @@ int     bl_gff_region_set_goi_index(bl_gff_region_t *bl_gff_region_ptr, size_t n
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for features member in a bl_gff_region_t structure.
- *      Use this function to set features in a bl_gff_region_t object
+ *      Mutator for features member in a bl_gff3_region_t structure.
+ *      Use this function to set features in a bl_gff3_region_t object
  *      from non-member functions.  This function performs a direct
  *      assignment for scalar or pointer structure members.  If
  *      features is a pointer, data previously pointed to should
@@ -133,19 +133,19 @@ int     bl_gff_region_set_goi_index(bl_gff_region_t *bl_gff_region_ptr, size_t n
  *      leaks.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      new_features    The new value for features
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
- *      bl_gff_t *      new_features;
+ *      bl_gff3_region_t bl_gff3_region;
+ *      bl_gff3_t *      new_features;
  *
- *      if ( bl_gff_region_set_features(&bl_gff_region, new_features)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_features(&bl_gff3_region, new_features)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
@@ -157,15 +157,15 @@ int     bl_gff_region_set_goi_index(bl_gff_region_t *bl_gff_region_ptr, size_t n
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_features(bl_gff_region_t *bl_gff_region_ptr, bl_gff_t * new_features)
+int     bl_gff3_region_set_features(bl_gff3_region_t *bl_gff3_region_ptr, bl_gff3_t * new_features)
 
 {
     if ( new_features == NULL )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
-	bl_gff_region_ptr->features = new_features;
-	return BL_GFF_REGION_DATA_OK;
+	bl_gff3_region_ptr->features = new_features;
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -176,46 +176,46 @@ int     bl_gff_region_set_features(bl_gff_region_t *bl_gff_region_ptr, bl_gff_t 
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for an array element of features member in a bl_gff_region_t
- *      structure. Use this function to set bl_gff_region_ptr->features[c]
- *      in a bl_gff_region_t object from non-member functions.
+ *      Mutator for an array element of features member in a bl_gff3_region_t
+ *      structure. Use this function to set bl_gff3_region_ptr->features[c]
+ *      in a bl_gff3_region_t object from non-member functions.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      c               Subscript to the features array
  *      new_features_element The new value for features[c]
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      size_t          c;
- *      bl_gff_t *      new_features_element;
+ *      bl_gff3_t *      new_features_element;
  *
- *      if ( bl_gff_region_set_features_ae(&bl_gff_region, c, new_features_element)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_features_ae(&bl_gff3_region, c, new_features_element)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
  *  See also:
- *      BL_GFF_REGION_SET_FEATURES_AE(3)
+ *      BL_GFF3_REGION_SET_FEATURES_AE(3)
  *
  *  History: 
  *  Date        Name        Modification
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_features_ae(bl_gff_region_t *bl_gff_region_ptr, size_t c, bl_gff_t  new_features_element)
+int     bl_gff3_region_set_features_ae(bl_gff3_region_t *bl_gff3_region_ptr, size_t c, bl_gff3_t  new_features_element)
 
 {
     if ( false )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
-	bl_gff_region_ptr->features[c] = new_features_element;
-	return BL_GFF_REGION_DATA_OK;
+	bl_gff3_region_ptr->features[c] = new_features_element;
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -226,51 +226,51 @@ int     bl_gff_region_set_features_ae(bl_gff_region_t *bl_gff_region_ptr, size_t
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for features member in a bl_gff_region_t structure.
- *      Use this function to set features in a bl_gff_region_t object
+ *      Mutator for features member in a bl_gff3_region_t structure.
+ *      Use this function to set features in a bl_gff3_region_t object
  *      from non-member functions.  This function copies the array pointed to
- *      by new_features to bl_gff_region_ptr->features.
+ *      by new_features to bl_gff3_region_ptr->features.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      new_features    The new value for features
  *      array_size      Size of the features array.
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
- *      bl_gff_t *      new_features;
+ *      bl_gff3_region_t bl_gff3_region;
+ *      bl_gff3_t *      new_features;
  *      size_t          array_size;
  *
- *      if ( bl_gff_region_set_features_cpy(&bl_gff_region, new_features, array_size)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_features_cpy(&bl_gff3_region, new_features, array_size)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
  *  See also:
- *      BL_GFF_REGION_SET_FEATURES(3)
+ *      BL_GFF3_REGION_SET_FEATURES(3)
  *
  *  History: 
  *  Date        Name        Modification
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_features_cpy(bl_gff_region_t *bl_gff_region_ptr, bl_gff_t * new_features, size_t array_size)
+int     bl_gff3_region_set_features_cpy(bl_gff3_region_t *bl_gff3_region_ptr, bl_gff3_t * new_features, size_t array_size)
 
 {
     if ( new_features == NULL )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
 	size_t  c;
 	
 	// FIXME: Assuming all elements should be copied
 	for (c = 0; c < array_size; ++c)
-	    bl_gff_region_ptr->features[c] = new_features[c];
-	return BL_GFF_REGION_DATA_OK;
+	    bl_gff3_region_ptr->features[c] = new_features[c];
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -281,8 +281,8 @@ int     bl_gff_region_set_features_cpy(bl_gff_region_t *bl_gff_region_ptr, bl_gf
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for species member in a bl_gff_region_t structure.
- *      Use this function to set species in a bl_gff_region_t object
+ *      Mutator for species member in a bl_gff3_region_t structure.
+ *      Use this function to set species in a bl_gff3_region_t object
  *      from non-member functions.  This function performs a direct
  *      assignment for scalar or pointer structure members.  If
  *      species is a pointer, data previously pointed to should
@@ -290,19 +290,19 @@ int     bl_gff_region_set_features_cpy(bl_gff_region_t *bl_gff_region_ptr, bl_gf
  *      leaks.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      new_species     The new value for species
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      char *          new_species;
  *
- *      if ( bl_gff_region_set_species(&bl_gff_region, new_species)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_species(&bl_gff3_region, new_species)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
@@ -314,15 +314,15 @@ int     bl_gff_region_set_features_cpy(bl_gff_region_t *bl_gff_region_ptr, bl_gf
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_species(bl_gff_region_t *bl_gff_region_ptr, char * new_species)
+int     bl_gff3_region_set_species(bl_gff3_region_t *bl_gff3_region_ptr, char * new_species)
 
 {
     if ( new_species == NULL )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
-	bl_gff_region_ptr->species = new_species;
-	return BL_GFF_REGION_DATA_OK;
+	bl_gff3_region_ptr->species = new_species;
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -333,46 +333,46 @@ int     bl_gff_region_set_species(bl_gff_region_t *bl_gff_region_ptr, char * new
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for an array element of species member in a bl_gff_region_t
- *      structure. Use this function to set bl_gff_region_ptr->species[c]
- *      in a bl_gff_region_t object from non-member functions.
+ *      Mutator for an array element of species member in a bl_gff3_region_t
+ *      structure. Use this function to set bl_gff3_region_ptr->species[c]
+ *      in a bl_gff3_region_t object from non-member functions.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      c               Subscript to the species array
  *      new_species_element The new value for species[c]
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      size_t          c;
  *      char *          new_species_element;
  *
- *      if ( bl_gff_region_set_species_ae(&bl_gff_region, c, new_species_element)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_species_ae(&bl_gff3_region, c, new_species_element)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
  *  See also:
- *      BL_GFF_REGION_SET_SPECIES_AE(3)
+ *      BL_GFF3_REGION_SET_SPECIES_AE(3)
  *
  *  History: 
  *  Date        Name        Modification
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_species_ae(bl_gff_region_t *bl_gff_region_ptr, size_t c, char  new_species_element)
+int     bl_gff3_region_set_species_ae(bl_gff3_region_t *bl_gff3_region_ptr, size_t c, char  new_species_element)
 
 {
     if ( false )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
-	bl_gff_region_ptr->species[c] = new_species_element;
-	return BL_GFF_REGION_DATA_OK;
+	bl_gff3_region_ptr->species[c] = new_species_element;
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -383,48 +383,48 @@ int     bl_gff_region_set_species_ae(bl_gff_region_t *bl_gff_region_ptr, size_t 
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for species member in a bl_gff_region_t structure.
- *      Use this function to set species in a bl_gff_region_t object
+ *      Mutator for species member in a bl_gff3_region_t structure.
+ *      Use this function to set species in a bl_gff3_region_t object
  *      from non-member functions.  This function copies the array pointed to
- *      by new_species to bl_gff_region_ptr->species.
+ *      by new_species to bl_gff3_region_ptr->species.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      new_species     The new value for species
  *      array_size      Size of the species array.
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      char *          new_species;
  *      size_t          array_size;
  *
- *      if ( bl_gff_region_set_species_cpy(&bl_gff_region, new_species, array_size)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_species_cpy(&bl_gff3_region, new_species, array_size)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
  *  See also:
- *      BL_GFF_REGION_SET_SPECIES(3)
+ *      BL_GFF3_REGION_SET_SPECIES(3)
  *
  *  History: 
  *  Date        Name        Modification
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_species_cpy(bl_gff_region_t *bl_gff_region_ptr, char * new_species, size_t array_size)
+int     bl_gff3_region_set_species_cpy(bl_gff3_region_t *bl_gff3_region_ptr, char * new_species, size_t array_size)
 
 {
     if ( new_species == NULL )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
 	// FIXME: Assuming char array is a null-terminated string
-	strlcpy(bl_gff_region_ptr->species, new_species, array_size);
-	return BL_GFF_REGION_DATA_OK;
+	strlcpy(bl_gff3_region_ptr->species, new_species, array_size);
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -435,8 +435,8 @@ int     bl_gff_region_set_species_cpy(bl_gff_region_t *bl_gff_region_ptr, char *
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for goi member in a bl_gff_region_t structure.
- *      Use this function to set goi in a bl_gff_region_t object
+ *      Mutator for goi member in a bl_gff3_region_t structure.
+ *      Use this function to set goi in a bl_gff3_region_t object
  *      from non-member functions.  This function performs a direct
  *      assignment for scalar or pointer structure members.  If
  *      goi is a pointer, data previously pointed to should
@@ -444,19 +444,19 @@ int     bl_gff_region_set_species_cpy(bl_gff_region_t *bl_gff_region_ptr, char *
  *      leaks.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      new_goi         The new value for goi
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      char *          new_goi;
  *
- *      if ( bl_gff_region_set_goi(&bl_gff_region, new_goi)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_goi(&bl_gff3_region, new_goi)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
@@ -468,15 +468,15 @@ int     bl_gff_region_set_species_cpy(bl_gff_region_t *bl_gff_region_ptr, char *
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_goi(bl_gff_region_t *bl_gff_region_ptr, char * new_goi)
+int     bl_gff3_region_set_goi(bl_gff3_region_t *bl_gff3_region_ptr, char * new_goi)
 
 {
     if ( new_goi == NULL )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
-	bl_gff_region_ptr->goi = new_goi;
-	return BL_GFF_REGION_DATA_OK;
+	bl_gff3_region_ptr->goi = new_goi;
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -487,46 +487,46 @@ int     bl_gff_region_set_goi(bl_gff_region_t *bl_gff_region_ptr, char * new_goi
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for an array element of goi member in a bl_gff_region_t
- *      structure. Use this function to set bl_gff_region_ptr->goi[c]
- *      in a bl_gff_region_t object from non-member functions.
+ *      Mutator for an array element of goi member in a bl_gff3_region_t
+ *      structure. Use this function to set bl_gff3_region_ptr->goi[c]
+ *      in a bl_gff3_region_t object from non-member functions.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      c               Subscript to the goi array
  *      new_goi_element The new value for goi[c]
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      size_t          c;
  *      char *          new_goi_element;
  *
- *      if ( bl_gff_region_set_goi_ae(&bl_gff_region, c, new_goi_element)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_goi_ae(&bl_gff3_region, c, new_goi_element)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
  *  See also:
- *      BL_GFF_REGION_SET_GOI_AE(3)
+ *      BL_GFF3_REGION_SET_GOI_AE(3)
  *
  *  History: 
  *  Date        Name        Modification
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_goi_ae(bl_gff_region_t *bl_gff_region_ptr, size_t c, char  new_goi_element)
+int     bl_gff3_region_set_goi_ae(bl_gff3_region_t *bl_gff3_region_ptr, size_t c, char  new_goi_element)
 
 {
     if ( false )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
-	bl_gff_region_ptr->goi[c] = new_goi_element;
-	return BL_GFF_REGION_DATA_OK;
+	bl_gff3_region_ptr->goi[c] = new_goi_element;
+	return BL_GFF3_REGION_DATA_OK;
     }
 }
 
@@ -537,47 +537,47 @@ int     bl_gff_region_set_goi_ae(bl_gff_region_t *bl_gff_region_ptr, size_t c, c
  *      -lbiolibc -lxtend
  *
  *  Description:
- *      Mutator for goi member in a bl_gff_region_t structure.
- *      Use this function to set goi in a bl_gff_region_t object
+ *      Mutator for goi member in a bl_gff3_region_t structure.
+ *      Use this function to set goi in a bl_gff3_region_t object
  *      from non-member functions.  This function copies the array pointed to
- *      by new_goi to bl_gff_region_ptr->goi.
+ *      by new_goi to bl_gff3_region_ptr->goi.
  *
  *  Arguments:
- *      bl_gff_region_ptr Pointer to the structure to set
+ *      bl_gff3_region_ptr Pointer to the structure to set
  *      new_goi         The new value for goi
  *      array_size      Size of the goi array.
  *
  *  Returns:
- *      BL_GFF_REGION_DATA_OK if the new value is acceptable and assigned
- *      BL_GFF_REGION_DATA_OUT_OF_RANGE otherwise
+ *      BL_GFF3_REGION_DATA_OK if the new value is acceptable and assigned
+ *      BL_GFF3_REGION_DATA_OUT_OF_RANGE otherwise
  *
  *  Examples:
- *      bl_gff_region_t bl_gff_region;
+ *      bl_gff3_region_t bl_gff3_region;
  *      char *          new_goi;
  *      size_t          array_size;
  *
- *      if ( bl_gff_region_set_goi_cpy(&bl_gff_region, new_goi, array_size)
- *              == BL_GFF_REGION_DATA_OK )
+ *      if ( bl_gff3_region_set_goi_cpy(&bl_gff3_region, new_goi, array_size)
+ *              == BL_GFF3_REGION_DATA_OK )
  *      {
  *      }
  *
  *  See also:
- *      BL_GFF_REGION_SET_GOI(3)
+ *      BL_GFF3_REGION_SET_GOI(3)
  *
  *  History: 
  *  Date        Name        Modification
  *  2022-02-25  gen-get-set Auto-generated from gff-region.h
  ***************************************************************************/
 
-int     bl_gff_region_set_goi_cpy(bl_gff_region_t *bl_gff_region_ptr, char * new_goi, size_t array_size)
+int     bl_gff3_region_set_goi_cpy(bl_gff3_region_t *bl_gff3_region_ptr, char * new_goi, size_t array_size)
 
 {
     if ( new_goi == NULL )
-	return BL_GFF_REGION_DATA_OUT_OF_RANGE;
+	return BL_GFF3_REGION_DATA_OUT_OF_RANGE;
     else
     {
 	// FIXME: Assuming char array is a null-terminated string
-	strlcpy(bl_gff_region_ptr->goi, new_goi, array_size);
-	return BL_GFF_REGION_DATA_OK;
+	strlcpy(bl_gff3_region_ptr->goi, new_goi, array_size);
+	return BL_GFF3_REGION_DATA_OK;
     }
 }

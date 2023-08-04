@@ -1,27 +1,27 @@
 alt-str-mutators.o: alt-str-mutators.c alt-str.h alt-str-rvs.h \
- alt-str-accessors.h alt-str-mutators.h
+  alt-str-accessors.h alt-str-mutators.h
 	${CC} -c ${CFLAGS} alt-str-mutators.c
 
 alt-str.o: alt-str.c alt-str.h alt-str-rvs.h alt-str-accessors.h \
- alt-str-mutators.h
+  alt-str-mutators.h
 	${CC} -c ${CFLAGS} alt-str.c
 
 gff-region-mutators.o: gff-region-mutators.c gff-region.h \
- gff-region-rvs.h gff-region-accessors.h gff-region-mutators.h
+  gff-region-rvs.h gff-region-accessors.h gff-region-mutators.h
 	${CC} -c ${CFLAGS} gff-region-mutators.c
 
 gff-region.o: gff-region.c gff-region.h gff-region-rvs.h \
- gff-region-accessors.h gff-region-mutators.h
+  gff-region-accessors.h gff-region-mutators.h
 	${CC} -c ${CFLAGS} gff-region.c
 
 ms-add-ortho.o: ms-add-ortho.c
 	${CC} -c ${CFLAGS} ms-add-ortho.c
 
 ms-extract.o: ms-extract.c ms-extract.h alt-str.h alt-str-rvs.h \
- alt-str-accessors.h alt-str-mutators.h
+  alt-str-accessors.h alt-str-mutators.h
 	${CC} -c ${CFLAGS} ms-extract.c
 
 ms-intersect.o: ms-intersect.c gff-region.h gff-region-rvs.h \
- gff-region-accessors.h gff-region-mutators.h
+  gff-region-accessors.h gff-region-mutators.h
 	${CC} -c ${CFLAGS} ms-intersect.c
 

@@ -7,7 +7,7 @@
 #include <string.h>
 #include <limits.h>         // PATH_MAX OpenIndiana
 #include <sys/param.h>      // PATH_MAX
-#include <biolibc/gff.h>
+#include <biolibc/gff3.h>
 #include <xtend/string.h>   // Linux strlcpy()
 #include <xtend/file.h>
 #include <xtend/mem.h>
@@ -42,13 +42,13 @@
  *  2022-02-16  Jason Bacon Begin
  ***************************************************************************/
 
-int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
+int     bl_gff3_region_load(bl_gff3_region_t *region, const char *filename)
 
 {
     FILE        *infile;
     char        temp_filename[PATH_MAX + 1], *p, *species, *gene_name;
     const char  *basename;
-    bl_gff_t    temp_feature;
+    bl_gff3_t    temp_feature;
 
     /*
      *  Set species and goi even if input file does not exist
@@ -86,7 +86,7 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
     if ( ((region->species = strdup(species)) == NULL) ||
 	 ((region->goi = strdup(gene_name)) == NULL) )
     {
-	fprintf(stderr, "bl_gff_region_load(): Could not allocate strings.\n");
+	fprintf(stderr, "bl_gff3_region_load(): Could not allocate strings.\n");
 	return 0;
     }
     region->goi_len = strlen(region->goi);
@@ -105,9 +105,9 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 	}
     }
     
-    bl_gff_skip_header(infile);
-    bl_gff_init(&temp_feature);
-    for (region->count = 0; (bl_gff_read(&temp_feature, infile, BL_GFF_FIELD_ALL)
+    bl_gff3_skip_header(infile);
+    bl_gff3_init(&temp_feature);
+    for (region->count = 0; (bl_gff3_read(&temp_feature, infile, BL_GFF3_FIELD_ALL)
 		 == BL_READ_OK); )
     {
 	if ( region->count == region->array_size )
@@ -121,17 +121,17 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
 		return 0;
 	    }
 	}
-	bl_gff_copy(&region->features[region->count], &temp_feature);
+	bl_gff3_copy(&region->features[region->count], &temp_feature);
 	/*printf("%s %" PRId64 "\n",
-		BL_GFF_SEQID(&region->features[c]),
-		BL_GFF_START(&region->features[c]));*/
-	//printf("%s %s\n", gene_name, BL_GFF_FEATURE_NAME(&temp_feature));
-	if ( strcasecmp(gene_name, BL_GFF_FEATURE_NAME(&temp_feature)) == 0 )
+		BL_GFF3_SEQID(&region->features[c]),
+		BL_GFF3_START(&region->features[c]));*/
+	//printf("%s %s\n", gene_name, BL_GFF3_FEATURE_NAME(&temp_feature));
+	if ( strcasecmp(gene_name, BL_GFF3_FEATURE_NAME(&temp_feature)) == 0 )
 	{
 	    region->goi_index = region->count;
-	    if ( (region->chrom = strdup(BL_GFF_SEQID(&temp_feature))) == NULL )
+	    if ( (region->chrom = strdup(BL_GFF3_SEQID(&temp_feature))) == NULL )
 	    {
-		fprintf(stderr, "bl_gff_region_load(): Failed to strdup() chrom.\n");
+		fprintf(stderr, "bl_gff3_region_load(): Failed to strdup() chrom.\n");
 		return 0;
 	    }
 	}
@@ -168,7 +168,7 @@ int     bl_gff_region_load(bl_gff_region_t *region, const char *filename)
  *  2022-02-20  Jason Bacon Begin
  ***************************************************************************/
 
-void    bl_gff_region_init(bl_gff_region_t *region)
+void    bl_gff3_region_init(bl_gff3_region_t *region)
 
 {
     region->array_size = 0;
@@ -208,7 +208,7 @@ void    bl_gff_region_init(bl_gff_region_t *region)
  *  2022-02-17  Jason Bacon Begin
  ***************************************************************************/
 
-void    bl_gff_region_free(bl_gff_region_t *region)
+void    bl_gff3_region_free(bl_gff3_region_t *region)
 
 {
     if ( region->features != NULL )
@@ -219,7 +219,7 @@ void    bl_gff_region_free(bl_gff_region_t *region)
 	free(region->goi);
     if ( region->chrom != NULL )
 	free(region->chrom);
-    bl_gff_region_init(region);
+    bl_gff3_region_init(region);
 }
 
 
@@ -234,7 +234,7 @@ void    bl_gff_region_free(bl_gff_region_t *region)
  *  2022-02-16  Jason Bacon Begin
  ***************************************************************************/
 
-int     bl_gff_region_commonality(bl_gff_region_t *r1, bl_gff_region_t *r2)
+int     bl_gff3_region_commonality(bl_gff3_region_t *r1, bl_gff3_region_t *r2)
 
 {
     int     n = 0, c1, c2;
@@ -242,10 +242,10 @@ int     bl_gff_region_commonality(bl_gff_region_t *r1, bl_gff_region_t *r2)
     
     for (c1 = 0; c1 < r1->count; ++c1)
     {
-	n1 = BL_GFF_FEATURE_NAME(&r1->features[c1]);
+	n1 = BL_GFF3_FEATURE_NAME(&r1->features[c1]);
 	for (c2 = 0; c2 < r2->count; ++c2)
 	{
-	    n2 = BL_GFF_FEATURE_NAME(&r2->features[c2]);
+	    n2 = BL_GFF3_FEATURE_NAME(&r2->features[c2]);
 	    if ( (strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0) )
 		++n;
 	}
@@ -280,19 +280,19 @@ int     bl_gff_region_commonality(bl_gff_region_t *r1, bl_gff_region_t *r2)
  *  2022-02-23  Jason Bacon Begin
  ***************************************************************************/
 
-bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t *r2)
+bl_gff3_region_t   *bl_gff3_region_intersect(bl_gff3_region_t *r1, bl_gff3_region_t *r2)
 
 {
     size_t          c1, c2;
     char            *n1, *n2, *attr;
-    bl_gff_region_t *intersect;
+    bl_gff3_region_t *intersect;
 
     if ( (intersect = xt_malloc(1, sizeof(*intersect))) == NULL )
     {
 	fprintf(stderr, "%s: Could not allocate intersect.\n", __FUNCTION__);
 	return NULL;
     }
-    bl_gff_region_init(intersect);
+    bl_gff3_region_init(intersect);
     intersect->array_size = 16;
     if ( (intersect->features = xt_malloc(intersect->array_size,
 	  sizeof(*intersect->features))) == NULL )
@@ -320,10 +320,10 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
     // FIXME: Don't count multiple copies of the same gene
     for (c1 = 0; c1 < r1->count; ++c1)
     {
-	n1 = BL_GFF_FEATURE_NAME(&r1->features[c1]);
+	n1 = BL_GFF3_FEATURE_NAME(&r1->features[c1]);
 	for (c2 = 0; c2 < r2->count; ++c2)
 	{
-	    n2 = BL_GFF_FEATURE_NAME(&r2->features[c2]);
+	    n2 = BL_GFF3_FEATURE_NAME(&r2->features[c2]);
 	    
 	    //printf("Comparing %s %s\n", n1, n2);
 	    
@@ -340,8 +340,8 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 	    if ( (((strcasecmp(n1, n2) == 0) && (strcmp(n1, "unnamed") != 0))
 		 || ((strcasecmp(n1, r1->goi) == 0)
 		     && (strcasecmp(n2, r2->goi) == 0)))
-		 && !bl_gff_region_duplicate_gene(intersect, n1)
-		 && !bl_gff_region_duplicate_gene(intersect, n2) )
+		 && !bl_gff3_region_duplicate_gene(intersect, n1)
+		 && !bl_gff3_region_duplicate_gene(intersect, n2) )
 	    {
 		if ( intersect->count == intersect->array_size )
 		{
@@ -361,14 +361,14 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
 		 *  Only the feature name is common to both species and
 		 *  so leave other fields blank.
 		 */
-		bl_gff_init(&intersect->features[intersect->count]);
-		bl_gff_set_type_cpy(&intersect->features[intersect->count],
-		    "gene", BL_GFF_TYPE_MAX_CHARS + 1);
+		bl_gff3_init(&intersect->features[intersect->count]);
+		bl_gff3_set_type_cpy(&intersect->features[intersect->count],
+		    "gene", BL_GFF3_TYPE_MAX_CHARS + 1);
 		strlower(n2);
-		bl_gff_set_feature_name(&intersect->features[intersect->count],
+		bl_gff3_set_feature_name(&intersect->features[intersect->count],
 		    strdup(n2));
 		asprintf(&attr, "Name=%s;", n2);
-		bl_gff_set_attributes(&intersect->features[intersect->count],
+		bl_gff3_set_attributes(&intersect->features[intersect->count],
 		    attr);
 		++intersect->count;
 		/*
@@ -409,7 +409,7 @@ bl_gff_region_t   *bl_gff_region_intersect(bl_gff_region_t *r1, bl_gff_region_t 
  *  2022-03-02  Jason Bacon Begin
  ***************************************************************************/
 
-bool    bl_gff_region_duplicate_gene(bl_gff_region_t *r, const char *feature_name)
+bool    bl_gff3_region_duplicate_gene(bl_gff3_region_t *r, const char *feature_name)
 
 {
     int     c;
@@ -421,7 +421,7 @@ bool    bl_gff_region_duplicate_gene(bl_gff_region_t *r, const char *feature_nam
      */
     
     for (c = 0; c < r->count; ++c)
-	if ( strcmp(BL_GFF_FEATURE_NAME(&r->features[c]), feature_name) == 0 )
+	if ( strcmp(BL_GFF3_FEATURE_NAME(&r->features[c]), feature_name) == 0 )
 	{
 	    //fprintf(stderr, "Duplicate gene: %s\n", feature_name);
 	    return true;
