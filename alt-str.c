@@ -42,7 +42,7 @@ int     xt_alt_str_read_line_malloc(alt_str_t *alt_str, FILE *stream)
     buff_size = len = 0;
     status = xt_read_line_malloc(stream, &buff, &buff_size, &len);
     if ( len > 0 )
-	alt_str->count = strsplit(buff, &alt_str->strings, "|");
+	alt_str->count = xt_strsplit(buff, &alt_str->strings, "|");
     return status;
 }
 

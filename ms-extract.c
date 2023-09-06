@@ -146,13 +146,13 @@ int     main(int argc,char *argv[])
 		    // Path name format is important, parsed by other progs
 		    // '-' is a separator, so don't allow it in species
 		    // or gene names
-		    strtr(gff3_basename, "-", "_", 0);
+		    xt_strtr(gff3_basename, "-", "_", 0);
 		    
 		    // Make gene name lower case in all files
 		    // Don't enable until verifying that case in gene
 		    // names has no meaning
-		    // strlower(ALT_STR_STRINGS_AE(&gene_names[c], t));
-		    strtr(ALT_STR_STRINGS_AE(&gene_names[c], t), "-", "_", 0);
+		    // xt_strlower(ALT_STR_STRINGS_AE(&gene_names[c], t));
+		    xt_strtr(ALT_STR_STRINGS_AE(&gene_names[c], t), "-", "_", 0);
 		    snprintf(region_file, PATH_MAX,
 			     "%s/%s-%s-%s-%" PRId64 "-%d-%" PRIu64 ".gff3",
 			     output_dir, gff3_basename,

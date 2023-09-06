@@ -364,7 +364,7 @@ bl_gff3_region_t   *bl_gff3_region_intersect(bl_gff3_region_t *r1, bl_gff3_regio
 		bl_gff3_init(&intersect->features[intersect->count]);
 		bl_gff3_set_type_cpy(&intersect->features[intersect->count],
 		    "gene", BL_GFF3_TYPE_MAX_CHARS + 1);
-		strlower(n2);
+		xt_strlower(n2);
 		bl_gff3_set_feature_name(&intersect->features[intersect->count],
 		    strdup(n2));
 		asprintf(&attr, "Name=%s;", n2);
