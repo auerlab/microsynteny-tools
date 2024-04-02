@@ -367,7 +367,11 @@ bl_gff3_region_t   *bl_gff3_region_intersect(bl_gff3_region_t *r1, bl_gff3_regio
 		xt_strlower(n2);
 		bl_gff3_set_feature_name(&intersect->features[intersect->count],
 		    strdup(n2));
-		asprintf(&attr, "Name=%s;", n2);
+		if ( asprintf(&attr, "Name=%s;", n2) == -1)
+		{
+		    fprintf(stderr, "%s(): asprintf() failed.\n", __FUNCTION__);
+		    return NULL;
+		}
 		bl_gff3_set_attributes(&intersect->features[intersect->count],
 		    attr);
 		++intersect->count;
